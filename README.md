@@ -58,3 +58,10 @@ Testcontainers has been configured to use the following Docker images:
 
 Please review the tags of the used images and set them to the same as you're running in production.
 
+
+# Run application on docker
+
+```shell
+docker-compose up
+```
+

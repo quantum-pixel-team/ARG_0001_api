@@ -1,0 +1,37 @@
+services:
+  # PostgreSQL Service Configuration
+  postgres:
+    image: 'postgres:16.1-alpine'
+    container_name: ecm-db
+    environment:
+      POSTGRES_DB: e-commerce
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+    ports:
+      - '5432:5432'
+
+
+  # pgAdmin web UI
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ecm-pgadmin
+    ports:
+      - "5059:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    env_file:
+      - ../.env
+    depends_on:
+      - postgres
+  py:
+    container_name: ecm_db_initialize
+    build:
+      context: .
+      dockerfile: DbInitialize
+    env_file:
+      - ../.env
+
+
+volumes:
+  postgres:
+  pgadmin:

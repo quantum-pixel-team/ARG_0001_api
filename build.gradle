@@ -8,6 +8,7 @@ group = 'com.quantum-pixel'
 version = '0.0.1-SNAPSHOT'
 
 java {
+    //TODO version 21 throws: Cause: error: invalid source release: 21
     sourceCompatibility = '21'
 }
 

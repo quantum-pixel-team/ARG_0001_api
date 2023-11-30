@@ -1,0 +1,35 @@
+services:
+  # PostgreSQL Service Configuration
+  postgres:
+    image: 'postgres:16.1-alpine'
+    container_name: ecm-db
+    environment:
+      POSTGRES_DB: e-commerce
+      POSTGRES_PASSWORD: ${db-password}
+      POSTGRES_USER: ${db-user}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file:
+      - .env
+  # pgAdmin web UI
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ecm-pgadmin
+    ports:
+      - "5059:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+
+volumes:
+  postgres:
+  pgadmin:

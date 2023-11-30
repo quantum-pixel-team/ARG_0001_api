@@ -1,0 +1,7 @@
+FROM python:3
+WORKDIR /db_data
+COPY /db/employees.sql 1.sql
+COPY init/ .
+
+RUN pip install --no-cache-dir -r requirements.txt
+CMD [ "python", "./main.py" ]
