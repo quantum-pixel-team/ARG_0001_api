@@ -1,7 +1,7 @@
 FROM python:3
 WORKDIR /db_data
-COPY /db/employees.sql 1.sql
-COPY init/ .
+COPY ecm-local/db/users.sql 1.sql
+COPY ecm-local/init/ .
 
 RUN pip install --no-cache-dir -r requirements.txt
 CMD [ "python", "./main.py" ]

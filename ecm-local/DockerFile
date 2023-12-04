@@ -1,0 +1,4 @@
+FROM ibm-semeru-runtimes:open-17-jdk
+WORKDIR /app
+COPY build/libs .
+CMD ["java","--enable-preview","-Dspring.profiles.active=local","-jar","e-commarce-0.0.1-SNAPSHOT.jar"]

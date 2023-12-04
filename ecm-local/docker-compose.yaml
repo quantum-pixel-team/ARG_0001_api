@@ -14,7 +14,7 @@ services:
   api:
     container_name: ecm-api
     build:
-      context: .
+      context: ..
       dockerfile: ecm-local/DockerFile
     environment:
       SPRING_PROFILES_ACTIVE: local
@@ -30,10 +30,31 @@ services:
       postgres:
         condition: service_started
 
+  # pgAdmin web UI
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ecm-pgadmin
+    ports:
+      - "5059:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    env_file:
+      - .env
+    depends_on:
+      - postgres
 
+  py:
+    container_name: ecm_db_initialize
+    build:
+      context: ..
+      dockerfile: DbInitialize
+    env_file:
+      - .env
+    networks:
+      - ecm
 
 volumes:
-  postgres:
+  pgadmin:
   api:
 
 networks:

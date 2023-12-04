@@ -39,3 +39,4 @@ out/
 ### Others ###
 **/.env
 **/temp/
+/.jpb/

@@ -1,0 +1,29 @@
+# application configuration
+server:
+  shutdown: graceful
+spring:
+  main:
+    allow-circular-references: true
+    web-application-type: SERVLET
+  jpa:
+    database: default
+    generate-ddl: false
+    open-in-view: false
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.generate_statistics: false
+      hibernate.default_schema: public
+      hibernate.format_sql: true
+    show-sql: ${SHOW_SQL:false}
+  datasource:
+    hikari:
+      maximum-pool-size: 15
+      connection-timeout: 10000
+      initialization-fail-timeout: 60000
+      register-mbeans: true
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL:jdbc:postgresql://localhost/e-commerce}
+    username: ${DATABASE_USER:ecm}
+    password: ${DATABASE_PASSWORD:ecm}
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
