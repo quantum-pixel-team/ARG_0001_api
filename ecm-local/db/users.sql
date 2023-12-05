@@ -1,3 +1,3 @@
-INSERT INTO public.users(first_name, last_name) VALUES ('Indrit', 'Vaka');
-INSERT INTO public.users(first_name, last_name) VALUES ('Luka', 'Buziu');
-INSERT INTO public.users(first_name, last_name) VALUES ('Fabion', 'Kallaku');
+INSERT INTO public.users(first_name, last_name,email) VALUES ('Indrit', 'Vaka','indrit.vaka@gmail.com');
+INSERT INTO public.users(first_name, last_name,email) VALUES ('Luka', 'Buziu','luka.buziu22@gmail.com');
+INSERT INTO public.users(first_name, last_name,email) VALUES ('Fabion', 'Kallaku','kallakukallaku@gmail.com');
