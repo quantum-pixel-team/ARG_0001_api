@@ -47,11 +47,14 @@ services:
     container_name: ecm_db_initialize
     build:
       context: ..
-      dockerfile: DbInitialize
+      dockerfile: ecm-local/DbInitialize
     env_file:
       - .env
     networks:
       - ecm
+    depends_on:
+      api:
+        condition: service_started
 
 volumes:
   pgadmin:
