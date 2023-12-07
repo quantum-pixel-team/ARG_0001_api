@@ -1,0 +1,65 @@
+services:
+  # PostgreSQL Service Configuration
+  postgres:
+    image: 'postgres:16.1-alpine'
+    container_name: ecm-db
+    environment:
+      POSTGRES_DB: e-commerce
+      POSTGRES_PASSWORD: ecm
+      POSTGRES_USER: ecm
+    ports:
+      - '5432:5432'
+    networks:
+      - ecm
+  api:
+    container_name: ecm-api
+    build:
+      context: ..
+      dockerfile: ecm-local/DockerFile
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SWAGGER_ENABLED: "true"
+      DATABASE_URL: jdbc:postgresql://postgres/e-commerce
+    ports:
+      - "8080:8080"
+    volumes:
+      - api:/usr/app/ecm
+    networks:
+      - ecm
+    depends_on:
+      postgres:
+        condition: service_started
+
+  # pgAdmin web UI
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ecm-pgadmin
+    ports:
+      - "5059:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  py:
+    container_name: ecm_db_initialize
+    build:
+      context: ..
+      dockerfile: ecm-local/DbInitialize
+    env_file:
+      - .env
+    networks:
+      - ecm
+    depends_on:
+      api:
+        condition: service_started
+
+volumes:
+  pgadmin:
+  api:
+
+networks:
+  ecm:
+    driver: bridge
