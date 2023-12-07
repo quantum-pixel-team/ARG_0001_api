@@ -7,17 +7,17 @@ import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-@TestConfiguration(proxyBeanMethods = false)
+//@TestConfiguration(proxyBeanMethods = false)
 public class TestECommarceApplication {
-
-    @Bean
-    @ServiceConnection
-    PostgreSQLContainer<?> postgresContainer() {
-        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.from(ECommarceApplication::main).with(TestECommarceApplication.class).run(args);
-    }
+//
+//    @Bean
+//    @ServiceConnection
+//    PostgreSQLContainer<?> postgresContainer() {
+//        return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
+//    }
+//
+//    public static void main(String[] args) {
+//        SpringApplication.from(ECommarceApplication::main).with(TestECommarceApplication.class).run(args);
+//    }
 
 }
