@@ -15,7 +15,7 @@ sonar {
     }
 }
 java {
-    sourceCompatibility = '21'
+    sourceCompatibility = '17'
 }
 
 configurations {
