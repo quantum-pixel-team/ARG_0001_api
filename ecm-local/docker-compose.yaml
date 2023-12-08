@@ -36,25 +36,26 @@ services:
     container_name: ecm-pgadmin
     ports:
       - "5059:80"
-    volumes:
-      - pgadmin:/var/lib/pgadmin
-    env_file:
-      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@quantum-pixel.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - postgres
-
-  py:
-    container_name: ecm_db_initialize
-    build:
-      context: ..
-      dockerfile: ecm-local/DbInitialize
-    env_file:
-      - .env
     networks:
       - ecm
-    depends_on:
-      api:
-        condition: service_started
+
+#  py:
+#    container_name: ecm_db_initialize
+#    build:
+#      context: ..
+#      dockerfile: ecm-local/DbInitialize
+#    env_file:
+#      - .env
+#    networks:
+#      - ecm
+#    depends_on:
+#      api:
+#        condition: service_started
 
 volumes:
   pgadmin:
