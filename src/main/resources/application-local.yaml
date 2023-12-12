@@ -1,0 +1,5 @@
+
+spring:
+  docker:
+    compose:
+      file: ecm-local/docker-compose.yaml
