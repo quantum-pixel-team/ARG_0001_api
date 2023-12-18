@@ -2,4 +2,4 @@
 spring:
   docker:
     compose:
-      file: ecm-local/docker-compose.yaml
+      file: ecm-local/docker-compose-base.yaml
