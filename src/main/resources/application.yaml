@@ -10,10 +10,11 @@ spring:
     generate-ddl: false
 #    open-in-view: false TODO #https://stackoverflow.com/questions/30549489/what-is-this-spring-jpa-open-in-view-true-property-in-spring-boot
     properties:
-      hibernate.cache.use_second_level_cache: false
-      hibernate.generate_statistics: false
-      hibernate.default_schema: public
-      hibernate.format_sql: true
+      hibernate:
+        cache.use_second_level_cache: false
+        generate_statistics: false
+        default_schema: public
+        format_sql: true
     show-sql: ${SHOW_SQL:false}
   datasource:
     hikari:
@@ -27,3 +28,5 @@ spring:
     password: ${DATABASE_PASSWORD:ecm}
   lifecycle:
     timeout-per-shutdown-phase: 10s
+  profiles:
+    active: local
