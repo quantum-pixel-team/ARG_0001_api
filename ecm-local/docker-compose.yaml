@@ -1,27 +1,22 @@
+include:
+  - docker-compose-base.yaml
+
 services:
-  # PostgreSQL Service Configuration
-  postgres:
-    image: 'postgres:16.1-alpine'
-    container_name: ecm-db
-    environment:
-      POSTGRES_DB: e-commerce
-      POSTGRES_PASSWORD: ecm
-      POSTGRES_USER: ecm
-    ports:
-      - '5432:5432'
-    networks:
-      - ecm
+
   api:
-    container_name: ecm-api
     build:
       context: ..
       dockerfile: ecm-local/DockerFile
+      args:
+        build_version: "0.0.1-SNAPSHOT"
     environment:
       SPRING_PROFILES_ACTIVE: local
-      SWAGGER_ENABLED: "true"
+      SWAGGER_ENABLED: true
       DATABASE_URL: jdbc:postgresql://postgres/e-commerce
     ports:
       - "8080:8080"
+      - "8000:8000"
+      - "3128:3128"
     volumes:
       - api:/usr/app/ecm
     networks:
@@ -36,31 +31,25 @@ services:
     container_name: ecm-pgadmin
     ports:
       - "5059:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@quantum-pixel.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+    env_file:
+      - .env
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
     depends_on:
       - postgres
     networks:
       - ecm
 
-#  py:
-#    container_name: ecm_db_initialize
-#    build:
-#      context: ..
-#      dockerfile: ecm-local/DbInitialize
-#    env_file:
-#      - .env
-#    networks:
-#      - ecm
-#    depends_on:
-#      api:
-#        condition: service_started
+  py:
+    container_name: ecm_db_initialize
+    build:
+      context: ..
+      dockerfile: ecm-local/DbInitialize
+    env_file:
+      - .env
+    networks:
+      - ecm
+    depends_on:
+      api:
+        condition: service_started
 
-volumes:
-  pgadmin:
-  api:
-
-networks:
-  ecm:
-    driver: bridge

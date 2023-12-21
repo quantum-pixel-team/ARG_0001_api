@@ -1,0 +1,25 @@
+
+services:
+
+  postgres:
+    image: 'postgres:16.1-alpine'
+    container_name: ecm-db
+    environment:
+      POSTGRES_DB: e-commerce
+      POSTGRES_PASSWORD: ecm
+      POSTGRES_USER: ecm
+    ports:
+      - '5432:5432'
+    networks:
+      - ecm
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:
+  api:
+
+networks:
+  ecm:
+    driver: bridge
