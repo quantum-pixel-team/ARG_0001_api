@@ -16,8 +16,6 @@ services:
       - "8080:8080"
       - "8000:8000"
       - "3128:3128"
-    volumes:
-      - api:/usr/app/ecm
     networks:
       - ecm
     depends_on:
