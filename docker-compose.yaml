@@ -17,7 +17,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: ecm-local/DockerFile
+      dockerfile: Dockerfile
       args:
         build_version: "0.0.1-SNAPSHOT"
     environment:
@@ -29,7 +29,7 @@ services:
       - "8000:8000"
       - "3128:3128"
     volumes:
-      - api:/usr/app/ecm
+      - api:/home/gradle/.gradle
     networks:
       - ecm
     depends_on:
