@@ -19,76 +19,25 @@ on:
         default: "delta"
 jobs:
   ci:
-    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/api-ci-gradle.yml@feature/EC-34-add-reusable-ci
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/api-ci-gradle.yml@master
     secrets:
       git_token: ${{ secrets.GITHUB_TOKEN }}
       sonar_token: ${{ secrets.SONAR_TOKEN }}
 
-  docker:
+  cd:
     needs: ci
-    runs-on: ubuntu-latest
-    if: github.event_name  == 'push'
-    environment: dev
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: |
-            image=moby/buildkit:v0.12.0
-          buildkitd-flags: --debug
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Download JAR artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: my-artifact
-          path: build/libs/
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ecm-docker/ecm-local/DockerFile
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
-          push: true
-          tags: blou5/e-commerce:latest
-
-  deploy-dev:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: "Deploy to dev"
-        uses: milanmk/actions-file-deployer@master
-        with:
-          sync: delta
-          remote-protocol: "sftp"
-          remote-host: ${{secrets.HOST}}
-          remote-user: ${{secrets.SSH_USER}}
-          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
-          local-path: "ecm-docker/dev"
-          remote-path: "/home/luka_buziu22_gmail_com/docker-compose"
-
-      - name: install ssh keys
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.HOST}}
-          username: ${{secrets.SSH_USER}}
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          port: 22
-          script: |
-            cd docker-compose
-            sudo docker compose pull |
-            sudo  docker compose up -d
-
-            
+    name: "Continuous Deployment"
+#    if: github.event_name  == 'push'
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@feature/ec-7-cd
+    with:
+      environment: "dev"
+      docker-file-path: "ecm-docker/ecm-local/DockerFile"
+      tag: "blou5/e-commerce:latest"
+      local-path: "ecm-docker/dev"
+      remote-path: "/home/luka_buziu22_gmail_com/docker-compose"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      HOST: ${{secrets.HOST}}
+      SSH_USER: ${{secrets.SSH_USER}}
+      SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
