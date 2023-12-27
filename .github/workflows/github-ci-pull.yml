@@ -10,7 +10,7 @@ on:
     branches: [ "master" ]
     paths:
       - "src/**"
-      - "ecm/docker/**"
+      - "ecm-docker/**"
   workflow_dispatch:
     inputs:
       sync:
@@ -30,7 +30,7 @@ jobs:
     uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
     with:
       environment: "dev"
-      docker-file-path: "ecm-docker/ecm-local/DockerFile"
+      docker-file-path: "Dockerfile"
       tag: "blou5/e-commerce:latest"
       local-path: "ecm-docker/dev"
       remote-path: "/home/luka_buziu22_gmail_com/docker-compose"

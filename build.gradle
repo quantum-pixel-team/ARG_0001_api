@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.0'
+    id 'org.springframework.boot' version '3.2.1'
     id 'io.spring.dependency-management' version '1.1.4'
     id "org.sonarqube" version "4.4.1.3373"
 }
 
 group = 'com.quantum-pixel'
-version = '0.0.1-SNAPSHOT'
+version = "${project_version}"
 sonar {
     properties {
         property "sonar.projectKey", "quantum-pixel-team_e-commerce"
@@ -36,11 +36,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.liquibase:liquibase-core'
+
     compileOnly 'org.projectlombok:lombok'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:junit-jupiter'
@@ -56,3 +60,30 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+bootJar {
+    archiveFileName = 'api.jar'
+    layered {
+        application {
+            intoLayer("spring-boot-loader") {
+                include "org/springframework/boot/loader/**"
+            }
+            intoLayer("application")
+        }
+        dependencies {
+            intoLayer("application") {
+                includeProjectDependencies()
+            }
+            intoLayer("snapshot-dependencies") {
+                include "*:*:*SNAPSHOT"
+            }
+            intoLayer("hibernate-deps") {
+                include "org.hibernate*:*:*"
+            }
+            intoLayer("spring-deps") {
+                include "org.springframework*:*"
+            }
+            intoLayer("dependencies")
+        }
+        layerOrder = ["spring-deps", "dependencies", "hibernate-deps", "spring-boot-loader", "snapshot-dependencies", "application"]
+    }
+}

@@ -6,7 +6,7 @@ services:
   api:
     build:
       context: ../..
-      dockerfile: ecm-docker/ecm-local/DockerFile
+      dockerfile: Dockerfile
       args:
         build_version: "0.0.1-SNAPSHOT"
     environment:
@@ -17,8 +17,6 @@ services:
       - "8080:8080"
       - "8000:8000"
       - "3128:3128"
-    volumes:
-      - api:/usr/app/ecm
     networks:
       - ecm
     depends_on:
@@ -51,5 +49,5 @@ services:
       - ecm
     depends_on:
       api:
-        condition: service_started
+        condition: service_healthy
 
