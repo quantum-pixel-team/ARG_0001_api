@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Continuous Integration/Deployment
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
     branches: [ "master" ]
     paths:
       - "src/**"
+      - "ecm/docker/**"
   workflow_dispatch:
     inputs:
       sync:
@@ -17,134 +18,25 @@ on:
         required: true
         default: "delta"
 jobs:
+  ci:
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/api-ci-gradle.yml@master
+    secrets:
+      git_token: ${{ secrets.GITHUB_TOKEN }}
+      sonar_token: ${{ secrets.SONAR_TOKEN }}
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.4.2
-      - name: Run Tests
-        run: gradle test
-
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.4.2
-      - name: Execute Gradle build
-        run: gradle build
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-            name: my-artifact
-            path: build/libs/
-
-  sonar:
-    needs: build
-    name: Build and analyze
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'temurin' # Alternative distribution options are available
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: gradle build sonar --info
-
-  docker:
-    needs: sonar
-    runs-on: ubuntu-latest
+  cd:
+    needs: ci
     if: github.event_name  == 'push'
-    environment: dev
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: |
-            image=moby/buildkit:v0.12.0
-          buildkitd-flags: --debug
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Download JAR artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: my-artifact
-          path: build/libs/
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
-          push: true
-          tags: blou5/e-commerce:latest
-
-  deploy-dev:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: "Deploy to dev"
-        uses: milanmk/actions-file-deployer@master
-        with:
-          sync: delta
-          remote-protocol: "sftp"
-          remote-host: ${{secrets.HOST}}
-          remote-user: ${{secrets.SSH_USER}}
-          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
-          local-path: "ecm-docker/dev"
-          remote-path: "/home/luka_buziu22_gmail_com/docker-compose"
-      - name: install ssh keys
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.HOST}}
-          username: ${{secrets.SSH_USER}}
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          port: 22
-          script: |
-            cd docker-compose
-            sudo docker compose pull |
-            sudo  docker compose up -d
-
-            
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
+    with:
+      environment: "dev"
+      docker-file-path: "ecm-docker/ecm-local/DockerFile"
+      tag: "blou5/e-commerce:latest"
+      local-path: "ecm-docker/dev"
+      remote-path: "/home/luka_buziu22_gmail_com/docker-compose"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      HOST: ${{secrets.HOST}}
+      SSH_USER: ${{secrets.SSH_USER}}
+      SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
