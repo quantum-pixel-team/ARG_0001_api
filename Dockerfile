@@ -4,7 +4,8 @@ COPY build.gradle .
 COPY *gradle* .
 COPY gradle/wrapper/gradle-wrapper.jar  gradle/wrapper/gradle-wrapper.jar
 COPY gradle/wrapper/gradle-wrapper.properties  gradle/wrapper/gradle-wrapper.properties
-RUN ./gradlew  dependencies
+RUN chmod +x ./gradlew && \
+    ./gradlew dependencies
 COPY src src
 RUN ./gradlew build
 RUN java -Djarmode=layertools -jar build/libs/api.jar extract
