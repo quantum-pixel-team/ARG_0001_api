@@ -61,7 +61,15 @@ Please review the tags of the used images and set them to the same as you're run
 
 # Run application on docker
 
+
+Navigate to ecm-docker
+## Run local version
+1. `./gradlw build` build your code, to generate jars, the image will point to jar that will be created.
+2. Navigate to ecm-local
+3. Run command bellow to start api
+
 ```shell
-docker-compose up
+docker compose up api
 ```
+
 

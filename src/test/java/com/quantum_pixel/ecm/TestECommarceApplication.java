@@ -17,7 +17,7 @@ public class TestECommarceApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.from(ECommarceApplication::main).with(TestECommarceApplication.class).run(args);
+        SpringApplication.from(ECommerceApplication::main).with(TestECommarceApplication.class).run(args);
     }
 
 }

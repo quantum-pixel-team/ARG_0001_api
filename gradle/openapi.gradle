@@ -7,7 +7,7 @@ sourceSets {
     }
 }
 openApiValidate {
-    inputSpec = "$rootDir/src/main/resources/openApi/api-v1.0.yaml".toString()
+    inputSpec = "$rootDir/src/main/resources/openapi/api-v1.0.yaml".toString()
 }
 
 
