@@ -1,0 +1,129 @@
+openapi: "3.0.1"
+
+info:
+  title: "E-commerce api"
+  version: "1"
+  description: E-commerce api
+
+servers:
+  - url: http://localhost:8080/api
+    description: Local server
+  - url: https://google.com/api
+    description: Dev server
+
+tags:
+  - name: Users
+    description: Users api
+paths:
+
+  /api/users:
+    get:
+      summary: Get All users
+      operationId: getAllUsers
+      tags:
+        - Users
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+  /api/user/{id}:
+    get:
+      summary: Get user by id
+      operationId: getUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+
+      responses:
+        201:
+          description: Returns created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      summary: delete user by id
+      operationId: deleteUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        204:
+          description: User was successfully deleted
+    put:
+      summary: edit an existing user
+      operationId: editUser
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+
+      requestBody:
+        description: Payload to edit the user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditUserRequest"
+      responses:
+        '200':
+          description: Returns edited user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /api/user:
+    post:
+      summary: Create new user
+      operationId: createNewUser
+      tags:
+        - Users
+      requestBody:
+        description: Payload for creating new user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUser"
+      responses:
+        201:
+          description: Returns created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+components:
+  schemas:
+    User:
+      $ref: "./schemas/user.yaml"
+    CreateUser:
+      $ref: "./schemas/CreateUser.yaml"
+    EditUserRequest:
+      $ref: "./schemas/EditUserRequest.yaml"

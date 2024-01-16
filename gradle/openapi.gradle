@@ -1,0 +1,64 @@
+
+sourceSets {
+    main {
+        java {
+            srcDir file("${buildDir}/generated-api/src/main/java")
+        }
+    }
+}
+openApiValidate {
+    inputSpec = "$rootDir/src/main/resources/openApi/api-v1.0.yaml".toString()
+}
+
+
+openApiGenerate {
+    templateDir = "$rootDir/src/main/resources/openapi/templates".toString()
+    generatorName = "spring"
+    library = "spring-boot"
+    validateSpec = true
+    inputSpec = "$rootDir/src/main/resources/openapi/api-v1.0.yaml".toString()
+    outputDir = "$rootDir/$DEFAULT_BUILD_DIR_NAME/generated-api".toString()
+    invokerPackage = "com.quantum_pixel.ecm.v1.config"
+    apiPackage = "com.quantum_pixel.ecm.v1.web"
+    modelPackage = "com.quantum_pixel.ecm.v1.web.model"
+    generateModelTests = false
+    generateApiTests = false
+    modelNameSuffix = "DTO"
+
+    configOptions = [
+            dateLibrary            : "java8",
+            hideGenerationTimestamp: "true",
+            interfaceOnly          : "true",
+            useTags                : "true",
+            swaggerDocketConfig    : "false",
+            swaggerAnnotations     : "false",
+            apiFirst               : "false",
+            configPackage          : "com.quantum_pixel.ecm.v1.config",
+            basePackage            : "com.quantum_pixel.ecm",
+            documentationProvider  : "none",
+            "additionalModelTypeAnnotations":"@lombok.NoArgsConstructor @lombok.AllArgsConstructor"
+    ]
+}
+tasks.register('packageDistributionApiV1', Zip) {
+    dependsOn("processResources")
+    description "Creating ZIP file for API contract"
+    archiveClassifier = 'api-v1.0'
+    from("$rootDir/$DEFAULT_BUILD_DIR_NAME/resources/main/openapi/") {
+        include "api-v1.0.yaml"
+    }
+}
+
+
+assemble.dependsOn tasks.packageDistributionApiV1
+tasks.openApiGenerate.dependsOn tasks.openApiValidate
+compileJava.dependsOn tasks.openApiGenerate
+
+
+dependencies {
+
+    implementation "org.openapitools:jackson-databind-nullable:${jackson_databind}"
+
+    implementation "io.swagger:swagger-annotations:${swagger_annotations}"
+    implementation "org.webjars:swagger-ui:${webjars_swagger_ui}"
+    implementation "org.webjars:webjars-locator:${webjars_locator}"
+}

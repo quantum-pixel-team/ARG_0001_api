@@ -1,7 +1,6 @@
-package com.quantumpixel.ecommarce;
+package com.quantum_pixel.ecm;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 //@SpringBootTest
 class ECommarceApplicationTests {

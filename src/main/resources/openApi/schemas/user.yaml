@@ -1,0 +1,22 @@
+type: object
+description: User
+properties:
+  id:
+    type: integer
+    description: user id
+    format: int64
+    minimum: 1
+  firstName:
+    type: string
+    description: first name of a user
+    example: Indrit
+  lastName:
+    type: string
+    description: last name of a user
+    example: Vaka
+  email:
+    type: string
+    description: user email
+    example: indirt.vaka@gmail.com
+required:
+  - id

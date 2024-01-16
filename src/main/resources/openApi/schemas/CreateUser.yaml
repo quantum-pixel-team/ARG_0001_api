@@ -1,0 +1,18 @@
+type: object
+description: User
+properties:
+  firstName:
+    type: string
+    description: first name of a user
+    example: Indrit
+  lastName:
+    type: string
+    description: last name of a user
+    example: Vaka
+  email:
+    type: string
+    description: user email
+    example: indirt.vaka@gmail.com
+required:
+  - firstName
+  - lastName
