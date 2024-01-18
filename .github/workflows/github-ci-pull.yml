@@ -26,14 +26,19 @@ jobs:
 
   cd:
     needs: ci
-    if: github.event_name  == 'push'
-    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
+#    if: github.event_name  == 'push'
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@feature/ec-45-cd-app
     with:
       environment: "dev"
       docker-file-path: "Dockerfile"
       tag: "blou5/e-commerce:latest"
       local-path: "ecm-docker/dev"
-      remote-path: "/home/luka_buziu22_gmail_com/docker-compose"
+      remote-path: "/home/luka_buziu22_gmail_com/docker-compose-api"
+      artifact-path: "build/libs"
+      deploy-script: "
+              cd docker-compose-api &&
+               docker compose pull &&
+              docker compose up -d  "
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
