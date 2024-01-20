@@ -16,7 +16,7 @@ tags:
     description: Users api
 paths:
 
-  /api/users:
+  /v1/users:
     get:
       summary: Get All users
       operationId: getAllUsers
@@ -31,93 +31,79 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/User"
-  /api/user/{id}:
-    get:
-      summary: Get user by id
-      operationId: getUserById
-      tags:
-        - Users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-
-      responses:
-        201:
-          description: Returns created user
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
-    delete:
-      summary: delete user by id
-      operationId: deleteUserById
-      tags:
-        - Users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-      responses:
-        204:
-          description: User was successfully deleted
     put:
-      summary: edit an existing user
-      operationId: editUser
+      summary: Updates a list of users
+      operationId: updateUsers
       tags:
         - Users
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-
       requestBody:
         description: Payload to edit the user
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EditUserRequest"
+              type: array
+              items:
+                $ref: "#/components/schemas/UpdateUserRequest"
       responses:
-        '200':
-          description: Returns edited user
+        200:
+          description: Updates users
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-
-  /api/user:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
     post:
-      summary: Create new user
-      operationId: createNewUser
+      summary: Create a list of users
+      operationId: createUsers
       tags:
         - Users
       requestBody:
-        description: Payload for creating new user
+        description: Payload to create the user
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateUser"
+              type: array
+              items:
+                $ref: "#/components/schemas/CreateUser"
       responses:
-        201:
-          description: Returns created user
+        200:
+          description: Updates users
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /v1/users/{userIds}:
+    delete:
+      summary: Delete a list of users by id
+      operationId: deleteUsersById
+      tags:
+        - Users
+      parameters:
+        - name: userIds
+          in: path
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+              minimum: 1
+            minItems: 1
+      responses:
+        '200':
+          description: Successful deletion
+        '400':
+          description: Bad Request - Invalid input
+        '404':
+          description: Not Found - Items not found
+
+
 
 components:
   schemas:
@@ -125,5 +111,5 @@ components:
       $ref: "./schemas/user.yaml"
     CreateUser:
       $ref: "./schemas/CreateUser.yaml"
-    EditUserRequest:
-      $ref: "./schemas/EditUserRequest.yaml"
+    UpdateUserRequest:
+      $ref: "./schemas/UpdateUserRequest.yaml"

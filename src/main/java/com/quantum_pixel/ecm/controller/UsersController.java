@@ -3,7 +3,7 @@ package com.quantum_pixel.ecm.controller;
 import com.quantum_pixel.ecm.service.UserService;
 import com.quantum_pixel.ecm.v1.web.UsersApi;
 import com.quantum_pixel.ecm.v1.web.model.CreateUserDTO;
-import com.quantum_pixel.ecm.v1.web.model.EditUserRequestDTO;
+import com.quantum_pixel.ecm.v1.web.model.UpdateUserRequestDTO;
 import com.quantum_pixel.ecm.v1.web.model.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,23 +23,20 @@ public class UsersController implements UsersApi {
 
 
     @Override
-    public ResponseEntity<UserDTO> createNewUser(CreateUserDTO createUserDTO) {
-        log.info("[ENDPOINT] Received request to create a new user");
-        var result = userService.createUser(createUserDTO);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
-
+    public ResponseEntity<List<UserDTO>> createUsers(List<CreateUserDTO> createUserDTO) {
+        List<UserDTO> createdUserList = userService.createUsers(createUserDTO);
+        return ResponseEntity.ok(createdUserList);
     }
 
     @Override
-    public ResponseEntity<Void> deleteUserById(Long id) {
-        log.info("[ENDPOINT] Received request to delete scenario");
-        userService.deleteUserById(id);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    public ResponseEntity<Void> deleteUsersById(List<Long> userIds) {
+        userService.deleteUsersById(userIds);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @Override
-    public ResponseEntity<UserDTO> editUser(Long id, EditUserRequestDTO editUserRequestDTO) {
-        var result = userService.editUser(id, editUserRequestDTO);
+    public ResponseEntity<List<UserDTO>> updateUsers(List<UpdateUserRequestDTO> updateUserRequestDTOS) {
+        var result = userService.updateUsers(updateUserRequestDTOS);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -48,8 +45,4 @@ public class UsersController implements UsersApi {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @Override
-    public ResponseEntity<UserDTO> getUserById(Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
-    }
 }
