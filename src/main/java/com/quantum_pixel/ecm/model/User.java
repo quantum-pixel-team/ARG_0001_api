@@ -1,4 +1,4 @@
-package com.quantumpixel.ecommarce.model;
+package com.quantum_pixel.ecm.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -27,5 +27,7 @@ public class User {
     @Size(max = 30)
     @Column(name = "last_name", length = 30)
     private String lastName;
+    @Column(name = "email", length = 30)
+    private String email;
 
 }

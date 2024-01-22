@@ -1,13 +1,13 @@
-package com.quantumpixel.ecommarce;
+package com.quantum_pixel.ecm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ECommarceApplication {
+public class ECommerceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ECommarceApplication.class, args);
+        SpringApplication.run(ECommerceApplication.class, args);
     }
 
 }

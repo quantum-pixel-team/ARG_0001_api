@@ -2,8 +2,7 @@ FROM  amazoncorretto:17-alpine AS build
 WORKDIR /app
 COPY build.gradle .
 COPY *gradle* .
-COPY gradle/wrapper/gradle-wrapper.jar  gradle/wrapper/gradle-wrapper.jar
-COPY gradle/wrapper/gradle-wrapper.properties  gradle/wrapper/gradle-wrapper.properties
+COPY gradle gradle/
 RUN chmod +x ./gradlew && \
     ./gradlew dependencies
 COPY src src
@@ -19,7 +18,7 @@ COPY --from=build /app/spring-boot-loader/ ./
 COPY --from=build /app/snapshot-dependencies/ ./
 COPY --from=build /app/application/ ./
 
-COPY src/main/java/com/quantumpixel/ecommarce/utilities/HealthCheck.java .
+COPY src/main/java/com/quantum_pixel/ecm/utilities/HealthCheck.java .
 EXPOSE 8080
 
 HEALTHCHECK --interval=10s \
