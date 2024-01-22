@@ -27,7 +27,7 @@ jobs:
   cd:
     needs: ci
     if: github.event_name  == 'push'
-    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@feature/ec-45-cd-app
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
     with:
       environment: "dev"
       docker-file-path: "Dockerfile"
