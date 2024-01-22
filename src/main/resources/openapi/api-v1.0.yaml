@@ -1,0 +1,115 @@
+openapi: "3.0.1"
+
+info:
+  title: "E-commerce api"
+  version: "2"
+  description: E-commerce api
+
+servers:
+  - url: http://localhost:8080/api
+    description: Local server
+  - url: https://google.com/api
+    description: Dev server
+
+tags:
+  - name: Users
+    description: Users api
+paths:
+
+  /v1/users:
+    get:
+      summary: Get All users
+      operationId: getAllUsers
+      tags:
+        - Users
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    put:
+      summary: Updates a list of users
+      operationId: updateUsers
+      tags:
+        - Users
+      requestBody:
+        description: Payload to edit the user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UpdateUserRequest"
+      responses:
+        200:
+          description: Updates users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      summary: Create a list of users
+      operationId: createUsers
+      tags:
+        - Users
+      requestBody:
+        description: Payload to create the user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CreateUser"
+      responses:
+        200:
+          description: Updates users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /v1/users/{userIds}:
+    delete:
+      summary: Delete a list of users by id
+      operationId: deleteUsersById
+      tags:
+        - Users
+      parameters:
+        - name: userIds
+          in: path
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+              minimum: 1
+            minItems: 1
+      responses:
+        '200':
+          description: Successful deletion
+        '400':
+          description: Bad Request - Invalid input
+        '404':
+          description: Not Found - Items not found
+
+
+
+components:
+  schemas:
+    User:
+      $ref: "./schemas/user.yaml"
+    CreateUser:
+      $ref: "./schemas/CreateUser.yaml"
+    UpdateUserRequest:
+      $ref: "./schemas/UpdateUserRequest.yaml"

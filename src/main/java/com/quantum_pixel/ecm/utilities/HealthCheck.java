@@ -1,4 +1,4 @@
-package com.quantumpixel.ecommarce.utilities;
+package com.quantum_pixel.ecm.utilities;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

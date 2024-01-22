@@ -6,7 +6,7 @@ services:
   api:
     build:
       context: ../..
-      dockerfile: Dockerfile
+      dockerfile: ecm-docker/ecm-local/Dockerfile
       args:
         build_version: "0.0.1-SNAPSHOT"
     environment:
@@ -19,6 +19,8 @@ services:
       - "3128:3128"
     networks:
       - ecm
+    volumes:
+      - ../../build:/app
     depends_on:
       postgres:
         condition: service_started
