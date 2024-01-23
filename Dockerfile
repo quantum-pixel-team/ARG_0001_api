@@ -1,7 +1,7 @@
 FROM  amazoncorretto:17-alpine AS build
 WORKDIR /app
 COPY build.gradle .
-COPY *gradle* .
+COPY *gradle* ./
 COPY gradle gradle/
 RUN chmod +x ./gradlew && \
     ./gradlew dependencies
