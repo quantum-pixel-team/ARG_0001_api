@@ -1,0 +1,51 @@
+sourceSets {
+    integTest {
+        java.srcDir file('src/integTest/java')
+        resources.srcDir file('src/integTest/resources')
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+
+    }
+}
+
+configurations {
+    integTestImplementation.extendsFrom implementation
+    integTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+
+tasks.register('integTest', Test) {
+    description = 'Runs integration tests.'
+
+    testClassesDirs = sourceSets.integTest.output.classesDirs
+    classpath = sourceSets.integTest.runtimeClasspath
+//    shouldRunAfter test
+
+    useJUnitPlatform()
+
+    testLogging.showStandardStreams = true
+}
+
+
+
+dependencies {
+    integTestImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    integTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    integTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integTestImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    integTestImplementation 'org.testcontainers:junit-jupiter'
+    integTestImplementation 'org.testcontainers:postgresql'
+    integTestImplementation "io.rest-assured:rest-assured:${rest_assured_version}"
+    integTestImplementation "io.rest-assured:json-path:${rest_assured_version}"
+    integTestImplementation "io.rest-assured:xml-path:${rest_assured_version}"
+    integTestCompileOnly 'org.projectlombok:lombok'
+    integTestAnnotationProcessor 'org.projectlombok:lombok'
+
+}
+
+
+rootProject.tasks.named("processIntegTestResources") {
+    duplicatesStrategy = 'include'
+}
+
+//check.dependsOn integTest
