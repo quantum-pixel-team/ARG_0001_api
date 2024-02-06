@@ -1,6 +1,5 @@
 package com.quantum_pixel.ecm;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -15,7 +14,6 @@ import java.util.List;
 
 @Testcontainers
 @ActiveProfiles("test")
-@RequiredArgsConstructor
 public abstract class ConfigTest {
 
     @Container
