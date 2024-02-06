@@ -1,7 +1,6 @@
 package com.quantum_pixel.ecm.service;
 
 import com.quantum_pixel.ecm.ConfigTest;
-
 import com.quantum_pixel.ecm.v1.web.model.CreateUserDTO;
 import com.quantum_pixel.ecm.v1.web.model.UserDTO;
 import org.junit.jupiter.api.Assertions;
@@ -9,15 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.web.server.ResponseStatusException;
-
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.INFERRED;
 

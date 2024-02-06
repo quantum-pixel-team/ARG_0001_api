@@ -1,13 +1,12 @@
 package com.quantum_pixel.ecm.repository;
 
-import com.quantum_pixel.ecm.model.User;
 import com.quantum_pixel.ecm.ConfigTest;
+import com.quantum_pixel.ecm.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
