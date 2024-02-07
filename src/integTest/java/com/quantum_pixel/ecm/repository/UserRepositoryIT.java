@@ -22,15 +22,15 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IN
         scripts = "/db/users.sql",
         config = @SqlConfig(transactionMode = INFERRED),
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-public class UserRepositoryTest extends ConfigTest {
+public class UserRepositoryIT extends ConfigTest {
 
 
     @Autowired
-    private  UserRepository repository;
+    private UserRepository repository;
 
 
     @Test
-    public void testContainer(){
+    public void testContainer() {
         Assertions.assertTrue(postgresContainer.isCreated());
         System.out.println("true");
         Assertions.assertTrue(postgresContainer.isRunning());
@@ -38,13 +38,13 @@ public class UserRepositoryTest extends ConfigTest {
         user.setFirstName("Luka");
         user.setLastName("Buziu");
         repository.save(user);
-        Assertions.assertTrue(repository.findAll().size()==31);
+        Assertions.assertTrue(repository.findAll().size() == 31);
         System.out.println(repository.findAll().size());
 
     }
 
     @Test
-    public void testContainerSecond(){
+    public void testContainerSecond() {
         User user = new User();
         user.setFirstName("Luka");
         user.setLastName("Buziu");

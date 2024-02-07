@@ -1,5 +1,6 @@
-
-test{
+test {
+    include '**/*Test.class'
+    exclude '**/*IT.class'
     testLogging.showStandardStreams = true
     reports {
         junitXml.required = true
@@ -19,15 +20,15 @@ test{
 
 jacocoTestReport {
     executionData = fileTree(dir: 'build/jacoco', include: '**/*.exec')
-    reports{
+    reports {
         xml.required = true
-        html.required= true
+        html.required = true
     }
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, excludes: ['build/generated/**/*','build/generated-api/**/*',
-                    '**/model/**','**/mapper/**','**/config/**'])
+            fileTree(dir: it, excludes: ['build/generated/**/*', 'build/generated-api/**/*',
+                                         '**/model/**', '**/mapper/**', '**/config/**'])
         }))
     }
 }
