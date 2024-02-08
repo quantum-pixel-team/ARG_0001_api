@@ -54,4 +54,4 @@ rootProject.tasks.named("processIntegTestResources") {
     duplicatesStrategy = 'include'
 }
 
-//check.dependsOn integTest
+
