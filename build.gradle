@@ -10,16 +10,7 @@ plugins {
 
 group = 'com.quantum-pixel'
 version = "${project_version}"
-sonar {
-    properties {
-        property "sonar.projectKey", "quantum-pixel-team_e-commerce"
-        property "sonar.organization", "quantum-pixel-team"
-        property "sonar.host.url", "https://sonarcloud.io"
-    }
 
-}
-
-project.tasks["sonar"].dependsOn "integTest"
 java {
     sourceCompatibility = '17'
 }
@@ -88,3 +79,4 @@ bootJar {
 apply from: "gradle/integration-test.gradle"
 apply from: "gradle/unit-test.gradle"
 apply from: "gradle/openapi.gradle"
+apply from: "gradle/sonar.gradle"
