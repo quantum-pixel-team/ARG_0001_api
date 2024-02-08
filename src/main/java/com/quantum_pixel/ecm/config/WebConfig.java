@@ -17,12 +17,13 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         String[] origins = environment.getProperty("allowed-origins", String[].class);
 
-        String allowedOrigins = origins != null ?
-                String.join(",", origins) : "*";
-
+        String[] allowedOrigins = origins != null ?
+                origins : new String[]{"*"};
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigins)
                 .allowedMethods("*")
-                .allowedHeaders("*");
+                .allowedHeaders("*")
+                .maxAge(3600)
+                .allowCredentials(false);
     }
 }
