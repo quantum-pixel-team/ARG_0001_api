@@ -1,0 +1,46 @@
+test {
+    include '**/*Test.class'
+    exclude '**/*IT.class'
+    testLogging.showStandardStreams = true
+    reports {
+        junitXml.required = true
+        html.required = true
+    }
+
+    jacoco {
+        destinationFile = layout.buildDirectory.file('jacoco/jacoco-unit-test.exec').get().asFile
+
+    }
+
+
+    finalizedBy jacocoTestReport
+    useJUnitPlatform()
+}
+
+
+jacocoTestReport {
+    executionData = fileTree(dir: 'build/jacoco', include: '**/*.exec')
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, excludes: ['build/generated/**/*', 'build/generated-api/**/*',
+                                         '**/model/**', '**/mapper/**', '**/config/**'])
+        }))
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.9"
+    layout.buildDirectory.dir('jacoco')
+}
+
+dependencies {
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}

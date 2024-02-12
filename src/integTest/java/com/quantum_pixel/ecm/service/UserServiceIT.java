@@ -25,12 +25,12 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IN
         scripts = "/db/users.sql",
         config = @SqlConfig(transactionMode = INFERRED),
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-        )
+)
 
-public class UserServiceTest extends ConfigTest {
+public class UserServiceIT extends ConfigTest {
 
     @Autowired
-    private  UserService service;
+    private UserService service;
 
 
     @Override
@@ -40,24 +40,24 @@ public class UserServiceTest extends ConfigTest {
 
 
     @Test
-    public void getAllUsersTest(){
+    public void getAllUsersTest() {
         List<UserDTO> allUsers = service.getAllUsers();
         System.out.println(allUsers.size());
         allUsers.stream().forEach(System.out::println);
-        Assertions.assertTrue(allUsers.size()==30);
+        Assertions.assertTrue(allUsers.size() == 30);
     }
 
     @Test
-    public void createOrUpdateTest(){
-        var userDto= CreateUserDTO.builder()
+    public void createOrUpdateTest() {
+        var userDto = CreateUserDTO.builder()
                 .firstName("luka")
                 .lastName("buziu")
                 .email("lukabuziu42@gmail.com").build();
         var users = List.of(userDto);
         service.createUsers(users);
         var allUsers = service.getAllUsers();
-         assertThat(allUsers)
-                 .hasSize(31);
+        assertThat(allUsers)
+                .hasSize(31);
 
     }
 
