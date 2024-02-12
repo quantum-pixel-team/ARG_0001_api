@@ -25,16 +25,15 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 )
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 
-public class UserControllerTest extends ConfigTest {
+public class UserControllerIT extends ConfigTest {
 
-    private static final String BASE_PATH="http://localhost:8080/api/v1";
-
+    private static final String BASE_PATH = "http://localhost:8080/api/v1";
 
 
     @Test
     public void getAllUserTest() throws Exception {
         given()
-                .get(BASE_PATH+"/users")
+                .get(BASE_PATH + "/users")
                 .prettyPeek()
                 .then()
                 .statusCode(200)
@@ -42,10 +41,8 @@ public class UserControllerTest extends ConfigTest {
     }
 
 
-
-
     @Test
-    public void createUserTest(){
+    public void createUserTest() {
         given()
                 .contentType(ContentType.JSON)
                 .body(
@@ -55,32 +52,32 @@ public class UserControllerTest extends ConfigTest {
                                 "}]"
                 )
                 .when()
-                .request("POST",BASE_PATH+"/users")
+                .request("POST", BASE_PATH + "/users")
                 .prettyPeek()
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("id",equalTo(List.of(31)));
+                .body("id", equalTo(List.of(31)));
     }
 
     @Test
 
-    public void updateUserTest(){
+    public void updateUserTest() {
         given()
                 .contentType(ContentType.JSON)
                 .body(
                         "[{" +
-                                " \"id\" : \"1\" ,\n"+
+                                " \"id\" : \"1\" ,\n" +
                                 "    \"firstName\": \"indrit\",\n" +
                                 "    \"lastName\":\"vaka\"\n" +
                                 "}]"
                 )
                 .when()
-                .request("PUT",BASE_PATH+"/users")
+                .request("PUT", BASE_PATH + "/users")
                 .prettyPeek()
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("firstName",equalTo(List.of("indrit")))
-                .body("lastName",equalTo(List.of("vaka")));
+                .body("firstName", equalTo(List.of("indrit")))
+                .body("lastName", equalTo(List.of("vaka")));
     }
 
 

@@ -5,17 +5,12 @@ plugins {
     id "org.sonarqube" version "4.4.1.3373"
     id "org.openapi.generator" version "${openapi_generator_version}"
     id 'application'
+    id 'jacoco'
 }
 
 group = 'com.quantum-pixel'
 version = "${project_version}"
-sonar {
-    properties {
-        property "sonar.projectKey", "quantum-pixel-team_e-commerce"
-        property "sonar.organization", "quantum-pixel-team"
-        property "sonar.host.url", "https://sonarcloud.io"
-    }
-}
+
 java {
     sourceCompatibility = '17'
 }
@@ -47,22 +42,12 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
     // others
     // mapstruct
     implementation "org.mapstruct:mapstruct:$mapstruct_version"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstruct_version"
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
 
 bootJar {
     archiveFileName = 'api.jar'
@@ -92,6 +77,6 @@ bootJar {
     }
 }
 apply from: "gradle/integration-test.gradle"
-
-
+apply from: "gradle/unit-test.gradle"
 apply from: "gradle/openapi.gradle"
+apply from: "gradle/sonar.gradle"

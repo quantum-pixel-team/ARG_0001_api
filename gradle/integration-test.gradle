@@ -19,8 +19,14 @@ tasks.register('integTest', Test) {
 
     testClassesDirs = sourceSets.integTest.output.classesDirs
     classpath = sourceSets.integTest.runtimeClasspath
-//    shouldRunAfter test
+    shouldRunAfter test
+    jacoco {
 
+        destinationFile =  layout.buildDirectory.file('jacoco/jacoco-integ-test.exec').get().asFile
+    }
+
+
+    finalizedBy jacocoTestReport
     useJUnitPlatform()
 
     testLogging.showStandardStreams = true
@@ -48,4 +54,4 @@ rootProject.tasks.named("processIntegTestResources") {
     duplicatesStrategy = 'include'
 }
 
-//check.dependsOn integTest
+
