@@ -1,0 +1,7 @@
+FROM python:3
+WORKDIR /db_data
+COPY arg-docker/arg-local/db/users.sql 1.sql
+COPY arg-docker/arg-local/init/ .
+
+RUN pip install --no-cache-dir -r requirements.txt
+CMD [ "python", "./main.py" ]

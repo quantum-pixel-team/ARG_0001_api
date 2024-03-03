@@ -2,10 +2,10 @@
 
 # Run application on docker
 
-Docker compose directory is at: ecm-docker
+Docker compose directory is at: arg-docker
 ## Run local version
 1. `./gradlw build` build your code, to generate jars, the image will point to jar that will be created.
-2. Navigate to ecm-docker/ecm-local
+2. Navigate to arg-docker/arg-local
 3. Run command bellow to start api
 
 ```shell
@@ -15,10 +15,10 @@ docker compose up --build api
 
 ## Run dev version
 
-Please add .env file in ecm-docker, this file contains credentials needed by application to start locally.
+Please add .env file in arg-docker, this file contains credentials needed by application to start locally.
 
 One sample provided as .env-example
-1. navigate to ecm-docker/dev
+1. navigate to arg-docker/dev
 2. Run command below to start the containers
    TODO: Docker hub auth
 ```shell

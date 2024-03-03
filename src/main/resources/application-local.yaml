@@ -2,6 +2,6 @@
 spring:
   docker:
     compose:
-      file: ecm-docker/ecm-local/docker-compose-base.yaml
+      file: arg-docker/arg-local/docker-compose-base.yaml
 
 allowed-origins: http://localhost:4200, http://localhost:5211

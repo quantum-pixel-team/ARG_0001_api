@@ -5,12 +5,12 @@ on:
     branches: [ "master" ]
     paths:
       - "src/**"
-      - "ecm-docker/**"
+      - "arg-docker/**"
   pull_request:
     branches: [ "master" ]
     paths:
       - "src/**"
-      - "ecm-docker/**"
+      - "arg-docker/**"
   workflow_dispatch:
     inputs:
       sync:
@@ -31,8 +31,8 @@ jobs:
     with:
       environment: "dev"
       docker-file-path: "Dockerfile"
-      tag: "blou5/e-commerce:latest"
-      local-path: "ecm-docker/dev"
+      tag: "blou5/arg:latest"
+      local-path: "arg-docker/dev"
       remote-path: "/home/luka_buziu22_gmail_com/docker-compose-api"
       artifact-path: "build/libs"
       deploy-script: "

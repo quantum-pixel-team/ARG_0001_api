@@ -1,6 +1,6 @@
 sonar {
     properties {
-        property "sonar.projectKey", "quantum-pixel-team_e-commerce"
+        property "sonar.projectKey", "quantum-pixel-team_arg"
         property "sonar.organization", "quantum-pixel-team"
         property "sonar.host.url", "https://sonarcloud.io"
     }

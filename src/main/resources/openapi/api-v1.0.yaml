@@ -1,9 +1,9 @@
 openapi: "3.0.1"
 
 info:
-  title: "E-commerce api"
+  title: "arg api"
   version: "2"
-  description: E-commerce api
+  description: arg api
 
 servers:
   - url: http://localhost:8080/api

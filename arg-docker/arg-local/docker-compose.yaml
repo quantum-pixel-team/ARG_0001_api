@@ -1,0 +1,55 @@
+include:
+  - docker-compose-base.yaml
+
+services:
+
+  api:
+    build:
+      context: ../..
+      dockerfile: arg-docker/arg-local/Dockerfile
+      args:
+        build_version: "0.0.1-SNAPSHOT"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SWAGGER_ENABLED: true
+      DATABASE_URL: jdbc:postgresql://postgres/arg
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+      - "3128:3128"
+    networks:
+      - arg
+    volumes:
+      - ../../build:/app
+    depends_on:
+      postgres:
+        condition: service_started
+
+  # pgAdmin web UI
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: arg-pgadmin
+    ports:
+      - "5059:80"
+    env_file:
+      - .env
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+    depends_on:
+      - postgres
+    networks:
+      - arg
+
+  py:
+    container_name: arg_db_initialize
+    build:
+      context: ../..
+      dockerfile: arg-docker/arg-local/DbInitialize
+    env_file:
+      - .env
+    networks:
+      - arg
+    depends_on:
+      api:
+        condition: service_healthy
+

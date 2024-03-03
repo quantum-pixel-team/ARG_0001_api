@@ -1,7 +1,0 @@
-FROM python:3
-WORKDIR /db_data
-COPY ecm-docker/ecm-local/db/users.sql 1.sql
-COPY ecm-docker/ecm-local/init/ .
-
-RUN pip install --no-cache-dir -r requirements.txt
-CMD [ "python", "./main.py" ]

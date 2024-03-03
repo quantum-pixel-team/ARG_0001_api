@@ -23,9 +23,9 @@ spring:
       initialization-fail-timeout: 60000
       register-mbeans: true
     driver-class-name: org.postgresql.Driver
-    url: ${DATABASE_URL:jdbc:postgresql://localhost/e-commerce}
-    username: ${DATABASE_USER:ecm}
-    password: ${DATABASE_PASSWORD:ecm}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost/arg}
+    username: ${DATABASE_USER:arg}
+    password: ${DATABASE_PASSWORD:arg}
   lifecycle:
     timeout-per-shutdown-phase: 10s
   profiles:

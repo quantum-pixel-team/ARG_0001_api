@@ -1,0 +1,25 @@
+
+services:
+
+  postgres:
+    image: 'postgres:16.1-alpine'
+    container_name: arg-db
+    environment:
+      POSTGRES_DB: arg
+      POSTGRES_PASSWORD: arg
+      POSTGRES_USER: arg
+    ports:
+      - '5432:5432'
+    networks:
+      - arg
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+volumes:
+  pgdata:
+  api:
+
+networks:
+  arg:
+    driver: bridge

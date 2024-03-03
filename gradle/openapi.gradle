@@ -18,9 +18,9 @@ openApiGenerate {
     validateSpec = true
     inputSpec = "$rootDir/src/main/resources/openapi/api-v1.0.yaml".toString()
     outputDir = "$rootDir/$DEFAULT_BUILD_DIR_NAME/generated-api".toString()
-    invokerPackage = "com.quantum_pixel.ecm.v1.config"
-    apiPackage = "com.quantum_pixel.ecm.v1.web"
-    modelPackage = "com.quantum_pixel.ecm.v1.web.model"
+    invokerPackage = "com.quantum_pixel.arg.v1.config"
+    apiPackage = "com.quantum_pixel.arg.v1.web"
+    modelPackage = "com.quantum_pixel.arg.v1.web.model"
     generateModelTests = false
     generateApiTests = false
     modelNameSuffix = "DTO"
@@ -33,8 +33,8 @@ openApiGenerate {
             swaggerDocketConfig    : "false",
             swaggerAnnotations     : "false",
             apiFirst               : "false",
-            configPackage          : "com.quantum_pixel.ecm.v1.config",
-            basePackage            : "com.quantum_pixel.ecm",
+            configPackage          : "com.quantum_pixel.arg.v1.config",
+            basePackage            : "com.quantum_pixel.arg",
             documentationProvider  : "none",
             "additionalModelTypeAnnotations":"@lombok.NoArgsConstructor @lombok.AllArgsConstructor"
     ]

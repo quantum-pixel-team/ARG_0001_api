@@ -18,7 +18,7 @@ COPY --from=build /app/spring-boot-loader/ ./
 COPY --from=build /app/snapshot-dependencies/ ./
 COPY --from=build /app/application/ ./
 
-COPY src/main/java/com/quantum_pixel/ecm/utilities/HealthCheck.java .
+COPY src/main/java/com/quantum_pixel/arg/utilities/HealthCheck.java .
 EXPOSE 8080
 
 HEALTHCHECK --interval=10s \

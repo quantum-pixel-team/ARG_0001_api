@@ -1,0 +1,23 @@
+include:
+  - docker-compose-base.yaml
+
+
+services:
+
+  api:
+    image: blou5/arg:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SWAGGER_ENABLED: true
+      DATABASE_URL: jdbc:postgresql://postgres/arg
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+      - "3128:3128"
+    networks:
+      - arg
+    depends_on:
+      postgres:
+        condition: service_started
