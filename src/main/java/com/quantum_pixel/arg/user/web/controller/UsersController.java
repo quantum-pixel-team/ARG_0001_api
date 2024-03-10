@@ -1,6 +1,6 @@
-package com.quantum_pixel.arg.controller;
+package com.quantum_pixel.arg.user.web.controller;
 
-import com.quantum_pixel.arg.service.UserService;
+import com.quantum_pixel.arg.user.service.UserService;
 import com.quantum_pixel.arg.v1.web.UsersApi;
 import com.quantum_pixel.arg.v1.web.model.CreateUserDTO;
 import com.quantum_pixel.arg.v1.web.model.UpdateUserRequestDTO;

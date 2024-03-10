@@ -16,3 +16,4 @@ properties:
 required:
   - firstName
   - lastName
+  - email

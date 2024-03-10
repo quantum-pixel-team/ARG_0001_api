@@ -1,6 +1,7 @@
 package com.quantum_pixel.arg.service;
 
-import com.quantum_pixel.arg.repository.UserRepository;
+import com.quantum_pixel.arg.user.repository.UserRepository;
+import com.quantum_pixel.arg.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

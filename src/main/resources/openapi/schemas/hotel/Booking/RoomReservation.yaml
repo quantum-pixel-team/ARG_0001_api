@@ -1,0 +1,38 @@
+type: array
+items:
+  title: Room reservation
+  description: Room reservation details for a given date
+  type: object
+  properties:
+    name:
+      type: string
+      description: Name/type of the room,
+      example: Economy double room
+    capacity:
+      type: integer
+      format: int16
+      minimum: 1
+      description: Number of persons a room can have
+      example: 2
+    minimum-nights:
+      type: integer
+      format: int16
+      description: Minimum number of nights that needs to be reserved
+    date:
+      type: string
+      format: date
+      description: This information applies to this date
+    sold:
+      type: boolean
+      description: If this room sold for the given date is equal true
+    currentPrice:
+      type: integer
+      description: Price for given date
+    reservation-url:
+      type: string
+      description: Reservation Url
+  required:
+    - name
+    - date
+    - sold
+    - currentPrice

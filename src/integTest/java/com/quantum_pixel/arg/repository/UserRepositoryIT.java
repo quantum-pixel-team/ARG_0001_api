@@ -1,7 +1,8 @@
 package com.quantum_pixel.arg.repository;
 
 import com.quantum_pixel.arg.ConfigTest;
-import com.quantum_pixel.arg.model.User;
+import com.quantum_pixel.arg.user.model.User;
+import com.quantum_pixel.arg.user.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -20,3 +20,6 @@ properties:
     example: indirt.vaka@gmail.com
 required:
   - id
+  - firstName
+  - lastName
+  - email

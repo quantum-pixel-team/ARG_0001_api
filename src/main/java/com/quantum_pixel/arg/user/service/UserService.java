@@ -1,8 +1,8 @@
-package com.quantum_pixel.arg.service;
+package com.quantum_pixel.arg.user.service;
 
-import com.quantum_pixel.arg.mapper.UserMapper;
-import com.quantum_pixel.arg.model.User;
-import com.quantum_pixel.arg.repository.UserRepository;
+import com.quantum_pixel.arg.user.web.mapper.UserMapper;
+import com.quantum_pixel.arg.user.model.User;
+import com.quantum_pixel.arg.user.repository.UserRepository;
 import com.quantum_pixel.arg.v1.web.model.CreateUserDTO;
 import com.quantum_pixel.arg.v1.web.model.UpdateUserRequestDTO;
 import com.quantum_pixel.arg.v1.web.model.UserDTO;

@@ -1,6 +1,6 @@
-package com.quantum_pixel.arg.mapper;
+package com.quantum_pixel.arg.user.web.mapper;
 
-import com.quantum_pixel.arg.model.User;
+import com.quantum_pixel.arg.user.model.User;
 import com.quantum_pixel.arg.v1.web.model.CreateUserDTO;
 import com.quantum_pixel.arg.v1.web.model.UpdateUserRequestDTO;
 import com.quantum_pixel.arg.v1.web.model.UserDTO;

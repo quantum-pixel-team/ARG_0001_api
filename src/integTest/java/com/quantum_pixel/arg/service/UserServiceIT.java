@@ -1,6 +1,7 @@
 package com.quantum_pixel.arg.service;
 
 import com.quantum_pixel.arg.ConfigTest;
+import com.quantum_pixel.arg.user.service.UserService;
 import com.quantum_pixel.arg.v1.web.model.CreateUserDTO;
 import com.quantum_pixel.arg.v1.web.model.UserDTO;
 import org.junit.jupiter.api.Assertions;

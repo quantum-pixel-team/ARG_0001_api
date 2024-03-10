@@ -46,6 +46,8 @@ dependencies {
     // mapstruct
     implementation "org.mapstruct:mapstruct:$mapstruct_version"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstruct_version"
+
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
 }
 
 

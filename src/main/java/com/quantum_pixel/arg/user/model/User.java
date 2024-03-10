@@ -1,4 +1,4 @@
-package com.quantum_pixel.arg.model;
+package com.quantum_pixel.arg.user.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

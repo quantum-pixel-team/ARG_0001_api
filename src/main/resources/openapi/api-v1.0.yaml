@@ -2,11 +2,11 @@ openapi: "3.0.1"
 
 info:
   title: "arg api"
-  version: "2"
+  version: "1"
   description: arg api
 
 servers:
-  - url: http://localhost:8080/api
+  - url: http://localhost:8080
     description: Local server
   - url: https://google.com/api
     description: Dev server
@@ -14,9 +14,11 @@ servers:
 tags:
   - name: Users
     description: Users api
+  - name: HotelBooking
+    description: Api to get booking information
 paths:
 
-  /v1/users:
+  /api/v1/users:
     get:
       summary: Get All users
       operationId: getAllUsers
@@ -78,7 +80,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/User"
 
-  /v1/users/{userIds}:
+  /api/v1/users/{userIds}:
     delete:
       summary: Delete a list of users by id
       operationId: deleteUsersById
@@ -102,6 +104,32 @@ paths:
           description: Bad Request - Invalid input
         '404':
           description: Not Found - Items not found
+  /api/v1/hotel/rooms:
+    get:
+      summary: Get list of rooms
+      operationId: getRoomsForGivenRangeOfDate
+      tags:
+        - HotelBooking
+      parameters:
+        - name: start-date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end-date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RoomPrototype"
 
 
 
@@ -113,3 +141,6 @@ components:
       $ref: "./schemas/CreateUser.yaml"
     UpdateUserRequest:
       $ref: "./schemas/UpdateUserRequest.yaml"
+
+    RoomPrototype:
+      $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
