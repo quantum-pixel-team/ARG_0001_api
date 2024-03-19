@@ -32,7 +32,7 @@ openApiGenerate {
             swaggerDocketConfig                 : "false",
             swaggerAnnotations                  : "false",
             apiFirst                            : "false",
-            configPackage          : "com.quantum_pixel.arg.v1.config",
+            configPackage                       : "com.quantum_pixel.arg.v1.config",
             basePackage                         : "com.quantum_pixel.arg",
             documentationProvider               : "none",
             useSpringBoot3                      : "true",
