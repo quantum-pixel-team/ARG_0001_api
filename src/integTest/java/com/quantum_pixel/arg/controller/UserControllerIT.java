@@ -49,6 +49,7 @@ public class UserControllerIT extends ConfigTest {
                         "[{" +
                                 "    \"firstName\": \"luka\",\n" +
                                 "    \"lastName\":\"buziu\"\n" +
+                                "\"email\":\"lukabuziu42@gmail.com\"" +
                                 "}]"
                 )
                 .when()
@@ -69,6 +70,7 @@ public class UserControllerIT extends ConfigTest {
                                 " \"id\" : \"1\" ,\n" +
                                 "    \"firstName\": \"indrit\",\n" +
                                 "    \"lastName\":\"vaka\"\n" +
+                                "\"email\":\"indrit.vaka@gmail.com\"" +
                                 "}]"
                 )
                 .when()
