@@ -35,4 +35,6 @@ class UserServiceTest {
         assertThat(argumentCaptor.getAllValues()).isNotNull().containsAll(userIdList);
 
     }
+
+
 }

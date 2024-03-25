@@ -33,10 +33,10 @@ jobs:
       docker-file-path: "Dockerfile"
       tag: "blou5/arg:latest"
       local-path: "arg-docker/dev"
-      remote-path: "/home/luka_buziu22_gmail_com/docker-compose-api"
+      remote-path: "/home/arg/api"
       artifact-path: "build/libs"
       deploy-script: "
-              cd docker-compose-api &&
+              cd /home/arg/api &&
                docker compose pull &&
               docker compose up -d  "
     secrets:

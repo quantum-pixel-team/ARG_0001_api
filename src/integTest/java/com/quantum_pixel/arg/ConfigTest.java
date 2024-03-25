@@ -27,6 +27,7 @@ public abstract class ConfigTest {
 
     @AfterEach
     public void execute() {
+        if(getTableToTruncate() != null)
         getTableToTruncate().forEach(table -> {
             jdbcTemplate.execute("TRUNCATE TABLE " + table);
             jdbcTemplate.execute("ALTER SEQUENCE %s_id_seq RESTART".formatted(table));

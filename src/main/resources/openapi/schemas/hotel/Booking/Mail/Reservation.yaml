@@ -1,0 +1,22 @@
+type: object
+description: Reservation format
+properties:
+  reservationDate:
+    type: string
+    format: date
+    description: requested date of the reservation
+    example: 2024-03-16
+  startTime:
+    type: string
+    format: time
+    description: the time when the meeting start
+    example: 14:00
+  endTime:
+    type: string
+    format: time
+    description: the time when the meeting ends
+    example: 200
+required:
+  - reservationDate
+  - startTime
+  - endTime

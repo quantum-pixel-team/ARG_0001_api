@@ -1,21 +1,7 @@
-server:
-  shutdown: graceful
-spring:
-  main:
-    allow-circular-references: true
-    web-application-type: SERVLET
-  jpa:
-    database: default
-    generate-ddl: false
-    #    open-in-view: false TODO #https://stackoverflow.com/questions/30549489/what-is-this-spring-jpa-open-in-view-true-property-in-spring-boot
-    properties:
-      hibernate:
-        cache.use_second_level_cache: false
-        generate_statistics: false
-        default_schema: public
-        format_sql: true
-    show-sql: true
-  liquibase:
-    enabled: true
-  lifecycle:
-    timeout-per-shutdown-phase: 10s
+
+EMAIL_HOST: 127.0.0.1
+EMAIL_PORT: 3025
+EMAIL_USERNAME: luka
+EMAIL_PASSWORD: buziu
+STARTTLS: false
+REQUIRED: false

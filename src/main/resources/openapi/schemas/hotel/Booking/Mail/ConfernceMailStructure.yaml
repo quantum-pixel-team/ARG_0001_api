@@ -1,0 +1,41 @@
+type: object
+description: Email Structure Data Required
+properties:
+  firstName:
+    type: string
+    nullable: false
+    pattern: "[a-zA-Z]{3,20}"
+    description: first name of the client
+    example: luka
+  lastName:
+    type: string
+    nullable: false
+    pattern: "[a-zA-Z]{3,20}"
+    description: last name of the client
+    example: buziu
+  phoneNumber:
+    type: string
+    pattern: "^(\\+?355|0)6[789]\\d{7}$"
+    nullable: false
+    description: detailed message of the email
+    example: i want to reserve the conference at the time and date etc...
+  email:
+    type: string
+    format: email
+    nullable: false
+    description: email address of an client
+    example: lukabuziu42@gmail.com
+  conferenceReservations:
+    type: array
+    items:
+      $ref: "./Reservation.yaml"
+  emailContent:
+    type: string
+    maxLength: 200
+    description: Content of email with extra information
+required:
+  - firstName
+  - lastName
+  - email
+  - conferenceReservations
+  - emailContent
