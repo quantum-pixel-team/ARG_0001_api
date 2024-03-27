@@ -1,5 +1,6 @@
 package com.quantum_pixel.arg.hotel.service;
 
+import com.quantum_pixel.arg.hotel.exception.TableStructureChangedException;
 import com.quantum_pixel.arg.hotel.model.RoomPrototype;
 import com.quantum_pixel.arg.hotel.model.RoomReservation;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
@@ -26,6 +27,8 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @Log4j2
 public class HotelBookingService {
+
+    private static final String BASE_URL = "https://app.inn-connect.com/book/properties/Aragosta%20Hotel%26Restaurant";
 
     private final HotelRoomMapper roomMapper;
 
@@ -62,14 +65,15 @@ public class HotelBookingService {
     @SneakyThrows
     private List<RoomReservation> getRoomPrototypeFromUrl(LocalDate startDate) {
 
-        String baseUrl = "https://app.inn-connect.com/book/properties/Aragosta%20Hotel%26Restaurant";
-        var url = baseUrl + "?start_date=" + startDate;
+        var url = BASE_URL + "?start_date=" + startDate;
         log.info("Sending Request to get room reservation using url: " + url);
         Document document = Jsoup.connect(url).get();
         // getting tale from doc
         Element table = document.getElementById("room-chart");
         // getting table body
-        assert table != null;
+        if(table == null) {
+            throw new TableStructureChangedException();
+        }
         Elements rows = table.select("tr");
         return rows.stream().skip(1)
                 .flatMap(row -> {
@@ -89,7 +93,7 @@ public class HotelBookingService {
 
                                 String reservationUrl = null;
                                 if (a != null) {
-                                    reservationUrl = baseUrl + a.attribute("href").getValue();
+                                    reservationUrl = BASE_URL + a.attribute("href").getValue();
                                     price = Integer.parseInt(a.text());
                                 }
                                 return new RoomReservation(name, localDate, sold, price, roomPrice, reservationUrl);
