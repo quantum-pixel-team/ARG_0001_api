@@ -1,11 +1,11 @@
 package com.quantum_pixel.arg.hotel.service;
 
+import com.quantum_pixel.arg.AppITConfig;
 import com.quantum_pixel.arg.ConfigTest;
 import com.quantum_pixel.arg.v1.web.model.RoomReservationDTO;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -15,10 +15,10 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-)
+@AppITConfig
 class HotelBookingServiceIT extends ConfigTest {
+
+
     @Autowired
     private HotelBookingService sut;
 

@@ -15,10 +15,9 @@ properties:
     example: buziu
   phoneNumber:
     type: string
-    pattern: "^(\\+?355|0)6[789]\\d{7}$"
     nullable: false
-    description: detailed message of the email
-    example: i want to reserve the conference at the time and date etc...
+    description: The phone number of the client
+    example: 355692458751
   email:
     type: string
     format: email
@@ -33,6 +32,7 @@ properties:
     type: string
     maxLength: 200
     description: Content of email with extra information
+    example: I have 200 people for the conference
 required:
   - firstName
   - lastName

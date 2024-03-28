@@ -39,7 +39,7 @@ public class UserRepositoryIT extends ConfigTest {
         user.setFirstName("Luka");
         user.setLastName("Buziu");
         repository.save(user);
-        Assertions.assertTrue(repository.findAll().size() == 31);
+        Assertions.assertEquals(31, repository.findAll().size());
         System.out.println(repository.findAll().size());
 
     }

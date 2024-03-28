@@ -1,12 +1,12 @@
 package com.quantum_pixel.arg.controller;
 
+import com.quantum_pixel.arg.AppITConfig;
 import com.quantum_pixel.arg.ConfigTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
@@ -16,24 +16,27 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AppITConfig
 @Sql(
         scripts = "/db/users.sql",
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+
 
 public class UserControllerIT extends ConfigTest {
 
-    private static final String BASE_PATH = "http://localhost:8080/api/v1";
+    @Autowired
+    private ServletWebServerApplicationContext webServerAppContext;
 
 
     @Test
     public void getAllUserTest() throws Exception {
         given()
-                .get(BASE_PATH + "/users")
+                .get(AppITConfig.BASE_URL
+                        + webServerAppContext.getWebServer().getPort()
+                        + AppITConfig.V1
+                        + "/users")
                 .prettyPeek()
                 .then()
                 .statusCode(200)
@@ -53,7 +56,9 @@ public class UserControllerIT extends ConfigTest {
                                 "}]"
                 )
                 .when()
-                .request("POST", BASE_PATH + "/users")
+                .request("POST", AppITConfig.BASE_URL
+                        + webServerAppContext.getWebServer().getPort()
+                        + AppITConfig.V1 + "/users")
                 .prettyPeek()
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -74,7 +79,9 @@ public class UserControllerIT extends ConfigTest {
                                 "}]"
                 )
                 .when()
-                .request("PUT", BASE_PATH + "/users")
+                .request("PUT", AppITConfig.BASE_URL
+                        + webServerAppContext.getWebServer().getPort()
+                        + AppITConfig.V1 + "/users")
                 .prettyPeek()
                 .then()
                 .statusCode(HttpStatus.OK.value())

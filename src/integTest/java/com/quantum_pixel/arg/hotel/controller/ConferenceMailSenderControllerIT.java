@@ -3,12 +3,14 @@ package com.quantum_pixel.arg.hotel.controller;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import com.quantum_pixel.arg.AppITConfig;
 import com.quantum_pixel.arg.ConfigTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -17,10 +19,11 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@AppITConfig
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ConferenceMailSenderControllerIT extends ConfigTest {
-    private static final String BASE_PATH = "http://localhost:8080/api/v1/contact-us/email";
+    @Autowired
+    private ServletWebServerApplicationContext webServerAppContext;
 
     @RegisterExtension
     static GreenMailExtension greenMailExtension = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -54,7 +57,9 @@ public class ConferenceMailSenderControllerIT extends ConfigTest {
                 .contentType(ContentType.JSON)
                 .body(payload)
                 .when()
-                .post(BASE_PATH).andReturn()
+                .post(AppITConfig.BASE_URL
+                        + webServerAppContext.getWebServer().getPort()
+                        + AppITConfig.V1 + "/contact-us/email").andReturn()
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
@@ -90,7 +95,10 @@ public class ConferenceMailSenderControllerIT extends ConfigTest {
                 .contentType(ContentType.JSON)
                 .body(payload)
                 .when()
-                .post(BASE_PATH).andReturn()
+                .post(AppITConfig.BASE_URL
+                        + webServerAppContext.getWebServer().getPort()
+                        + AppITConfig.V1 + "/contact-us/email"
+                ).andReturn()
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
