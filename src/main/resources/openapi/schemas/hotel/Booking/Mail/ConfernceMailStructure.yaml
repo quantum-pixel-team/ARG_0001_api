@@ -18,7 +18,7 @@ properties:
     pattern: "^(\\+?355|0)6[789]\\d{7}$"
     nullable: false
     description: The phone number of the client
-    example: 0692458751
+    example: 355692458751
   email:
     type: string
     format: email

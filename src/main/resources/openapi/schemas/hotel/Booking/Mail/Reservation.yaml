@@ -5,7 +5,7 @@ properties:
     type: string
     format: date
     description: requested date of the reservation
-    example: 2024-09-16
+    example: "2024-09-16"
   startTime:
     type: string
     format: time
