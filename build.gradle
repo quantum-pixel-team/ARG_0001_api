@@ -51,7 +51,6 @@ dependencies {
 
     // mail sender
     implementation 'jakarta.mail:jakarta.mail-api:2.1.3'
-    implementation 'com.icegreen:greenmail-junit5:2.0.1'
 }
 
 

@@ -1,14 +1,12 @@
 package com.quantum_pixel.arg.service;
 
 import com.quantum_pixel.arg.ConfigTest;
-import com.quantum_pixel.arg.hotel.service.MailSenderService;
 import com.quantum_pixel.arg.user.service.UserService;
 import com.quantum_pixel.arg.v1.web.model.CreateUserDTO;
 import com.quantum_pixel.arg.v1.web.model.UserDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;

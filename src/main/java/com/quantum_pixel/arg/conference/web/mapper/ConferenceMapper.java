@@ -1,4 +1,4 @@
-package com.quantum_pixel.arg.hotel.web.mapper;
+package com.quantum_pixel.arg.conference.web.mapper;
 
 import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
 import com.quantum_pixel.arg.v1.web.model.ConfernceMailStructureDTO;
@@ -7,7 +7,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface ConferenceMailMapper {
-    ConferenceMailStructure toObject(ConfernceMailStructureDTO confernceMailStructureDTO);
+public interface ConferenceMapper {
+    ConferenceMailStructure toEntity(ConfernceMailStructureDTO confernceMailStructureDTO);
 
 }

@@ -1,4 +1,4 @@
-package com.quantum_pixel.arg.hotel.controller;
+package com.quantum_pixel.arg.conference.controller;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -18,8 +18,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ConferenceMailSenderControllerIT extends ConfigTest {
+public class ConferenceControllerIT extends ConfigTest {
     private static final String BASE_PATH = "http://localhost:8080/api/v1/contact-us/email";
 
     @RegisterExtension
