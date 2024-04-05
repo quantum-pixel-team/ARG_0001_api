@@ -4,13 +4,13 @@ properties:
   firstName:
     type: string
     nullable: false
-    pattern: "[a-zA-Z]{3,20}"
+    pattern: "[a-zA-Z]{3,40}"
     description: first name of the client
     example: luka
   lastName:
     type: string
     nullable: false
-    pattern: "[a-zA-Z]{3,20}"
+    pattern: "[a-zA-Z]{3,40}"
     description: last name of the client
     example: buziu
   phoneNumber:

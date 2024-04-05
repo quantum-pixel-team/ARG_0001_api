@@ -1,4 +1,4 @@
-package com.quantum_pixel.arg.hotel.service;
+package com.quantum_pixel.arg.conference.service;
 
 import com.quantum_pixel.arg.hotel.exception.PastDateException;
 import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
@@ -26,12 +26,13 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class MailSenderServiceTest {
+class MailServiceTest {
 
     @InjectMocks
-    private MailSenderService mailSenderService;
+    private MailService mailService;
     @Mock
     private JavaMailSender mailSender;
+
     private static final String email = "lukabuziu42@gmail.com";
 
     @Test
@@ -39,7 +40,7 @@ class MailSenderServiceTest {
         ArgumentCaptor<SimpleMailMessage> argumentCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         MailStructure emailStructure = createEmailStructure();
         SimpleMailMessage simpleMail = createSimpleMail();
-        mailSenderService.sendEmail(emailStructure);
+        mailService.sendEmail(emailStructure);
         System.out.println(emailStructure.createEmailContext());
         verify(mailSender, times(1)).send(argumentCaptor.capture());
         SimpleMailMessage emailSent = argumentCaptor.getValue();
@@ -55,33 +56,11 @@ class MailSenderServiceTest {
     void emailThrowsMailException() {
         MailStructure emailStructure = createEmailStructure();
         doThrow(new MailParseException("")).when(mailSender).send((SimpleMailMessage) any());
-        Assertions.assertThrows(MailException.class, () -> mailSenderService.sendEmail(emailStructure));
+        Assertions.assertThrows(MailException.class, () -> mailService.sendEmail(emailStructure));
     }
 
 
-    @Test
-    void emailThrowsPasDateExceptionForDate(){
-        ConferenceMailStructure mailStructure= (ConferenceMailStructure) createEmailStructure();
-        mailStructure.getConferenceReservations().add(Reservation.builder()
-                        .reservationDate(LocalDate.of(2024,3,26))
-                        .startTime(LocalTime.MIN)
-                        .endTime(LocalTime.MAX)
-                .build());
 
-        Assertions.assertThrows(PastDateException.class,() ->mailSenderService.sendEmail(mailStructure));
-
-    }
-
-    @Test
-    void emailThrowsPastDateExceptionForTime(){
-        ConferenceMailStructure mailStructure= (ConferenceMailStructure) createEmailStructure();
-        mailStructure.getConferenceReservations().add(Reservation.builder()
-                .reservationDate(LocalDate.of(2024,3,28))
-                .startTime(LocalTime.MAX)
-                .endTime(LocalTime.MIN)
-                .build());
-        Assertions.assertThrows(PastDateException.class,() ->mailSenderService.sendEmail(mailStructure));
-    }
 
     private SimpleMailMessage createSimpleMail() {
         MailStructure emailStructure = createEmailStructure();

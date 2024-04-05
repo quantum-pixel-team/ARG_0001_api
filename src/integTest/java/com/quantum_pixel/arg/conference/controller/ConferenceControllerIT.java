@@ -1,4 +1,4 @@
-package com.quantum_pixel.arg.hotel.controller;
+package com.quantum_pixel.arg.conference.controller;
 
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
@@ -9,7 +9,6 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.http.HttpStatus;
 
@@ -18,12 +17,12 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-
 @AppITConfig
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ConferenceMailSenderControllerIT extends ConfigTest {
+public class ConferenceControllerIT extends ConfigTest {
+
     @Autowired
     private ServletWebServerApplicationContext webServerAppContext;
+
 
     @RegisterExtension
     static GreenMailExtension greenMailExtension = new GreenMailExtension(ServerSetupTest.SMTP)
@@ -59,13 +58,13 @@ public class ConferenceMailSenderControllerIT extends ConfigTest {
                 .when()
                 .post(AppITConfig.BASE_URL
                         + webServerAppContext.getWebServer().getPort()
-                        + AppITConfig.V1 + "/contact-us/email").andReturn()
+                        + AppITConfig.V1
+                        + "/contact-us/email").andReturn()
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
         assertThat(greenMailExtension.getReceivedMessages().length)
                 .isEqualTo(1);
-
     }
 
     @Test
@@ -97,8 +96,8 @@ public class ConferenceMailSenderControllerIT extends ConfigTest {
                 .when()
                 .post(AppITConfig.BASE_URL
                         + webServerAppContext.getWebServer().getPort()
-                        + AppITConfig.V1 + "/contact-us/email"
-                ).andReturn()
+                        + AppITConfig.V1
+                        + "/contact-us/email").andReturn()
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
