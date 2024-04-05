@@ -4,17 +4,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-
 import java.util.List;
 
 @Testcontainers
-@ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class ConfigTest {
 
     @Container
@@ -27,6 +26,7 @@ public abstract class ConfigTest {
 
     @AfterEach
     public void execute() {
+        if(getTableToTruncate() != null)
         getTableToTruncate().forEach(table -> {
             jdbcTemplate.execute("TRUNCATE TABLE " + table);
             jdbcTemplate.execute("ALTER SEQUENCE %s_id_seq RESTART".formatted(table));

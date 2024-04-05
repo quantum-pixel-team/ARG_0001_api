@@ -46,6 +46,7 @@ dependencies {
     integTestImplementation "io.rest-assured:xml-path:${rest_assured_version}"
     integTestCompileOnly 'org.projectlombok:lombok'
     integTestAnnotationProcessor 'org.projectlombok:lombok'
+    integTestImplementation 'com.icegreen:greenmail-junit5:2.0.1'
 
 }
 

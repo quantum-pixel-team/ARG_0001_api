@@ -48,6 +48,9 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstruct_version"
 
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
+
+    // mail sender
+    implementation 'jakarta.mail:jakarta.mail-api:2.1.3'
 }
 
 

@@ -22,6 +22,8 @@ openApiGenerate {
     generateModelTests = false
     generateApiTests = false
     modelNameSuffix = "DTO"
+    typeMappings = ["time": "LocalTime"]
+    importMappings = ["LocalTime": "java.time.LocalTime"]
 
     configOptions = [
             dateLibrary                         : "java8",
