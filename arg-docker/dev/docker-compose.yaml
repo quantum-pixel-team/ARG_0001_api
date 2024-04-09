@@ -5,7 +5,7 @@ include:
 services:
 
   api:
-    image: blou5/arg:latest
+    image: blou5/arg-api:latest
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       SWAGGER_ENABLED: true

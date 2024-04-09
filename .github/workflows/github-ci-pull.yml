@@ -31,7 +31,7 @@ jobs:
     with:
       environment: "dev"
       docker-file-path: "Dockerfile"
-      tag: "blou5/arg:latest"
+      tag: "blou5/arg-api:latest"
       local-path: "arg-docker/dev"
       remote-path: "/home/arg/api"
       artifact-path: "build/libs"
