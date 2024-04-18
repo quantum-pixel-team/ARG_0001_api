@@ -13,3 +13,8 @@ EMAIL_HOST: smtp.gmail.com
 EMAIL_PORT: 587
 EMAIL_USERNAME: some03642@gmail.com
 EMAIL_PASSWORD: efguwlscpdvgudst
+
+IMAP_USERNAME: some03642%40gmail.com
+IMAP_PASSWORD: efguwlscpdvgudst
+IMAP_HOST: imap.gmail.com
+IMAP_PORT: 993
