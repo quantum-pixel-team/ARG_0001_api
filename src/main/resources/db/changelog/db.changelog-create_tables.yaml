@@ -19,3 +19,43 @@ databaseChangeLog:
               - column:
                   name: last_name
                   type: varchar(30)
+  - changeSet:
+      id: 5
+      author: indrit.vaka@gmail.com
+      changes:
+        - createTable:
+            tableName: events
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(40)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: short_description
+                  type: varchar(400)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: date
+              - column:
+                  name: start_time
+                  type: time
+              - column:
+                  name: feature_image_url
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

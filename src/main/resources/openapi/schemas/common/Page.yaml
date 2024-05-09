@@ -1,0 +1,47 @@
+description: A page of data
+type: object
+properties:
+  content:
+    type: array
+    items:
+      type: object
+      description: can be anything string, number array object etc.
+  pageable:
+    $ref: './PageablePage.yaml'
+  totalPages:
+    type: integer
+    format: int64
+  totalElements:
+    type: integer
+    format: int64
+  last:
+    type: boolean
+  number:
+    type: integer
+    format: int32
+  size:
+    type: integer
+    format: int32
+    example: 10
+  numberOfElements:
+    type: integer
+    format: int64
+    example: 5
+  sort:
+    $ref: './Sort.yaml'
+  first:
+    type: boolean
+  empty:
+    type: boolean
+required:
+  - content
+  - pageable
+  - totalPages
+  - totalElements
+  - last
+  - number
+  - size
+  - numberOfElements
+  - sort
+  - first
+  - empty
