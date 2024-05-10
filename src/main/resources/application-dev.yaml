@@ -1,4 +1,4 @@
-allowed-origins: http://62.171.153.17,http://localhost:4200
+allowed-origins: http://62.171.153.17,http://62.171.153.17:4200,http://localhost:4200
 
 # Email Config
 
