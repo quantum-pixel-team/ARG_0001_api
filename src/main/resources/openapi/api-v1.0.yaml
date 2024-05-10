@@ -221,7 +221,7 @@ components:
     RoomPrototype:
       $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
     ConfernceMailStructure:
-      $ref: "./schemas/hotel/Booking/Mail/ConfernceMailStructure.yaml"
+      $ref: "./schemas/hotel/Booking/mail/ConfernceMailStructure.yaml"
     Page:
       $ref: "./schemas/common/Page.yaml"
     Event:
