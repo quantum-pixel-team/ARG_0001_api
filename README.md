@@ -4,7 +4,7 @@
 
 Docker compose directory is at: arg-docker
 ## Run local version
-1. `./gradlw build` build your code, to generate jars, the image will point to jar that will be created.
+1. `.\gradlw build` build your code, to generate jars, the image will point to jar that will be created.
 2. Navigate to arg-docker/arg-local
 3. Run command bellow to start api
 

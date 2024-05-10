@@ -3,6 +3,9 @@ spring:
   docker:
     compose:
       file: arg-docker/arg-local/docker-compose-base.yaml
+  jpa:
+    show-sql: true
+
 
 allowed-origins: http://localhost:4200, http://localhost:5211
 

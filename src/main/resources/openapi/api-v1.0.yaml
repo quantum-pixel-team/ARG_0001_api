@@ -18,6 +18,8 @@ tags:
     description: Api to get booking information
   - name: ContactUs
     description: send email to the client
+  - name: Event
+    description: Api for events
 paths:
 
   /api/v1/users:
@@ -150,6 +152,62 @@ paths:
         200:
           description: OK
 
+  /api/v1/events:
+    get:
+      tags:
+        - Event
+      summary: Get a page of events
+      operationId: getAllUpcomingEvents
+      parameters:
+        - name: pageIndex
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: pageSize
+          in: query
+          description: Number of events per page
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - name: eventType
+          in: query
+          description: Filter events by type (upcoming/recent/all)
+          required: true
+          schema:
+            type: string
+            enum: [ upcoming, recent, all ]
+            default: all
+          
+      responses:
+        '200':
+          description: List of upcoming events
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Page"
+    post:
+      tags:
+        - Event
+      summary: Create a new event
+
+      operationId: createEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad request
 
 
 components:
@@ -164,4 +222,7 @@ components:
       $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
     ConfernceMailStructure:
       $ref: "./schemas/hotel/Booking/Mail/ConfernceMailStructure.yaml"
-
+    Page:
+      $ref: "./schemas/common/Page.yaml"
+    Event:
+      $ref: "./schemas/event/event.yaml"

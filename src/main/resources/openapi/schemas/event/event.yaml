@@ -1,0 +1,24 @@
+type: object
+properties:
+  title:
+    type: string
+  short_description:
+    type: string
+    maxLength: 400
+  start_date:
+    type: string
+    format: date
+  end_date:
+    type: string
+    format: date
+  start_time:
+    type: string
+    format: time
+    example: 20:35
+  feature_image_url:
+    type: string
+required:
+  - title
+  - short_description
+  - start_date
+  - feature_image_url
