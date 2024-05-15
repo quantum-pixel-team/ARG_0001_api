@@ -147,7 +147,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ConfernceMailStructure"
+              $ref: "#/components/schemas/ConferenceMailStructure"
       responses:
         200:
           description: OK
@@ -220,8 +220,8 @@ components:
       $ref: "./schemas/UpdateUserRequest.yaml"
     RoomPrototype:
       $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
-    ConfernceMailStructure:
-      $ref: "./schemas/hotel/Booking/Mail/ConfernceMailStructure.yaml"
+    ConferenceMailStructure:
+      $ref: "./schemas/hotel/Booking/Mail/ConferenceMailStructure.yaml"
     Page:
       $ref: "./schemas/common/Page.yaml"
     Event:
