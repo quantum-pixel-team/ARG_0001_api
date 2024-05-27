@@ -2,14 +2,12 @@ package com.quantum_pixel.arg.conference.service;
 
 import com.quantum_pixel.arg.conference.web.mapper.ConferenceMapper;
 import com.quantum_pixel.arg.hotel.exception.PastDateException;
-import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
 import com.quantum_pixel.arg.v1.web.model.ConfernceMailStructureDTO;
 import com.quantum_pixel.arg.v1.web.model.ReservationDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -63,12 +61,9 @@ public class ConferenceServiceTest {
 
     @Test
     void emailValidationPassSuccessfully(){
-
         var confernceMailStructureDTO =createEmailStructure();
         doNothing().when(mailService).sendEmail(any());
         conferenceService.sentEmail(confernceMailStructureDTO);
-
-
 
     }
 
@@ -81,12 +76,11 @@ public class ConferenceServiceTest {
                 .endTime(LocalTime.MAX)
                 .build()));
         return ConfernceMailStructureDTO.builder()
-                .firstName("luka")
-                .lastName("Buziu")
+                .fullNameOrCompanyName("luka buziu")
                 .email("lukabuziu42@gmail.com")
                 .phoneNumber(Optional.of("0682510985"))
                 .conferenceReservations(reservations)
-                .emailContent("more detail information about email")
+                .emailContent(Optional.of("emailContent"))
                 .build();
     }
 }

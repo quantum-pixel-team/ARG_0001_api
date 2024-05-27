@@ -2,7 +2,7 @@ package com.quantum_pixel.arg.conference.service;
 
 import com.quantum_pixel.arg.conference.web.mapper.ConferenceMapper;
 import com.quantum_pixel.arg.hotel.exception.PastDateException;
-import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
+import com.quantum_pixel.arg.conference.model.ConferenceMailStructure;
 import com.quantum_pixel.arg.v1.web.model.ConfernceMailStructureDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class ConferenceService {
         LocalDate date = LocalDate.now();
         conferenceMailStructure.getConferenceReservations()
                 .stream().filter(reservation ->
-                        reservation.getReservationDate().isBefore(date)
+                        reservation.getReservationDate().isBefore(date.minusDays(1))
                                 || reservation.getStartTime().isAfter(reservation.getEndTime())
                 ).findFirst()
                 .ifPresent(sam -> {

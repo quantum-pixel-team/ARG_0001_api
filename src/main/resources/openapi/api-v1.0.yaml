@@ -16,8 +16,11 @@ tags:
     description: Users api
   - name: HotelBooking
     description: Api to get booking information
+  - name: ConferenceReservation
+    description: Api to send a reservation request email
   - name: ContactUs
-    description: send email to the client
+    description: send email to the client for contact
+
 paths:
 
   /api/v1/users:
@@ -133,12 +136,12 @@ paths:
                 items:
                   $ref: "#/components/schemas/RoomPrototype"
 
-  /api/v1/contact-us/email:
+  /api/v1/contact-us/conference-mail-reservation:
     post:
       summary: Send an email to the owner
-      operationId: sendEmail
+      operationId: sendConferenceReservationMail
       tags:
-        - ContactUs
+        - ConferenceReservation
       requestBody:
         description: Necessary Data to send the email
         required: true
@@ -150,6 +153,22 @@ paths:
         200:
           description: OK
 
+  /api/v1/contact-us/contact-us-message:
+    post:
+      summary: Send an email to the owner
+      operationId: sendContactUsMail
+      tags:
+        - ContactUs
+      requestBody:
+        description: Necessary Data to send the email
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactUsMailStructure"
+      responses:
+        200:
+          description: OK
 
 
 components:
@@ -164,4 +183,6 @@ components:
       $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
     ConfernceMailStructure:
       $ref: "./schemas/hotel/Booking/Mail/ConfernceMailStructure.yaml"
+    ContactUsMailStructure:
+      $ref: "./schemas/hotel/Booking/Mail/ContactUsMailStructure.yaml"
 
