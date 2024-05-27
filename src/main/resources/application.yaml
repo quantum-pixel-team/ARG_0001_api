@@ -47,6 +47,7 @@ spring:
       verify:
         host: ${VERIFY_EMAIL_HOST}
 
+
   lifecycle:
     timeout-per-shutdown-phase: 10s
   profiles:
@@ -54,3 +55,4 @@ spring:
 swagger-ui:
   enabled: ${SWAGGER_ENABLED:true}
   configuration-name: ${SWAGGER_UI_CONFIGURATION_NAME:keycloak}
+

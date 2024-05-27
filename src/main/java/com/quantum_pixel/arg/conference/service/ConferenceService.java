@@ -2,7 +2,7 @@ package com.quantum_pixel.arg.conference.service;
 
 import com.quantum_pixel.arg.conference.web.mapper.ConferenceMapper;
 import com.quantum_pixel.arg.hotel.exception.PastDateException;
-import com.quantum_pixel.arg.conference.model.ConferenceMailStructure;
+import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
 import com.quantum_pixel.arg.v1.web.model.ConfernceMailStructureDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

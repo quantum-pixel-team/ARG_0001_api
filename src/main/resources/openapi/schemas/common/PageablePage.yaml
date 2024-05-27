@@ -1,0 +1,30 @@
+description: Pageable object of page container
+type: object
+properties:
+  pageNumber:
+    type: integer
+    format: int32
+    example: 0
+  pageSize:
+    type: integer
+    format: int32
+    example: 10
+  sort:
+    $ref: './Sort.yaml'
+  offset:
+    type: integer
+    format: int64
+    example: 0
+  paged:
+    type: boolean
+    example: true
+  unpaged:
+    type: boolean
+    example: false
+required:
+  - pageNumber
+  - pageSize
+  - sort
+  - offset
+  - paged
+  - unpaged

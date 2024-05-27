@@ -1,0 +1,13 @@
+description: Sort object of page container
+type: object
+properties:
+  sorted:
+    type: boolean
+  empty:
+    type: boolean
+  unsorted:
+    type: boolean
+required:
+  - sorted
+  - empty
+  - unsorted
