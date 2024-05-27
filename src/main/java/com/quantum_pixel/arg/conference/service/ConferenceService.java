@@ -1,9 +1,10 @@
 package com.quantum_pixel.arg.conference.service;
 
+import com.quantum_pixel.arg.conference.model.ConferenceMailStructure;
 import com.quantum_pixel.arg.conference.web.mapper.ConferenceMapper;
 import com.quantum_pixel.arg.hotel.exception.PastDateException;
-import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
-import com.quantum_pixel.arg.v1.web.model.ConfernceMailStructureDTO;
+
+import com.quantum_pixel.arg.v1.web.model.ConferenceMailStructureDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class ConferenceService {
 
     private final ConferenceMapper conferenceMapper;
 
-    public void sentEmail(ConfernceMailStructureDTO conferenceMailStructure) {
+    public void sentEmail(ConferenceMailStructureDTO conferenceMailStructure) {
         var conferenceMapperEntity = conferenceMapper.toEntity(conferenceMailStructure);
         verifyReservationDates(conferenceMapperEntity);
         mailService.sendEmail(conferenceMapperEntity);
