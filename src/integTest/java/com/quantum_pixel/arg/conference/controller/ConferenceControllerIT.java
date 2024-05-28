@@ -33,8 +33,8 @@ public class ConferenceControllerIT extends ConfigTest {
     void shouldSentSuccessfully() {
         String payload = """
                 {  \s
-                    "firstName" : "luka",
-                    "lastName" : "Buziu",
+                    "fullNameOrCompanyName" : "luka",
+                
                     "email": "lukabuziu22@gmail.com",
                     "conferenceReservations" : [
                         {
@@ -59,7 +59,7 @@ public class ConferenceControllerIT extends ConfigTest {
                 .post(AppITConfig.BASE_URL
                         + webServerAppContext.getWebServer().getPort()
                         + AppITConfig.V1
-                        + "/contact-us/email").andReturn()
+                        + "/contact-us/conference-mail-reservation").andReturn()
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
@@ -72,8 +72,7 @@ public class ConferenceControllerIT extends ConfigTest {
         String payload =
                 """
                         {  \s
-                            "firstName" : "luka",
-                            "lastName" : "Buziu",
+                            "fullNameOrCompanyName" : "luka",
                             "email": "lukabuziu22@gmail.com",
                             "conferenceReservations" : [
                                 {
@@ -97,7 +96,7 @@ public class ConferenceControllerIT extends ConfigTest {
                 .post(AppITConfig.BASE_URL
                         + webServerAppContext.getWebServer().getPort()
                         + AppITConfig.V1
-                        + "/contact-us/email").andReturn()
+                        + "/contact-us/conference-mail-reservation").andReturn()
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }

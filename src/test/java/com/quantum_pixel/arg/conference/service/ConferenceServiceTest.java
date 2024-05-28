@@ -61,12 +61,9 @@ public class ConferenceServiceTest {
 
     @Test
     void emailValidationPassSuccessfully(){
-
         var confernceMailStructureDTO =createEmailStructure();
         doNothing().when(mailService).sendEmail(any());
         conferenceService.sentEmail(confernceMailStructureDTO);
-
-
 
     }
 
@@ -79,12 +76,11 @@ public class ConferenceServiceTest {
                 .endTime(LocalTime.MAX)
                 .build()));
         return ConferenceMailStructureDTO.builder()
-                .firstName("luka")
-                .lastName("Buziu")
+                .fullNameOrCompanyName("luka buziu")
                 .email("lukabuziu42@gmail.com")
                 .phoneNumber(Optional.of("0682510985"))
                 .conferenceReservations(reservations)
-                .emailContent("more detail information about email")
+                .emailContent(Optional.of("emailContent"))
                 .build();
     }
 }

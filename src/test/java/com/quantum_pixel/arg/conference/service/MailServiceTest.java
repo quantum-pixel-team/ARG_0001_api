@@ -1,9 +1,8 @@
 package com.quantum_pixel.arg.conference.service;
 
-import com.quantum_pixel.arg.hotel.exception.PastDateException;
-import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
-import com.quantum_pixel.arg.hotel.model.mail.MailStructure;
-import com.quantum_pixel.arg.hotel.model.mail.Reservation;
+import com.quantum_pixel.arg.conference.model.ConferenceMailStructure;
+import com.quantum_pixel.arg.conference.model.MailStructure;
+import com.quantum_pixel.arg.conference.model.Reservation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -81,12 +80,11 @@ class MailServiceTest {
                 .endTime(LocalTime.MAX)
                 .build()));
         return ConferenceMailStructure.builder()
-                .firstName("luka")
-                .lastName("Buziu")
+                .fullNameOrCompanyName("luka")
                 .email("lukabuziu42@gmail.com")
                 .phoneNumber(Optional.of("0682510985"))
                 .conferenceReservations(reservations)
-                .emailContent("more detail information about email")
+                .emailContent(Optional.of("content"))
                 .build();
     }
 }

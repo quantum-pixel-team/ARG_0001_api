@@ -5,13 +5,12 @@ import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.quantum_pixel.arg.AppITConfig;
 import com.quantum_pixel.arg.ConfigTest;
-import com.quantum_pixel.arg.hotel.model.mail.ConferenceMailStructure;
-import com.quantum_pixel.arg.hotel.model.mail.MailStructure;
-import com.quantum_pixel.arg.hotel.model.mail.Reservation;
+import com.quantum_pixel.arg.conference.model.ConferenceMailStructure;
+import com.quantum_pixel.arg.conference.model.MailStructure;
+import com.quantum_pixel.arg.conference.model.Reservation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -39,7 +38,6 @@ public class MailServiceIT extends ConfigTest {
                 .isEqualTo(1);
     }
 
-
     private MailStructure createEmailStructure() {
         List<Reservation> reservations = new ArrayList<>();
         reservations.add((Reservation.builder()
@@ -48,12 +46,11 @@ public class MailServiceIT extends ConfigTest {
                 .endTime(LocalTime.MAX)
                 .build()));
         return ConferenceMailStructure.builder()
-                .firstName("luka")
-                .lastName("Buziu")
+                .fullNameOrCompanyName("luka")
                 .email("lukabuziu42@gmail.com")
                 .phoneNumber(Optional.of("0682510985"))
                 .conferenceReservations(reservations)
-                .emailContent("more detail information about email")
+                .emailContent(Optional.of("content"))
                 .build();
     }
 

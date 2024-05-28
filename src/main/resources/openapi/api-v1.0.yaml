@@ -16,8 +16,10 @@ tags:
     description: Users api
   - name: HotelBooking
     description: Api to get booking information
+  - name: ConferenceReservation
+    description: Api to send a reservation request email
   - name: ContactUs
-    description: send email to the client
+    description: send email to the client for contact
   - name: Event
     description: Api for events
 paths:
@@ -135,12 +137,12 @@ paths:
                 items:
                   $ref: "#/components/schemas/RoomPrototype"
 
-  /api/v1/contact-us/email:
+  /api/v1/contact-us/conference-mail-reservation:
     post:
       summary: Send an email to the owner
-      operationId: sendEmail
+      operationId: sendConferenceReservationMail
       tags:
-        - ContactUs
+        - ConferenceReservation
       requestBody:
         description: Necessary Data to send the email
         required: true
@@ -152,6 +154,22 @@ paths:
         200:
           description: OK
 
+  /api/v1/contact-us/contact-us-message:
+    post:
+      summary: Send an email to the owner
+      operationId: sendContactUsMail
+      tags:
+        - ContactUs
+      requestBody:
+        description: Necessary Data to send the email
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactUsMailStructure"
+      responses:
+        200:
+          description: OK
   /api/v1/events:
     get:
       tags:
@@ -183,7 +201,7 @@ paths:
             type: string
             enum: [ upcoming, recent, all ]
             default: all
-          
+
       responses:
         '200':
           description: List of upcoming events
@@ -220,6 +238,8 @@ components:
       $ref: "./schemas/UpdateUserRequest.yaml"
     RoomPrototype:
       $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
+    ContactUsMailStructure:
+      $ref: "./schemas/hotel/Booking/Mail/ContactUsMailStructure.yaml"
     ConferenceMailStructure:
       $ref: "./schemas/hotel/Booking/Mail/ConferenceMailStructure.yaml"
     Page:

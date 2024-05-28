@@ -1,6 +1,6 @@
 package com.quantum_pixel.arg.conference.service;
 
-import com.quantum_pixel.arg.hotel.model.mail.MailStructure;
+import com.quantum_pixel.arg.conference.model.MailStructure;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,13 +1,10 @@
-package com.quantum_pixel.arg.hotel.model.mail;
+package com.quantum_pixel.arg.conference.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 
 @Data
 @Builder

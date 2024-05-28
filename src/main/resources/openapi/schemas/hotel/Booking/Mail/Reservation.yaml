@@ -6,6 +6,11 @@ properties:
     format: date
     description: requested date of the reservation
     example: "2024-09-16"
+  numberOfAttenders:
+    type: integer
+    description: requested number of participant
+    format: int64
+    example: 20
   startTime:
     type: string
     format: time
