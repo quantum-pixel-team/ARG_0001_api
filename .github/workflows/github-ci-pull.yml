@@ -24,12 +24,12 @@ jobs:
       git_token: ${{ secrets.GITHUB_TOKEN }}
       sonar_token: ${{ secrets.SONAR_TOKEN }}
 
-  cd:
+  cd-dev:
     needs: ci
 #    if: github.event_name  == 'push'
-    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@feature/qpt-127-ope-ci-cd-config
     with:
-      environment: "dev"
+      environment: dev
       docker-file-path: "Dockerfile"
       tag: "blou5/arg-api:latest"
       local-path: "arg-docker/dev"
@@ -38,7 +38,29 @@ jobs:
       deploy-script: "
               cd /home/arg/api &&
                docker compose pull &&
-              docker compose up -d  "
+              docker compose up -d"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      HOST: ${{secrets.HOST}}
+      SSH_USER: ${{secrets.SSH_USER}}
+      SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+
+  cd-prod:
+    needs: cd-dev
+    #    if: github.event_name  == 'push'
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@feature/qpt-127-ope-ci-cd-config
+    with:
+      environment: prod
+      docker-file-path: "Dockerfile"
+      tag: "blou5/arg-api:latest"
+      local-path: "arg-docker/dev"
+      remote-path: "/home/arg/api"
+      artifact-path: "build/libs"
+      deploy-script: "
+                cd /home/arg/api &&
+                 docker compose pull &&
+                docker compose up -d"
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
