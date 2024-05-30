@@ -27,7 +27,7 @@ jobs:
   cd-dev:
     needs: ci
 #    if: github.event_name  == 'push'
-    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@feature/qpt-127-ope-ci-cd-config
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
     with:
       environment: dev
       docker-file-path: "Dockerfile"
@@ -49,7 +49,7 @@ jobs:
   cd-prod:
     needs: cd-dev
     #    if: github.event_name  == 'push'
-    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@feature/qpt-127-ope-ci-cd-config
+    uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
     with:
       environment: prod
       docker-file-path: "Dockerfile"
