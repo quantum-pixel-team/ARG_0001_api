@@ -227,6 +227,22 @@ paths:
         '400':
           description: Bad request
 
+  /api/v1/whatsapp/send:
+    post:
+      summary: Send a WhatsApp message
+      operationId: sendWhatsAppMessage
+      tags:
+        - Whatsapp
+      requestBody:
+        description: Request payload for sending a WhatsApp message
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '200':
+          description: Message sent successfully
 
 components:
   schemas:
@@ -246,3 +262,5 @@ components:
       $ref: "./schemas/common/Page.yaml"
     Event:
       $ref: "./schemas/event/event.yaml"
+    MessageRequest:
+      $ref: "./schemas/whatsapp/MessageRequest.yaml"

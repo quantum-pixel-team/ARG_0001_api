@@ -1,0 +1,11 @@
+type: object
+properties:
+  phoneNumber:
+    type: string
+    example: "+1234567890"
+  message:
+    type: string
+    example: "Hello, this is a test message!"
+required:
+  - phoneNumber
+  - message
