@@ -21,19 +21,24 @@ public class ConferenceMailStructure extends MailStructure{
     private List<Reservation> conferenceReservations;
     private Optional<String> emailContent;
 
-    private static final String SUBJECT ="Kerkese aprovimi per rezervim te konferencën: %s";
-    private static final String CONTEXT_FIRST_PART= "Të dhënat për rezervimin janë si vijon:\n" +
+    private static final String SUBJECT ="Njoftim për Rezervim Konference: %s";
+    private static final String CONTEXT_FIRST_PART= "Përshëndetje,\n" +
             "\n" +
-            "Emri: %s\n" +
+            "Ju informojmë se është bërë një kërkesë rezervimi për konferencën me këto detaje::\n" +
+            "\n" +
+            "Emri i Plotë: %s\n" +
             "Email: %s\n" ;
     private static final String CONTEXT_NUMBER_PHONE =
-            "Numri i telefonit: %s\n" ;
+            "Numri i Telefonit: %s\n" ;
     private static final String EMAIL_CONTENT =
-            "Datat e mundshme të konferencës:\n" +
+            "Detajet e Rezervimit::\n" +
              "%s"+
-            "Pershkrimi i rezervimit: %s"
-            +"Me respekt," +
-            "Quantum-Pixel";
+            "Mesazh Shtesë: %s"
+            +"Për të kontaktuar klientin, ju lutemi përdorni informacionin e mësipërm.\n" +
+                    "\n" +
+                    "Ju lutemi mos i bëni reply këtij emaili.\n" +
+                    "\n" +
+                    "Faleminderit.";
 
 
     @Override
@@ -56,7 +61,7 @@ public class ConferenceMailStructure extends MailStructure{
         return phoneNumber.map(s -> firstMailPartStructure + String.format(CONTEXT_NUMBER_PHONE, s)
                 + String.format(EMAIL_CONTENT, reservationDate, getEmailContent()))
                 .orElseGet(() -> firstMailPartStructure + String.format(EMAIL_CONTENT, reservationDate
-                , getEmailContent().orElseGet(()->"Nuk Ka Pershkrim")));
+                , getEmailContent().orElse("Nuk Ka Pershkrim")));
     }
 
     @Override
