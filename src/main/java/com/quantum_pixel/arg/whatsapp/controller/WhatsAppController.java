@@ -1,7 +1,7 @@
 package com.quantum_pixel.arg.whatsapp.controller;
 
 import com.quantum_pixel.arg.v1.web.WhatsappApi;
-import com.quantum_pixel.arg.v1.web.model.MessageRequestDTO;
+import com.quantum_pixel.arg.v1.web.model.RestaurantReservationRequestDTO;
 import com.quantum_pixel.arg.whatsapp.service.WhatsAppService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,8 +14,8 @@ public class WhatsAppController implements WhatsappApi {
 
     private final WhatsAppService whatsappService;
     @Override
-    public ResponseEntity<Void> sendWhatsAppMessage(MessageRequestDTO request) {
-        whatsappService.sendMessage(request.getPhoneNumber(), request.getMessage());
+    public ResponseEntity<Void> sendRestaurantReservation(RestaurantReservationRequestDTO request) {
+        whatsappService.sendRestaurantReservationDetails(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

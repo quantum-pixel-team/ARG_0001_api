@@ -8,7 +8,7 @@ spring:
   jpa:
     database: default
     generate-ddl: false
-#    open-in-view: false TODO #https://stackoverflow.com/questions/30549489/what-is-this-spring-jpa-open-in-view-true-property-in-spring-boot
+    #    open-in-view: false TODO #https://stackoverflow.com/questions/30549489/what-is-this-spring-jpa-open-in-view-true-property-in-spring-boot
     properties:
       hibernate:
         cache.use_second_level_cache: false
@@ -58,6 +58,7 @@ swagger-ui:
 
 whatsapp:
   api:
-    url: https://graph.facebook.com/v19.0/311469262042262/messages
-    token: EAAFvoTBlQ4YBO7ATvNtI5pL4rt0gX1ngAQMKXyHbqY4rfEHu66RE96fvNqD3BtvB1udGV14NZAPjt8oynheIObxBK6nXEAkr4NHYcdQ3S3tyb12jSlU2lYJsyHBbJND8ZBhmOfYx4injlM41NniGVCESkNxSWuBsF0qMpPiHJOobDGKh3bvYF7rrEV5ZAoErPFZBtkPcsnxLJi4p
-    to: 355676923049
+    phone_number_id: ${whatsapp_api_phone_number_id:359238797270535}
+    url: https://graph.facebook.com/v19.0
+    token: ${whatsapp_api_token}
+    to: ${whatsapp_api_to:355676923049}

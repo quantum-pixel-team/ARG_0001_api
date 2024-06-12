@@ -14,5 +14,7 @@ public class WhatsAppConfig {
     private String apiToken;
     @Value("${whatsapp.api.to}")
     private String to;
+    @Value("${whatsapp.api.phone_number_id}")
+    private String phoneNumberId;
 
 }
