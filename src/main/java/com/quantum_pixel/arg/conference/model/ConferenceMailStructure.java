@@ -22,23 +22,25 @@ public class ConferenceMailStructure extends MailStructure{
     private Optional<String> emailContent;
 
     private static final String SUBJECT ="Njoftim për Rezervim Konference: %s";
-    private static final String CONTEXT_FIRST_PART= "Përshëndetje,\n" +
-            "\n" +
-            "Ju informojmë se është bërë një kërkesë rezervimi për konferencën me këto detaje::\n" +
-            "\n" +
-            "Emri i Plotë: %s\n" +
-            "Email: %s\n" ;
+    private static final String CONTEXT_FIRST_PART= """
+            Përshëndetje,
+
+            Ju informojmë se është bërë një kërkesë rezervimi për konferencën me këto detaje:
+
+            Emri i Plotë: %s
+            Email: %s
+            """;
     private static final String CONTEXT_NUMBER_PHONE =
             "Numri i Telefonit: %s\n" ;
     private static final String EMAIL_CONTENT =
-            "Detajet e Rezervimit::\n" +
-             "%s"+
-            "Mesazh Shtesë: %s"
-            +"Për të kontaktuar klientin, ju lutemi përdorni informacionin e mësipërm.\n" +
-                    "\n" +
-                    "Ju lutemi mos i bëni reply këtij emaili.\n" +
-                    "\n" +
-                    "Faleminderit.";
+            """
+                    Detajet e Rezervimit:
+                    %sMesazh Shtesë: %s\s
+                    Për të kontaktuar klientin, ju lutemi përdorni informacionin e mësipërm.
+
+                    Ju lutemi mos i bëni reply këtij emaili.
+
+                    Faleminderit.""";
 
 
     @Override
@@ -61,7 +63,7 @@ public class ConferenceMailStructure extends MailStructure{
         return phoneNumber.map(s -> firstMailPartStructure + String.format(CONTEXT_NUMBER_PHONE, s)
                 + String.format(EMAIL_CONTENT, reservationDate, getEmailContent()))
                 .orElseGet(() -> firstMailPartStructure + String.format(EMAIL_CONTENT, reservationDate
-                , getEmailContent().orElse("Nuk Ka Pershkrim")));
+                , getEmailContent().orElseGet(()->"Nuk Ka Pershkrim")));
     }
 
     @Override

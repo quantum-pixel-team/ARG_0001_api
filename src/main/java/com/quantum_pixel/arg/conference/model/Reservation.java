@@ -20,7 +20,7 @@ public class Reservation {
         if (numberOfAttenders.isPresent()) {
             return
                     "\tData:" + reservationDate + "\n" +
-                            "\tNumri i Pjesëmarrësve: " + numberOfAttenders + "\n" +
+                            "\tNumri i Pjesëmarrësve: " + numberOfAttenders.get() + "\n" +
                             "\tOra e Fillimit: " + startTime + "\n" +
                             "\tOra e Mbarimit:" + endTime + "\n"
                     ;
