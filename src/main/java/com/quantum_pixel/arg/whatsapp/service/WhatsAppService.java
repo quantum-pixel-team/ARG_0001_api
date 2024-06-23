@@ -20,9 +20,9 @@ import java.util.Map;
 public class WhatsAppService {
 
     private final WhatsAppConfig config;
+    private final RestTemplate restTemplate;
 
     public void sendRestaurantReservationDetails(RestaurantReservationRequestDTO reservationRequestDTO) {
-        RestTemplate restTemplate = new RestTemplate();
 
         String baseUrl = config.getApiUrl();
         String token = config.getApiToken();
