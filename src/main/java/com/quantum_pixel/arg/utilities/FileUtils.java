@@ -7,19 +7,20 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-public final  class FileUtils {
+public final class FileUtils {
 
-    private FileUtils (){}
+    private FileUtils() {
+    }
+
     @SneakyThrows
-    public static String readResource(String resource)  {
+    public static String readResource(String resource) {
         String name = extractFileName(resource);
         InputStream resourceStream = FileUtils.class.getResourceAsStream("/" + name);
-        if(resourceStream == null) {
+        if (resourceStream == null) {
             throw new FileNotFoundException(resource);
         }
         return new Scanner(resourceStream, StandardCharsets.UTF_8).useDelimiter("\\A").next();
     }
-
 
 
     private static String extractFileName(String fileName) {
