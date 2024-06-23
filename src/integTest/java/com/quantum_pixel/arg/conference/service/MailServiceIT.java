@@ -44,6 +44,7 @@ public class MailServiceIT extends ConfigTest {
                 .reservationDate(LocalDate.MAX)
                 .startTime(LocalTime.MIN)
                 .endTime(LocalTime.MAX)
+                .numberOfAttenders(Optional.of(34l))
                 .build()));
         return ConferenceMailStructure.builder()
                 .fullNameOrCompanyName("luka")

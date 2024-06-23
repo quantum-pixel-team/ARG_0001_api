@@ -78,6 +78,7 @@ class MailServiceTest {
                 .reservationDate(LocalDate.MAX)
                 .startTime(LocalTime.MIN)
                 .endTime(LocalTime.MAX)
+                .numberOfAttenders(Optional.of(24L))
                 .build()));
         return ConferenceMailStructure.builder()
                 .fullNameOrCompanyName("luka")
