@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-public class FileUtils {
+public final  class FileUtils {
 
     private FileUtils (){}
     @SneakyThrows
