@@ -3,13 +3,13 @@ package com.quantum_pixel.arg.utilities;
 import lombok.SneakyThrows;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class FileUtils {
 
+    private FileUtils (){}
     @SneakyThrows
     public static String readResource(String resource)  {
         String name = extractFileName(resource);

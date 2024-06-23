@@ -4,6 +4,9 @@ import java.util.Map;
 
 public class TemplateUtils {
 
+    private TemplateUtils() {
+    }
+
     public static String injectVariables(String sqlTemplate, Map<String, String> placeholder) {
         String temp = sqlTemplate;
         for (Map.Entry<String, String> entry : placeholder.entrySet()) {
