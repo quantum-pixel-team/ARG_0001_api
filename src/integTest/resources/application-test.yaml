@@ -12,3 +12,4 @@ IMAP_USERNAME: luka
 IMAP_PASSWORD: buziu
 IMAP_HOST: 127.0.0.1
 IMAP_PORT: 3143
+whatsapp_api_token: dummyToken
