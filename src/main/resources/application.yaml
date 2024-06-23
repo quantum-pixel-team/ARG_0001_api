@@ -62,3 +62,4 @@ whatsapp:
     url: https://graph.facebook.com/v19.0
     token: ${whatsapp_api_token}
     to: ${whatsapp_api_to:355676923049}
+    
