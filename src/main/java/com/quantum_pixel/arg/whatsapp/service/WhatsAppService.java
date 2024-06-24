@@ -26,7 +26,6 @@ public class WhatsAppService {
 
         String baseUrl = config.getApiUrl();
         String token = config.getApiToken();
-        String to = config.getTo();
         var phoneNumberId = config.getPhoneNumberId();
 
         HttpHeaders headers = new HttpHeaders();
@@ -35,7 +34,7 @@ public class WhatsAppService {
 
         var jsonTemplate = FileUtils.readResource("whatsapp/templates/restaurant_reservation.json");
         Map<String, String> variables = Map.of(
-                "to", to,
+                "to", reservationRequestDTO.getTo(),
                 "language_code", reservationRequestDTO.getLanguageCode().orElse(RestaurantReservationRequestDTO.LanguageCodeEnum.EN).toString(),
                 "user_name", reservationRequestDTO.getName(),
                 "phone_number", reservationRequestDTO.getPhoneNumber(),

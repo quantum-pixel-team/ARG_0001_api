@@ -12,7 +12,3 @@ IMAP_USERNAME: some03642%40gmail.com
 IMAP_PASSWORD: efguwlscpdvgudst
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
-
-whatsapp:
-  api:
-    to: ${whatsapp_api_to:355676923049}

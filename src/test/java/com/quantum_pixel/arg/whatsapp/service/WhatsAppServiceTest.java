@@ -40,7 +40,6 @@ class WhatsAppServiceTest {
         // Mock configurations
         when(config.getApiUrl()).thenReturn("https://api.whatsapp.com");
         when(config.getApiToken()).thenReturn("dummyToken");
-        when(config.getTo()).thenReturn("+355676923049");
         when(config.getPhoneNumberId()).thenReturn("987654321");
 
         // Create a sample reservation request DTO
@@ -48,6 +47,7 @@ class WhatsAppServiceTest {
                 .languageCode(Optional.of(RestaurantReservationRequestDTO.LanguageCodeEnum.EN))
                 .name("John Doe")
                 .phoneNumber("0987654321")
+                .to("355676923049")
                 .guests(4)
                 .date(LocalDate.parse("2023-07-01"))
                 .time(LocalTime.parse("19:00"))

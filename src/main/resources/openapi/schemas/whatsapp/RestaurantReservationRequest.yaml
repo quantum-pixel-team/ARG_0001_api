@@ -32,9 +32,13 @@ properties:
       - sq
     default: en
     example: 'en'
+  to:
+    type: string
+    example: '+355676923049'
 required:
   - name
   - phoneNumber
   - guests
   - date
   - time
+  - to
