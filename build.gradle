@@ -36,6 +36,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-integration:3.2.4'
     implementation 'org.springframework.boot:spring-boot-starter-mail:3.2.4'
 
+    implementation 'org.springframework.batch:spring-batch-core:5.1.2'
+
+
     implementation 'org.liquibase:liquibase-core'
 
     compileOnly 'org.projectlombok:lombok'

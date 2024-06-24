@@ -8,7 +8,7 @@ import org.springframework.integration.config.EnableIntegration;
 @EnableIntegration
 public class ArgApplication {
 
-    public static void main(String[] args) {
+        public static void main(String[] args) {
         SpringApplication.run(ArgApplication.class, args);
     }
 

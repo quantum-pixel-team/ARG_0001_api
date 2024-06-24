@@ -24,7 +24,7 @@ public class MailService {
     private String EMAIL;
 
     @Bean
-    public  IntegrationFlow imapMailFlow(@Value("imaps://${IMAP_USERNAME}:${IMAP_PASSWORD}@${IMAP_HOST}:${IMAP_PORT}/inbox") String storeUrl) {
+    public IntegrationFlow imapMailFlow(@Value("imaps://${IMAP_USERNAME}:${IMAP_PASSWORD}@${IMAP_HOST}:${IMAP_PORT}/inbox") String storeUrl) {
         return IntegrationFlow
                 .from(Mail.imapIdleAdapter(storeUrl)
                         .autoStartup(true)
@@ -49,7 +49,6 @@ public class MailService {
         simpleMailMessage.setText(mailStructure.createEmailContext());
         javaMailSender.send(simpleMailMessage);
     }
-
 
 
 }

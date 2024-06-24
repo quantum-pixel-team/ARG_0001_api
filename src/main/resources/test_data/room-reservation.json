@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "roomName": "Deluxe Room",
+    "reservationDate": "2024-07-01",
+    "sold": false,
+    "currentPrice": 150,
+    "roomPrice": 200,
+    "checkoutUrl": "http://example.com/checkout/1"
+  },
+  {
+    "id": 2,
+    "roomName": "Standard Room",
+    "reservationDate": "2024-07-02",
+    "sold": true,
+    "currentPrice": 100,
+    "roomPrice": 120,
+    "checkoutUrl": "http://example.com/checkout/2"
+  },
+  {
+    "id": 3,
+    "roomName": "Suite",
+    "reservationDate": "2024-07-03",
+    "sold": false,
+    "currentPrice": 250,
+    "roomPrice": 300,
+    "checkoutUrl": "http://example.com/checkout/3"
+  },
+  {
+    "id": 4,
+    "roomName": "Economy Room",
+    "reservationDate": "2024-07-04",
+    "sold": true,
+    "currentPrice": 80,
+    "roomPrice": 100,
+    "checkoutUrl": "http://example.com/checkout/4"
+  },
+  {
+    "id": 5,
+    "roomName": "Presidential Suite",
+    "reservationDate": "2024-07-05",
+    "sold": false,
+    "currentPrice": 500,
+    "roomPrice": 600,
+    "checkoutUrl": "http://example.com/checkout/5"
+  }
+]

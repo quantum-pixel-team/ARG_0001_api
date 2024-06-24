@@ -59,3 +59,47 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: 6
+      author: luka.buziu22@gmail.com
+      changes:
+        - createTable:
+            tableName: room_reservations
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: room_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reservation_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sold
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currentPrice
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: roomPrice
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                 name: checkoutUrl
+                 type: varchar(100)
+                 constraints:
+                   nullable: false

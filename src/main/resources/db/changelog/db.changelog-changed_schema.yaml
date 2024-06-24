@@ -9,3 +9,23 @@ databaseChangeLog:
               - column:
                   name: email
                   type: varchar(254)
+  - changeSet:
+      id: rename column
+      author: luka.buziu22@gmail.com
+      changes:
+        - renameColumn:
+            tableName: room_reservations
+            oldColumnName: checkoutUrl
+            newColumnName: checkout_url
+  - changeSet:
+      id: rename columns
+      author: luka.buziu22@gmail.com
+      changes:
+        - renameColumn:
+            tableName: room_reservations
+            oldColumnName: currentPrice
+            newColumnName: current_price
+        - renameColumn:
+            tableName: room_reservations
+            oldColumnName: roomPrice
+            newColumnName: room_price
