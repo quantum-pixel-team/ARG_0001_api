@@ -23,7 +23,7 @@ public final class FileUtils {
     }
 
 
-    private static String extractFileName(String fileName) {
+    static String extractFileName(String fileName) {
         boolean startsWithSlash = fileName.startsWith("/") || fileName.startsWith("\\");
         if (startsWithSlash) {
             return fileName.substring(1);
