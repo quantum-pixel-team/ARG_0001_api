@@ -1,5 +1,8 @@
 # Getting Started
 
+# Pre-request
+In order to use whatsapp api you will need to setup the whatsapp api token `whatsapp_api_token=token`.
+
 # Run application on docker
 
 Docker compose directory is at: arg-docker

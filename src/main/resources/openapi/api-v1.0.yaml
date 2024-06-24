@@ -10,6 +10,8 @@ servers:
     description: Local server
   - url: http://62.171.153.17:8080
     description: Dev server
+  - url: http://45.90.121.140:8080
+    description: Prod server
 
 tags:
   - name: Users
@@ -227,6 +229,22 @@ paths:
         '400':
           description: Bad request
 
+  /api/v1/whatsapp/send:
+    post:
+      summary: Send a WhatsApp message
+      operationId: sendRestaurantReservation
+      tags:
+        - Whatsapp
+      requestBody:
+        description: Request payload for sending a WhatsApp message
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestaurantReservationRequest'
+      responses:
+        '200':
+          description: Message sent successfully
 
 components:
   schemas:
@@ -246,3 +264,5 @@ components:
       $ref: "./schemas/common/Page.yaml"
     Event:
       $ref: "./schemas/event/event.yaml"
+    RestaurantReservationRequest:
+      $ref: "./schemas/whatsapp/RestaurantReservationRequest.yaml"
