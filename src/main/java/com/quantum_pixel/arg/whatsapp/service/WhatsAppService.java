@@ -41,7 +41,7 @@ public class WhatsAppService {
                 "guests", reservationRequestDTO.getGuests().toString(),
                 "reservation_date", reservationRequestDTO.getDate().toString(),
                 "reservation_time", reservationRequestDTO.getTime().toString(),
-                "message", reservationRequestDTO.getMessage().orElse("NaN")
+                "message", reservationRequestDTO.getMessage().map(el -> el.isBlank() ? null : el).orElse("NaN")
         );
         var body = TemplateUtils.injectVariables(jsonTemplate, variables);
 
