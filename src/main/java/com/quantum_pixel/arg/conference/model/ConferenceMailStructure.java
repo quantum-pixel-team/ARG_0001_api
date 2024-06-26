@@ -35,7 +35,7 @@ public class ConferenceMailStructure extends MailStructure{
     private static final String EMAIL_CONTENT =
             """
                     Detajet e Rezervimit:
-                    %sMesazh Shtesë: %s\s
+                    %sMesazh Shtesë: %s \n
                     Për të kontaktuar klientin, ju lutemi përdorni informacionin e mësipërm.
 
                     Ju lutemi mos i bëni reply këtij emaili.
@@ -61,9 +61,9 @@ public class ConferenceMailStructure extends MailStructure{
                 , email);
 
         return phoneNumber.map(s -> firstMailPartStructure + String.format(CONTEXT_NUMBER_PHONE, s)
-                + String.format(EMAIL_CONTENT, reservationDate, getEmailContent()))
+                + String.format(EMAIL_CONTENT, reservationDate, getEmailContent().orElse("Nuk ka Pershkrim")))
                 .orElseGet(() -> firstMailPartStructure + String.format(EMAIL_CONTENT, reservationDate
-                , getEmailContent().orElseGet(()->"Nuk Ka Pershkrim")));
+                , getEmailContent().orElse("Nuk Ka Pershkrim")));
     }
 
     @Override
