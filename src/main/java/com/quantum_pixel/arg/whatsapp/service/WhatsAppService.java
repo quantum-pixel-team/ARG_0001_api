@@ -31,6 +31,7 @@ public class WhatsAppService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(token);
+        log.info("[Whatsapp service] Sending Restaurant reservation {}", reservationRequestDTO);
 
         var jsonTemplate = FileUtils.readResource("whatsapp/templates/restaurant_reservation.json");
         Map<String, String> variables = Map.of(
@@ -45,7 +46,6 @@ public class WhatsAppService {
         );
         var body = TemplateUtils.injectVariables(jsonTemplate, variables);
 
-        log.debug("[Whatsapp service] Sending message using body: ");
         log.debug(body);
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
