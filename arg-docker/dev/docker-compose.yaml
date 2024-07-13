@@ -12,6 +12,7 @@ services:
       DATABASE_URL: jdbc:postgresql://postgres/arg
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      whatsapp_api_token: ${whatsapp_api_token}
     ports:
       - "8080:8080"
       - "8000:8000"
