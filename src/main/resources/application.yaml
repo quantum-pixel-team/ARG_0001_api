@@ -58,6 +58,6 @@ swagger-ui:
 
 whatsapp:
   api:
-    phone_number_id: ${whatsapp_api_phone_number_id:359238797270535}
+    phone_number_id: ${whatsapp_api_phone_number_id:341358742400656}
     url: https://graph.facebook.com/v19.0
     token: ${whatsapp_api_token}

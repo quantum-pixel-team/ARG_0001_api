@@ -59,3 +59,135 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+
+  - changeSet:
+      id: created_room
+      author: indrit.vaka@gmail.com
+      changes:
+        - createTable:
+            tableName: room
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: type
+                  type: varchar(100)
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: price
+                  type: real
+              - column:
+                  name: capacity
+                  type: integer
+              - column:
+                  name: rate_applies_to
+                  type: integer
+              - column:
+                  name: images_url
+                  type: text[]
+  - changeSet:
+      id: created_room_reservation
+      author: indrit.vaka@gmail.com
+      changes:
+        - createTable:
+            tableName: room_reservation
+            columns:
+              - column:
+                  name: room_id
+                  type: integer
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: current_price
+                  type: real
+              - column:
+                  name: available
+                  type: integer
+              - column:
+                  name: minimum_nights
+                  type: integer
+        -   createIndex:
+              tableName: room_reservation
+              indexName: date_index_room_reservation
+              columns:
+                - column:
+                    name: date
+
+        - addForeignKeyConstraint:
+            baseTableName: room_reservation
+            baseColumnNames: room_id
+            referencedTableName: room
+            referencedColumnNames: id
+            constraintName: fk_room_reservation_room
+            onDelete: cascade
+  - changeSet:
+      id: created_facility
+      author: indrit.vaka@gmail.com
+      changes:
+        - createTable:
+            tableName: facility
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: usage_count
+                  type: integer
+                  defaultValueNumeric: "0"
+
+  - changeSet:
+      id: created_room_facility
+      author: indrit.vaka@gmail.com
+      changes:
+        - createTable:
+            tableName: room_facility
+            columns:
+              - column:
+                  name: room_id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: facility_id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: room_facility
+            baseColumnNames: room_id
+            referencedTableName: room
+            referencedColumnNames: id
+            constraintName: fk_room_facility_room
+            onDelete: cascade
+        - addForeignKeyConstraint:
+            baseTableName: room_facility
+            baseColumnNames: facility_id
+            referencedTableName: facility
+            referencedColumnNames: id
+            constraintName: fk_room_facility_facility
+            onDelete: cascade

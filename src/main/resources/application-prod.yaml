@@ -1,0 +1,18 @@
+allowed-origins: http://62.171.153.17,http://62.171.153.17:4200,http://62.171.153.17:4100,http://localhost:4200
+
+# Email Config
+
+EMAIL_HOST: smtp.gmail.com
+EMAIL_PORT: 587
+EMAIL_USERNAME: some03642@gmail.com
+EMAIL_PASSWORD: efguwlscpdvgudst
+VERIFY_EMAIL_HOST: http://localhost:8080
+
+IMAP_USERNAME: some03642%40gmail.com
+IMAP_PASSWORD: efguwlscpdvgudst
+IMAP_HOST: imap.gmail.com
+IMAP_PORT: 993
+
+whatsapp:
+  api:
+    phone_number_id: ${whatsapp_api_phone_number_id:341358742400656}
