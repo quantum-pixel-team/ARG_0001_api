@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("SELECT r FROM Room r JOIN r.roomReservations rr WHERE rr.id.date BETWEEN :startDate AND :endDate")
-    List<Room> findAvailableRooms(LocalDate startDate,LocalDate endDate);
+    List<Room> findAvailableRooms(LocalDate startDate, LocalDate endDate);
 }
