@@ -1,4 +1,4 @@
-FROM  amazoncorretto:17-alpine AS build
+FROM  amazoncorretto:21-alpine AS build
 WORKDIR /app
 COPY build.gradle .
 COPY *gradle* ./
@@ -9,7 +9,7 @@ COPY src src
 RUN ./gradlew build
 RUN java -Djarmode=layertools -jar build/libs/api.jar extract
 
-FROM  amazoncorretto:17-alpine
+FROM  amazoncorretto:21-alpine
 WORKDIR /app
 COPY --from=build /app/spring-deps/ ./
 COPY --from=build /app/dependencies/ ./
