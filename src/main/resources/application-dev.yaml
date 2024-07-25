@@ -12,3 +12,6 @@ IMAP_USERNAME: some03642%40gmail.com
 IMAP_PASSWORD: efguwlscpdvgudst
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
+
+logging:
+  config: classpath:logback-spring-dev.xml
