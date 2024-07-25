@@ -55,6 +55,10 @@ dependencies {
 
     // mail sender
     implementation 'javax.mail:javax.mail-api:1.6.2'
+
+    // logs
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstash_logback_version}"
+
 }
 
 
