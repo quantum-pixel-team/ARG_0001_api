@@ -114,30 +114,71 @@ paths:
           description: Not Found - Items not found
   /api/v1/hotel/rooms:
     get:
-      summary: Get list of rooms
-      operationId: getRoomsForGivenRangeOfDate
+      summary: Retrieve a list of available rooms for a specified date range
+      operationId: retrieveAvailableRoomsForDateRange
       tags:
         - HotelBooking
       parameters:
         - name: start-date
           in: query
+          description: Start date of the range for which to retrieve rooms
+          example: 2024-07-19
+          required: true
           schema:
             type: string
             format: date
         - name: end-date
           in: query
+          description: End date of the range for which to retrieve rooms
+          required: true
+          example: 2024-07-20
           schema:
             type: string
             format: date
       responses:
-        200:
-          description: OK
+        '200':
+          description: A list of rooms available within the specified date range
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/RoomPrototype"
+                  $ref: '#/components/schemas/Room'
+        '400':
+          description: Bad request, invalid date format or missing required parameters
+        '500':
+          description: Internal server error
+    post:
+      summary: Trigger an update of room reservation details for a specified date range
+      operationId: triggerRoomReservationUpdate
+      tags:
+        - HotelBooking
+      parameters:
+        - name: start-date
+          in: query
+          description: Start date of the range for which to update room reservations
+          example: 2024-07-19
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end-date
+          in: query
+          description: End date of the range for which to update room reservations
+          example: 2024-07-20
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successful update of room reservations
+        '400':
+          description: Bad request, invalid date format or missing required parameters
+        '404':
+          description: Not found, no reservations found for the given date range
+        '500':
+          description: Internal server error
 
   /api/v1/contact-us/conference-mail-reservation:
     post:
@@ -254,8 +295,8 @@ components:
       $ref: "./schemas/CreateUser.yaml"
     UpdateUserRequest:
       $ref: "./schemas/UpdateUserRequest.yaml"
-    RoomPrototype:
-      $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
+    Room:
+      $ref: "./schemas/hotel/Booking/Room.yaml"
     ContactUsMailStructure:
       $ref: "./schemas/hotel/Booking/Mail/ContactUsMailStructure.yaml"
     ConferenceMailStructure:
