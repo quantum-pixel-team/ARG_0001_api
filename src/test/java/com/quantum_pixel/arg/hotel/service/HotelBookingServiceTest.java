@@ -1,115 +1,120 @@
 package com.quantum_pixel.arg.hotel.service;
 
-import com.quantum_pixel.arg.hotel.exception.TableStructureChangedException;
+import com.quantum_pixel.arg.hotel.exception.PastDateException;
+import com.quantum_pixel.arg.hotel.model.Room;
+import com.quantum_pixel.arg.hotel.model.RoomReservation;
+import com.quantum_pixel.arg.hotel.model.RoomReservationId;
+import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
+import com.quantum_pixel.arg.hotel.model.dao.RoomReservationDao;
+import com.quantum_pixel.arg.hotel.repository.RoomRepository;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
-import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapperImpl;
-import com.quantum_pixel.arg.v1.web.model.RoomPrototypeDTO;
-import com.quantum_pixel.arg.v1.web.model.RoomReservationDTO;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class HotelBookingServiceTest {
 
     @Mock
-    private Connection connection;
+    private RoomScraperService roomScraperService;
 
-    HotelRoomMapper roomMapper = new HotelRoomMapperImpl();
-    private final HotelBookingService sut = new HotelBookingService(roomMapper);
+    @Mock
+    private HotelRoomMapper roomMapper;
 
-    @Test
-    void getRoomReservationsForGivenRangeOfDate_table_structure_changed() throws IOException {
-        try (MockedStatic<Jsoup> sutUtil = Mockito.mockStatic(Jsoup.class)) {
+    @Mock
+    private RoomRepository roomRepository;
 
-            // given
-            Document document = new Document("");
-            sutUtil.when(() -> Jsoup.connect(any())).thenReturn(connection);
-            when(connection.get()).thenReturn(document);
+    @InjectMocks
+    private HotelBookingService sut;
 
-            Element table = new Element("table");
-            table.attr("id", "new table id");
-            document.appendChild(table);
-            Optional<LocalDate> startDate = Optional.empty();
-            Optional<LocalDate> endDate = Optional.empty();
 
-            // when
-            assertThrows(TableStructureChangedException.class,
-                    () -> sut.getRoomReservationsForGivenRangeOfDate(startDate, endDate));
+    private RoomDao roomDao;
+    private Room room;
 
-        }
+    @BeforeEach
+    void setUp() {
+        RoomReservationDao roomReservationDao = RoomReservationDao.builder()
+                .roomId(1L)
+                .date(LocalDate.now())
+                .currentPrice(100.0)
+                .available(1)
+                .minimumNights(1)
+                .build();
+
+        roomDao = RoomDao.builder()
+                .id(1L)
+                .name("Room 1")
+                .price(100.0)
+                .capacity(2)
+                .rateAppliesTo(2)
+                .roomReservations(List.of(roomReservationDao))
+                .build();
+
+        room = new Room();
+        room.setId(1L);
+        room.setName("Room 1");
+        room.setPrice(100.0f);
+        room.setCapacity(2);
+        room.setRateAppliesTo(2);
+        room.setRoomReservations(Stream.of(new RoomReservation())
+                .peek(res -> {
+                    res.setRoom(room);
+                    res.setId(new RoomReservationId(1L, LocalDate.now()));
+                    res.setCurrentPrice(100.0f);
+                    res.setAvailable(1);
+                    res.setMinimumNights(1);
+                }).collect(Collectors.toSet()));
     }
 
     @Test
-    void getRoomReservationsForGivenRangeOfDate_ok() throws IOException {
-        // given
-        try (MockedStatic<Jsoup> sutUtil = Mockito.mockStatic(Jsoup.class)) {
+    void triggerRoomReservationUpdate_success() throws Exception {
+        // Arrange
+        LocalDate startDate = LocalDate.now().minusDays(1);
+        LocalDate endDate = LocalDate.now();
 
-            Document document = mock(Document.class);
-            sutUtil.when(() -> Jsoup.connect(any())).thenReturn(connection);
-            when(connection.get()).thenReturn(document);
-            Element mockTable = mock(Element.class);
-            when(document.getElementById("room-chart")).thenReturn(mockTable);
+        when(roomScraperService.getRoom(any(LocalDate.class), any(LocalDate.class)))
+                .thenReturn(List.of(roomDao));
+        when(roomMapper.toEntity(anyList()))
+                .thenReturn(List.of(room));
 
-            Element mockRow = new Element("tr");
-            mockRow.attr("data-prev-day-rate", "40");
+        // Act
+        sut.triggerRoomReservationUpdate(startDate, endDate);
 
-            Element cell = new Element("td");
-            cell.attr("data-tooltip", "date " + LocalDate.now());
-            Element cellHeader = new Element("td");
+        // Assert
+        verify(roomScraperService, times(1)).getRoom(startDate, endDate);
+        verify(roomMapper, times(1)).toEntity(List.of(roomDao));
+        verify(roomRepository, times(1)).saveAll(List.of(room));
 
-            Element p = new Element("p");
-            cellHeader.appendChild(p);
-            Element cell2 = new Element("td");
-            cell2.attr("data-tooltip", "date " + LocalDate.now().plusDays(1));
-            Element a = new Element("a");
-            a.attr("href", "url_to_room_reservation");
-            a.text("150");
-            cell2.appendChild(a);
-            mockRow.appendChild(cellHeader);
-            mockRow.appendChild(cell);
-            mockRow.appendChild(cell2);
-            Elements rows = new Elements(mockRow, mockRow);
-            when(mockTable.select("tr")).thenReturn(rows);
+        assertFalse(room.getRoomReservations().isEmpty());
+        assertEquals(1, room.getRoomReservations().size());
+        room.getRoomReservations().forEach(res -> assertEquals(room, res.getRoom()));
+    }
 
-            // when
-            List<RoomPrototypeDTO> roomReservations = sut.getRoomReservationsForGivenRangeOfDate(Optional.empty(), Optional.empty());
+    @Test
+    void triggerRoomReservationUpdate_startDateAfterEndDate() {
+        // Arrange
+        LocalDate startDate = LocalDate.now().plusDays(1);
+        LocalDate endDate = LocalDate.now();
 
-            // then
-
-            RoomReservationDTO reservationDetails = roomReservations.get(0).getRoomReservations().get(0);
-
-            assertThat(reservationDetails)
-                    .extracting(RoomReservationDTO::getDate)
-                    .isEqualTo(LocalDate.now());
-            assertThat(reservationDetails)
-                    .extracting(RoomReservationDTO::getSold)
-                    .withFailMessage("This room should be sold on given date since a tag is null")
-                    .isEqualTo(true);
-            assertThat(roomReservations.get(0).getRoomReservations().get(1))
-                    .extracting(RoomReservationDTO::getSold)
-                    .isEqualTo(false);
-        }
-
+        // Act & Assert
+        assertThrows(PastDateException.class,
+                () -> sut.triggerRoomReservationUpdate(startDate, endDate));
 
     }
+
 }

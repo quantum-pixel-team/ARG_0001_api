@@ -13,5 +13,6 @@ IMAP_PASSWORD: efguwlscpdvgudst
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
 
-logging:
-  config: classpath:logback-spring-dev.xml
+whatsapp:
+  api:
+    phone_number_id: ${whatsapp_api_phone_number_id:341358742400656}

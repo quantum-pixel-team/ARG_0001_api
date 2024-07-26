@@ -13,7 +13,8 @@ services:
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       whatsapp_api_token: ${whatsapp_api_token}
-      ARG_SPRING_BOOT_LOGS_PATH: ${ARG_SPRING_BOOT_LOGS_PATH}
+    volumes:
+      - ${ARG_SPRING_BOOT_LOGS_PATH}:/app/logs
     ports:
       - "8080:8080"
       - "8000:8000"
