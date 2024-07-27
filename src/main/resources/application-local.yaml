@@ -14,10 +14,10 @@ allowed-origins: http://localhost:4200, http://localhost:5211
 
 EMAIL_HOST: smtp.gmail.com
 EMAIL_PORT: 587
-EMAIL_USERNAME: some03642@gmail.com
-EMAIL_PASSWORD: efguwlscpdvgudst
+EMAIL_USERNAME: testqpt8@gmail.com
+EMAIL_PASSWORD: lbzhzuruwvudrbem
 
-IMAP_USERNAME: some03642%40gmail.com
-IMAP_PASSWORD: efguwlscpdvgudst
+IMAP_USERNAME: testqpt8%40gmail.com
+IMAP_PASSWORD: lbzhzuruwvudrbem
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
