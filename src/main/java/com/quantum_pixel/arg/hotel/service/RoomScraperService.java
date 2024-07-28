@@ -22,16 +22,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomScraperService {
 
-    private final RoomReservationService roomReservationService;
+    private final RoomReservationHttpService roomReservationHttpService;
 
     private static final String BASE_URL = "https://app.inn-connect.com/book/properties/Aragosta%20Hotel%26Restaurant";
     private static final String DEFAULT_PARAM = "widget=1&channel=";
 
 
     @SneakyThrows
-    public List<RoomDao> getRoom(LocalDate startDate, LocalDate endDate) {
+    public List<RoomDao> getAllRooms() {
 
-        var url = BASE_URL + "?" + DEFAULT_PARAM + "&start_date=" + startDate;
+        var url = BASE_URL + "?" + DEFAULT_PARAM;
 
         log.info("Sending Request to get room reservation using url: {}", url);
 
@@ -48,15 +48,27 @@ public class RoomScraperService {
                 .map(row -> {
                     var roomId = Long.parseLong(row.attribute("data-rate-id").getValue());
                     String name = row.getElementsByTag("td").getFirst().getElementsByTag("p").getFirst().text();
-                    return getRoomReservationDetails(roomId, name, startDate, endDate);
+                    return getRoomDetails(roomId, name);
                 }).toList();
     }
 
-    private RoomDao getRoomReservationDetails(Long roomId, String name, LocalDate startDate, LocalDate endDate) {
+    private RoomDao getRoomDetails(Long roomId, String name) {
 
-        Rate rates = roomReservationService.fetchRoomRates(roomId, startDate, endDate);
+        Rate rates = roomReservationHttpService.fetchRoomRates(roomId, LocalDate.now(), LocalDate.now().plusDays(1));
         RateDate firstRateDate = rates.getDates().getFirst();
-        var reservationDetails = rates.getDates().stream()
+        return RoomDao.builder()
+                .id(rates.getRateId())
+                .name(name)
+                .price(Double.valueOf(firstRateDate.getRate()))
+                .capacity(firstRateDate.getCapacity())
+                .rateAppliesTo(firstRateDate.getGuests())
+                .build();
+    }
+
+    public List<RoomReservationDao> getRoomReservationDetails(Long roomId, LocalDate startDate, LocalDate endDate) {
+
+        Rate rates = roomReservationHttpService.fetchRoomRates(roomId, startDate, endDate);
+        return rates.getDates().stream()
                 .filter(rate -> rate.getDate().isBefore(endDate.plusDays(1)) && rate.getDate().isAfter(startDate.minusDays(1)))
                 .map(rateDate -> RoomReservationDao.builder()
                         .roomId(roomId)
@@ -66,14 +78,7 @@ public class RoomScraperService {
                         .minimumNights(rateDate.getMinStay())
                         .build())
                 .toList();
-        return RoomDao.builder()
-                .id(rates.getRateId())
-                .name(name)
-                .price(Double.valueOf(firstRateDate.getRate()))
-                .capacity(firstRateDate.getCapacity())
-                .rateAppliesTo(firstRateDate.getGuests())
-                .roomReservations(reservationDetails)
-                .build();
+
     }
 
 

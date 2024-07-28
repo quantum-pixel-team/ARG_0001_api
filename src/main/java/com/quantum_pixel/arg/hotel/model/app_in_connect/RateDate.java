@@ -1,12 +1,14 @@
 package com.quantum_pixel.arg.hotel.model.app_in_connect;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RateDate {
     private LocalDate date;
     private boolean available;

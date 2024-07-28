@@ -7,24 +7,27 @@ import com.quantum_pixel.arg.hotel.model.RoomReservationId;
 import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
 import com.quantum_pixel.arg.hotel.model.dao.RoomReservationDao;
 import com.quantum_pixel.arg.hotel.repository.RoomRepository;
+import com.quantum_pixel.arg.hotel.repository.RoomReservationRepository;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,28 +44,20 @@ class HotelBookingServiceTest {
 
     @InjectMocks
     private HotelBookingService sut;
+    @Mock
+    private RoomReservationRepository roomReservationRepository;
 
-
-    private RoomDao roomDao;
     private Room room;
+    RoomReservationDao roomReservationDao;
 
     @BeforeEach
     void setUp() {
-        RoomReservationDao roomReservationDao = RoomReservationDao.builder()
+        roomReservationDao = RoomReservationDao.builder()
                 .roomId(1L)
                 .date(LocalDate.now())
                 .currentPrice(100.0)
                 .available(1)
                 .minimumNights(1)
-                .build();
-
-        roomDao = RoomDao.builder()
-                .id(1L)
-                .name("Room 1")
-                .price(100.0)
-                .capacity(2)
-                .rateAppliesTo(2)
-                .roomReservations(List.of(roomReservationDao))
                 .build();
 
         room = new Room();
@@ -82,27 +77,42 @@ class HotelBookingServiceTest {
     }
 
     @Test
-    void triggerRoomReservationUpdate_success() throws Exception {
+    void triggerRoomReservationUpdate_success() {
+        // Arrange
+        LocalDate startDate = LocalDate.now().minusDays(1);
+        LocalDate endDate = LocalDate.now();
+        List<Long> roomIds = List.of(1L);
+
+
+        when(roomRepository.findAllById(roomIds)).thenReturn(List.of(room));
+        when(roomMapper.toReservationEntities(any())).thenReturn(room.getRoomReservations().stream().toList());
+        // Act
+        sut.triggerRoomReservationUpdate(startDate, endDate, Optional.of(roomIds));
+
+        // Assert
+        verify(roomRepository, times(1)).findAllById(roomIds);
+        verify(roomReservationRepository, times(1)).saveAll(room.getRoomReservations().stream().toList());
+
+        assertFalse(room.getRoomReservations().isEmpty());
+        Assertions.assertEquals(1, room.getRoomReservations().size());
+        room.getRoomReservations().forEach(res -> Assertions.assertEquals(room, res.getRoom()));
+    }
+
+    @Test
+    void triggerRoomReservationUpdate_noRoomsOnDb() {
         // Arrange
         LocalDate startDate = LocalDate.now().minusDays(1);
         LocalDate endDate = LocalDate.now();
 
-        when(roomScraperService.getRoom(any(LocalDate.class), any(LocalDate.class)))
-                .thenReturn(List.of(roomDao));
-        when(roomMapper.toEntity(anyList()))
-                .thenReturn(List.of(room));
+        when(roomRepository.findAll()).thenReturn(Collections.emptyList());
+        Optional<List<Long>> ids = Optional.empty();
 
         // Act
-        sut.triggerRoomReservationUpdate(startDate, endDate);
+        assertThrows(HttpClientErrorException.class, () -> sut.triggerRoomReservationUpdate(startDate, endDate, ids));
 
         // Assert
-        verify(roomScraperService, times(1)).getRoom(startDate, endDate);
-        verify(roomMapper, times(1)).toEntity(List.of(roomDao));
-        verify(roomRepository, times(1)).saveAll(List.of(room));
+        verify(roomRepository, times(1)).findAll();
 
-        assertFalse(room.getRoomReservations().isEmpty());
-        assertEquals(1, room.getRoomReservations().size());
-        room.getRoomReservations().forEach(res -> assertEquals(room, res.getRoom()));
     }
 
     @Test
@@ -110,10 +120,26 @@ class HotelBookingServiceTest {
         // Arrange
         LocalDate startDate = LocalDate.now().plusDays(1);
         LocalDate endDate = LocalDate.now();
-
+        Optional<List<Long>> ids = Optional.empty();
         // Act & Assert
         assertThrows(PastDateException.class,
-                () -> sut.triggerRoomReservationUpdate(startDate, endDate));
+                () -> sut.triggerRoomReservationUpdate(startDate, endDate, ids));
+
+    }
+
+    @Test
+    void testTriggerRoomUpdate() {
+        // given
+        var mockRoom = mock(RoomDao.class);
+        when(roomScraperService.getAllRooms()).thenReturn(List.of(mockRoom));
+        when(roomMapper.toRoomEntities(any())).thenReturn(List.of(room));
+        when(roomRepository.findById(any())).thenReturn(Optional.ofNullable(room));
+        // when
+        sut.triggerRoomUpdate();
+
+        // then
+        verify(roomScraperService, times(1)).getAllRooms();
+        verify(roomRepository, times(1)).saveAll(List.of(room));
 
     }
 

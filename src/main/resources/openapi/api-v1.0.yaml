@@ -119,7 +119,24 @@ paths:
       tags:
         - HotelBooking
       parameters:
-        - name: start-date
+        - name: pageIndex
+          description: Number of the page
+          example: 0
+          required: true
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+        - name: page-size
+          description: The size of the page
+          example: 5
+          required: true
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+
+        - name: check-in-date
           in: query
           description: Start date of the range for which to retrieve rooms
           example: 2024-07-19
@@ -127,7 +144,7 @@ paths:
           schema:
             type: string
             format: date
-        - name: end-date
+        - name: check-out-date
           in: query
           description: End date of the range for which to retrieve rooms
           required: true
@@ -135,30 +152,105 @@ paths:
           schema:
             type: string
             format: date
+        - name: number-of-rooms
+          in: query
+          description: Number of rooms to reserve
+          required: true
+          example: 1
+          schema:
+            type: integer
+            format: int16
+        - name: number-of-adults
+          in: query
+          description: Number of adults
+          required: true
+          example: 1
+          schema:
+            type: integer
+            format: int16
+        - name: number-of-children
+          in: query
+          description: Number of children
+          required: false
+          example: 1
+          schema:
+            type: integer
+            format: int14
+        - name: children-ages
+          in: query
+          description: Age of each child
+          required: false
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: room-types
+          in: query
+          description: Filter rooms by types (comma-separated values)
+          example: [ single, double, suite ]
+          schema:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
+        - name: min-price
+          in: query
+          description: Minimum price to filter rooms
+          example: 100
+          schema:
+            type: number
+            format: float
+        - name: max-price
+          in: query
+          description: Maximum price to filter rooms
+          example: 500
+          schema:
+            type: number
+            format: float
+        - name: room-facilities
+          in: query
+          description: Filter rooms by facilities (comma-separated values)
+          example: [ wifi, parking, pool ]
+          schema:
+            type: array
+            items:
+              type: string
+            uniqueItems: true
       responses:
         '200':
           description: A list of rooms available within the specified date range
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Room'
+                $ref: "#/components/schemas/PaginatedRoom"
         '400':
           description: Bad request, invalid date format or missing required parameters
         '500':
           description: Internal server error
     post:
-      summary: Trigger an update of room reservation details for a specified date range
+      summary: Trigger an update for all rooms (Loads all room from app_in_connect into DB)
+      operationId: triggerRoomUpdate
+      tags:
+        - HotelBooking
+      responses:
+        '200':
+          description: Successful update of rooms
+        '400':
+          description: Bad request, invalid date format or missing required parameters
+        '500':
+          description: Internal server error
+  /api/v1/hotel/rooms/reservation:
+    post:
+      summary: Trigger an update of room reservations only (rooms are not updated)
       operationId: triggerRoomReservationUpdate
       tags:
         - HotelBooking
       parameters:
         - name: start-date
-          in: query
           description: Start date of the range for which to update room reservations
           example: 2024-07-19
           required: true
+          in: query
           schema:
             type: string
             format: date
@@ -170,13 +262,24 @@ paths:
           schema:
             type: string
             format: date
+        - name: rooms-id
+          description: The id of all rooms to trigger an reservation update
+          in: query
+          required: false
+          example: [ 1,5,625646 ]
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+            default: [ ]
       responses:
         '200':
           description: Successful update of room reservations
         '400':
           description: Bad request, invalid date format or missing required parameters
         '404':
-          description: Not found, no reservations found for the given date range
+          description: Not found, no reservations found for the given date range or no room present
         '500':
           description: Internal server error
 
@@ -297,6 +400,8 @@ components:
       $ref: "./schemas/UpdateUserRequest.yaml"
     Room:
       $ref: "./schemas/hotel/Booking/Room.yaml"
+    PaginatedRoom:
+      $ref: "./schemas/hotel/Booking/PaginatedRoom.yml"
     ContactUsMailStructure:
       $ref: "./schemas/hotel/Booking/Mail/ContactUsMailStructure.yaml"
     ConferenceMailStructure:

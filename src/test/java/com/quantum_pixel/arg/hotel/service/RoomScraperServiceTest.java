@@ -4,6 +4,7 @@ import com.quantum_pixel.arg.hotel.exception.TableStructureChangedException;
 import com.quantum_pixel.arg.hotel.model.app_in_connect.Rate;
 import com.quantum_pixel.arg.hotel.model.app_in_connect.RateDate;
 import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
+import com.quantum_pixel.arg.hotel.model.dao.RoomReservationDao;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -30,11 +32,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RoomScraperServiceTest {
     @Mock
-    private RoomReservationService roomReservationService;
+    private RoomReservationHttpService roomReservationHttpService;
     @Mock
     private Connection connection;
     @InjectMocks
     private RoomScraperService sut;
+
     @Test
     void getRoomReservationsForGivenRangeOfDate_table_structure_changed() throws IOException {
         try (MockedStatic<Jsoup> sutUtil = Mockito.mockStatic(Jsoup.class)) {
@@ -47,20 +50,17 @@ class RoomScraperServiceTest {
             Element table = new Element("table");
             table.attr("id", "new table id");
             document.appendChild(table);
-            var startDate = LocalDate.now();
-            var endDate = LocalDate.now();
 
             // when
             assertThrows(TableStructureChangedException.class,
-                    () -> sut.getRoom(startDate, endDate));
+                    () -> sut.getAllRooms());
 
         }
     }
+
     @Test
     void testGetRoom() throws Exception {
         // Arrange
-        LocalDate startDate = LocalDate.of(2023, 7, 19);
-        LocalDate endDate = LocalDate.of(2023, 7, 20);
         try (MockedStatic<Jsoup> sutUtil = Mockito.mockStatic(Jsoup.class)) {
 
 
@@ -88,33 +88,69 @@ class RoomScraperServiceTest {
             when(mockPElements.getFirst()).thenReturn(mockP);
             when(mockP.text()).thenReturn("Room Name");
 
-            when(roomReservationService.fetchRoomRates(anyLong(), any(LocalDate.class), any(LocalDate.class)))
+            when(roomReservationHttpService.fetchRoomRates(anyLong(), any(LocalDate.class), any(LocalDate.class)))
                     .thenReturn(mockRate());
 
 
             // Act
-            List<RoomDao> roomDaos = sut.getRoom(startDate, endDate);
+            List<RoomDao> roomDaos = sut.getAllRooms();
 
             // Assert
             assertNotNull(roomDaos);
             assertEquals(1, roomDaos.size());
-            assertEquals("Room Name", roomDaos.getFirst().getName());
+            assertEquals("Room Name", roomDaos.getFirst().name());
         }
     }
 
     private Rate mockRate() {
-        RateDate rateDate = new RateDate();
-        rateDate.setDate(LocalDate.of(2023, 7, 19));
-        rateDate.setRate("100.0");
-        rateDate.setCapacity(2);
-        rateDate.setGuests(2);
-        rateDate.setAvail(10);
-        rateDate.setMinStay(1);
-
+        RateDate rateDate = RateDate.builder()
+                .date(LocalDate.now())
+                .rate("100.0")
+                .capacity(2)
+                .guests(2)
+                .avail(10)
+                .minStay(1)
+                .build();
+        RateDate rateDate2 = RateDate.builder()
+                .date(LocalDate.now().plusDays(1))
+                .rate("100.0")
+                .capacity(2)
+                .guests(2)
+                .avail(10)
+                .minStay(1)
+                .build();
+        RateDate rateDate3 = RateDate.builder()
+                .date(LocalDate.now().plusDays(2))
+                .rate("100.0")
+                .capacity(2)
+                .guests(2)
+                .avail(10)
+                .minStay(2)
+                .build();
         Rate rate = new Rate();
         rate.setRateId(1L);
-        rate.setDates(List.of(rateDate));
+        rate.setDates(List.of(rateDate, rateDate2, rateDate3));
 
         return rate;
     }
+
+    @Test
+    void testGetRoomReservationDetails() {
+
+        // given
+        when(roomReservationHttpService.fetchRoomRates(any(), any(), any())).thenReturn(mockRate());
+
+        // when
+        List<RoomReservationDao> reservationDetails = sut.getRoomReservationDetails(1L, LocalDate.now(), LocalDate.now().plusDays(1));
+
+
+        // then
+        assertThat(reservationDetails)
+                .hasSize(2)
+                .extracting(RoomReservationDao::roomId)
+                .first()
+                .isEqualTo(1L);
+    }
+
+
 }

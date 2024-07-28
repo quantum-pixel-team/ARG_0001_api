@@ -43,9 +43,10 @@ public class Room {
     @JoinTable(name = "room_facility",
             joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "facility_id"))
+
     private Set<Facility> facilities = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room")
     private Set<RoomReservation> roomReservations = new LinkedHashSet<>();
 
     @JdbcTypeCode(SqlTypes.ARRAY)
