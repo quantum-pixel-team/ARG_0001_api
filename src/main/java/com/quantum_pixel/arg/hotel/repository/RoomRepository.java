@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
     @Transactional
@@ -59,17 +60,17 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                                  JSONB_BUILD_OBJECT(
                                                          'id', f.id,
                                                          'name', f.name,
-                                                         'usage_count', f.usage_count,
-                                                         'icon_name', f.icon_name) ORDER BY f.usage_count DESC)
+                                                         'usageCount', f.usage_count,
+                                                         'iconName', f.icon_name) ORDER BY f.usage_count DESC)
                                                  FILTER (WHERE f.id IS NOT NULL), '[]'::jsonb) AS facilities
                                  FROM room_res r
                                           LEFT JOIN room_facility rf ON rf.room_id = r.id
                                           LEFT JOIN facility f ON f.id = rf.facility_id
-                                 WHERE-- (:roomTypes IS NULL
-                                    -- OR EXISTS (SELECT 1
-                                     --           FROM regexp_split_to_table(r.name, '\\s+') AS word
-                                     --           WHERE word ILIKE ANY (:roomTypes)))
-                                  -- AND
+                                 WHERE ((:roomTypes) IS NULL
+                                     OR EXISTS (SELECT 1
+                                                 FROM regexp_split_to_table(r.name, '\\s+') AS word
+                                                 WHERE lower(word) IN (:roomTypes)))
+                                   AND
                                      (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
                                  GROUP BY r.id, r.name, r.description, r.total_capacity, r.images_url, r.total_price,
@@ -85,7 +86,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("checkOutDate") LocalDate checkOutDate,
             @Param("numberOfGuests") Integer numberOfGuests,
             @Param("numberOfRooms") Integer numberOfRooms,
-//            @Param("roomTypes") String[] roomTypes,
+            @Param("roomTypes") List<String> roomTypes,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
             @Param("roomFacilities") String[] roomFacilities,
