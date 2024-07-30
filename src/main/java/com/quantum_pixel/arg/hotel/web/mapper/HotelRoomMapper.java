@@ -7,7 +7,6 @@ import com.quantum_pixel.arg.hotel.model.RoomReservation;
 import com.quantum_pixel.arg.hotel.model.RoomView;
 import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
 import com.quantum_pixel.arg.hotel.model.dao.RoomReservationDao;
-import com.quantum_pixel.arg.hotel.service.ReservationUrlBuilder;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomFacilityDTO;

@@ -9,7 +9,6 @@ import com.quantum_pixel.arg.hotel.repository.RoomReservationRepository;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomDTO;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

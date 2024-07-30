@@ -140,7 +140,7 @@ public class ArgExceptionHandling {
 
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorsDTO> unknownException(Exception ex, WebRequest req) {
+    public ResponseEntity<ErrorsDTO> unknownException(Exception ex) {
         log.error("Unexpected exception", ex);
 
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
