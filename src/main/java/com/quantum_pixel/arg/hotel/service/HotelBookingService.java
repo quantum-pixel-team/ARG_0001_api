@@ -8,6 +8,8 @@ import com.quantum_pixel.arg.hotel.repository.RoomRepository;
 import com.quantum_pixel.arg.hotel.repository.RoomReservationRepository;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
+import com.quantum_pixel.arg.v1.web.model.RoomDTO;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -32,6 +35,7 @@ public class HotelBookingService {
     private final RoomRepository roomRepository;
     private final RoomReservationRepository roomReservationRepository;
     private final RoomScraperService roomScraperService;
+    private final ReservationUrlBuilder reservationUrlBuilder;
 
     @SneakyThrows
     @Transactional
@@ -48,7 +52,7 @@ public class HotelBookingService {
         List<RoomReservation> reservations = rooms.stream()
                 .flatMap(room -> {
                     var reservationDetails = roomScraperService.getRoomReservationDetails(room.getId(), startDate, endDate);
-                    return roomMapper.toReservationEntities(reservationDetails).stream().map(reservation-> reservation.setRoom(room));
+                    return roomMapper.toReservationEntities(reservationDetails).stream().map(reservation -> reservation.setRoom(room));
                 }).toList();
         roomReservationRepository.saveAll(reservations);
     }
@@ -57,7 +61,7 @@ public class HotelBookingService {
         List<RoomDao> roomDaos = roomScraperService.getAllRooms();
         List<Room> rooms = roomMapper.toRoomEntities(roomDaos).stream()
                 .map(newRoom -> {
-                    Optional<Room> room =  roomRepository.findById(newRoom.getId());
+                    Optional<Room> room = roomRepository.findById(newRoom.getId());
                     newRoom.setFacilities(room.map(Room::getFacilities).orElse(Collections.emptySet()));
                     newRoom.setImagesUrl(room.map(Room::getImagesUrl).orElse(null));
                     newRoom.setType(room.map(Room::getType).orElse(null));
@@ -70,17 +74,44 @@ public class HotelBookingService {
 
 
     public PaginatedRoomDTO getAllRooms(LocalDate checkInDate,
-                                       LocalDate checkOutDate,
-                                       Integer numberOfRooms,
-                                       Integer numberOfAdults,
-                                       Optional<Integer> numberOfChildren,
-                                       Optional<List<Integer>> childrenAges,
-                                       Optional<Set<String>> roomTypes,
-                                       Optional<Float> minPrice,
-                                       Optional<Float> maxPrice,
-                                       Optional<Set<String>> roomFacilities, Pageable pageable) {
-        return roomMapper.toPageDto(roomRepository.getRoomAggregated(roomTypes.orElse(Collections.emptySet()),
-                minPrice.orElse(null), maxPrice.orElse(null), roomFacilities.orElse(Collections.emptySet()), pageable));
-    }
-}
+                                        LocalDate checkOutDate,
+                                        Integer numberOfRooms,
+                                        Integer numberOfAdults,
+                                        Optional<List<Integer>> childrenAges,
+                                        Optional<Set<String>> roomTypes,
+                                        Optional<Double> minPrice,
+                                        Optional<Double> maxPrice,
+                                        Optional<Set<String>> roomFacilities, Pageable pageable) {
 
+        if (checkInDate.isBefore(LocalDate.now()) ||
+                checkOutDate.isBefore(checkInDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check-in should not be on past, and check out date should be after check in date!");
+        }
+        if(minPrice.orElse(0d) > maxPrice.orElse(0d))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Min price should be less than max price!");
+
+        var numberOfGuests = numberOfAdults + childrenAges.map(children -> (int) children.stream().filter(age -> age > 6).count()).orElse(0);
+
+        var rooms = roomRepository.getRoomAggregated(
+                checkInDate,
+                checkOutDate,
+                numberOfGuests,
+                numberOfRooms,
+                roomTypes.orElse(Collections.emptySet()).toArray(new String[0]),
+                minPrice.orElse(null),
+                maxPrice.orElse(null),
+                roomFacilities.orElse(Collections.emptySet()).toArray(new String[0]),
+                pageable);
+        if (rooms.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No rooms available on Database");
+
+        PaginatedRoomDTO pageDto = roomMapper.toPageDto(rooms);
+        List<RoomDTO> updatedContent = pageDto.getContent().stream()
+                .map(el -> el.bookNowUrl(reservationUrlBuilder.buildReservationUrl(checkInDate, checkOutDate, numberOfRooms, numberOfAdults, childrenAges, el.getId())))
+                .toList();
+        return pageDto.content(updatedContent);
+
+    }
+
+
+}

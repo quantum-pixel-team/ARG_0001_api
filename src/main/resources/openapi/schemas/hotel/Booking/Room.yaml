@@ -14,19 +14,16 @@ properties:
     type: string
     description: Description of the room
     example: Spacious suite with a panoramic sea view
-  total-price:
+  totalPrice:
     type: number
     format: float
     description: Total price of the room for given dates
     example: 140.0
-  capacity:
+  totalCapacity:
     type: integer
-    description: Maximum capacity of the room
+    description: Total capacity of all rooms
     example: 2
-  book-now-url:
-    type: string
-    description: The URL to book the room for given dates/filters
-  images-url:
+  imagesUrl:
     type: array
     description: URLs of images associated with the room
     items:
@@ -34,18 +31,29 @@ properties:
     example:
       - https://example.com/image1.jpg
       - https://example.com/image2.jpg
+  availableRooms:
+    type: integer
+    description: The number of available rooms for given dates
+    example: 1
+  minimumNights:
+    type: integer
+    description: Minimum nights that one room can be booked for given dates
   facilities:
     type: array
     description: Room facilities
     items:
       $ref: "RoomFacility.yaml"
+  bookNowUrl:
+    type: string
+    description: The URL to book the room for given dates/filters
 required:
   - id
   - name
-  - type
   - description
-  - total-price
-  - capacity
-  - book-now-url
-  - images-url
+  - totalPrice
+  - totalCapacity
+  - imagesUrl
+  - availableRooms
+  - minimumNights
   - facilities
+  - bookNowUrl

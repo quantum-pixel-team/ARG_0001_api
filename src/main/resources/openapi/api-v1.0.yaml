@@ -160,6 +160,7 @@ paths:
           schema:
             type: integer
             format: int16
+            minimum: 1
         - name: number-of-adults
           in: query
           description: Number of adults
@@ -168,14 +169,7 @@ paths:
           schema:
             type: integer
             format: int16
-        - name: number-of-children
-          in: query
-          description: Number of children
-          required: false
-          example: 1
-          schema:
-            type: integer
-            format: int14
+            minimum: 1
         - name: children-ages
           in: query
           description: Age of each child
@@ -184,6 +178,7 @@ paths:
             type: array
             items:
               type: integer
+              minimum: 0
         - name: room-types
           in: query
           description: Filter rooms by types (comma-separated values)
@@ -196,17 +191,17 @@ paths:
         - name: min-price
           in: query
           description: Minimum price to filter rooms
-          example: 100
+          example: 50
           schema:
             type: number
-            format: float
+            format: double
         - name: max-price
           in: query
           description: Maximum price to filter rooms
           example: 500
           schema:
             type: number
-            format: float
+            format: double
         - name: room-facilities
           in: query
           description: Filter rooms by facilities (comma-separated values)
@@ -216,6 +211,16 @@ paths:
             items:
               type: string
             uniqueItems: true
+        - name: sort
+          in: query
+          description: Sort order by price
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+            default: ASC
+            example: ASC
       responses:
         '200':
           description: A list of rooms available within the specified date range
@@ -224,9 +229,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/PaginatedRoom"
         '400':
-          description: Bad request, invalid date format or missing required parameters
+          $ref: './responses/BadRequest.yaml'
         '500':
-          description: Internal server error
+          $ref: './responses/UnexpectedError.yaml'
     post:
       summary: Trigger an update for all rooms (Loads all room from app_in_connect into DB)
       operationId: triggerRoomUpdate

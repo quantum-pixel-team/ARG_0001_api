@@ -3,18 +3,18 @@ description: Room facility
 properties:
   name:
     type: string
-    description: name of the facility
+    description: Name of the facility
     example: Wifi
-  icon-name:
+  iconName:
     type: string
-    description: Represents the icon name from google fonts
+    description: Represents the icon name from Google Fonts
     example: wifi
-  usage-count:
+  usageCount:
     type: integer
     description: The number of times this facility is used on filters
     example: 5
 
 required:
   - name
-  - icon-name
-  - usage-count
+  - iconName
+  - usageCount

@@ -10,6 +10,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Collections;
 import java.util.List;
 
 @Testcontainers
@@ -33,5 +34,7 @@ public abstract class ConfigTest {
         });
     }
 
-    protected abstract List<String> getTableToTruncate();
+    protected List<String> getTableToTruncate(){
+        return Collections.emptyList();
+    }
 }

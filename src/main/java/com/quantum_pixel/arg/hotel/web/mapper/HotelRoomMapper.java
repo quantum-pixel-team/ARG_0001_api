@@ -7,7 +7,9 @@ import com.quantum_pixel.arg.hotel.model.RoomReservation;
 import com.quantum_pixel.arg.hotel.model.RoomView;
 import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
 import com.quantum_pixel.arg.hotel.model.dao.RoomReservationDao;
+import com.quantum_pixel.arg.hotel.service.ReservationUrlBuilder;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
+import com.quantum_pixel.arg.v1.web.model.RoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomFacilityDTO;
 import lombok.SneakyThrows;
 import org.mapstruct.Mapper;
@@ -22,7 +24,7 @@ import java.util.List;
 public abstract class HotelRoomMapper {
 
     @Autowired
-    protected ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     public abstract List<RoomReservation> toReservationEntities(List<RoomReservationDao> reservationDetails);
 
@@ -40,4 +42,5 @@ public abstract class HotelRoomMapper {
 
     public abstract List<Room> toRoomEntities(List<RoomDao> rooms);
 
+    public abstract List<RoomDTO> toDto(List<RoomView> rooms2) ;
 }

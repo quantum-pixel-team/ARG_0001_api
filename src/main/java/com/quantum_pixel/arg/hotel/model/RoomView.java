@@ -7,9 +7,10 @@ public interface RoomView {
     String getName();
     String getDescription();
     Float getTotalPrice();
-    Integer getCapacity();
+    Integer getTotalCapacity();
     List<String> getImagesUrl();
-
+    Integer getAvailableRooms();
+    Integer getMinimumNights();
     String getFacilities();
 }
 
