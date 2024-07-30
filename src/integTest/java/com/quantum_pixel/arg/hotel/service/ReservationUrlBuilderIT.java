@@ -14,7 +14,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @AppITConfig
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ReservationUrlBuilderTest extends ConfigTest {
+public class ReservationUrlBuilderIT extends ConfigTest {
 
     @Autowired
     private ReservationUrlBuilder sut;

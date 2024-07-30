@@ -23,7 +23,7 @@ public class ConferenceService {
         mailService.sendEmail(conferenceMapperEntity);
     }
 
-    private void verifyReservationDates(ConferenceMailStructure conferenceMailStructure)  {
+    private void verifyReservationDates(ConferenceMailStructure conferenceMailStructure) throws PastDateException {
         LocalDate date = LocalDate.now();
         conferenceMailStructure.getConferenceReservations()
                 .stream().filter(reservation ->
