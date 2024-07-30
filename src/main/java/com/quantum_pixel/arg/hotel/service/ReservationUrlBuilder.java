@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
@@ -23,14 +21,14 @@ public class ReservationUrlBuilder {
                                       LocalDate checkOutDate,
                                       Integer numberOfRooms,
                                       Integer numberOfAdults,
-                                      Optional<List<Integer>> childrenAges,
+                                      List<Integer> childrenAges,
                                       Long roomId) {
 
         var baseUrl = "https://app.inn-connect.com/book2/?p=Aragosta+Hotel%26Restaurant#book";
-        var chAges = String.join(",", childrenAges.map(el-> el.stream().map(Object::toString).toList()).orElse(Collections.emptyList()));
+        var chAges = String.join(",", childrenAges.stream().map(Object::toString).toList());
 
         List<RoomDetails> rooms = IntStream.range(0, numberOfRooms)
-                .mapToObj(el -> new RoomDetails(numberOfAdults, childrenAges.map(List::size).orElse(0), roomId, chAges)).toList();
+                .mapToObj(el -> new RoomDetails(numberOfAdults, childrenAges.size(), roomId, chAges)).toList();
         BookingDetails bookingDetails = new BookingDetails(checkInDate.toString(), checkOutDate.toString(), "USD", "en", rooms);
 
         String jsonValue = objectMapper.writeValueAsString(bookingDetails);

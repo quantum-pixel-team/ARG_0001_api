@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
     @Transactional
@@ -67,9 +66,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                           LEFT JOIN room_facility rf ON rf.room_id = r.id
                                           LEFT JOIN facility f ON f.id = rf.facility_id
                                  WHERE ((:roomTypes) IS NULL
-                                     OR EXISTS (SELECT 1
-                                                 FROM regexp_split_to_table(r.name, '\\s+') AS word
-                                                 WHERE lower(word) IN (:roomTypes)))
+                                     OR r.name ILIKE ANY (:roomTypes) OR  ARRAY_LENGTH(:roomTypes, 1) IS NULL)
                                    AND
                                      (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
@@ -86,7 +83,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("checkOutDate") LocalDate checkOutDate,
             @Param("numberOfGuests") Integer numberOfGuests,
             @Param("numberOfRooms") Integer numberOfRooms,
-            @Param("roomTypes") List<String> roomTypes,
+            @Param("roomTypes") String[] roomTypes,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
             @Param("roomFacilities") String[] roomFacilities,

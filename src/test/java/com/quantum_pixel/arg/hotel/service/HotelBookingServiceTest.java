@@ -11,6 +11,7 @@ import com.quantum_pixel.arg.hotel.repository.RoomRepository;
 import com.quantum_pixel.arg.hotel.repository.RoomReservationRepository;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
+import com.quantum_pixel.arg.v1.web.model.RoomFiltersDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,14 +21,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,7 +62,7 @@ class HotelBookingServiceTest {
 
     private Room room;
     RoomReservationDao roomReservationDao;
-
+    RoomFiltersDTO.RoomFiltersDTOBuilder filtersDTO;
     @BeforeEach
     void setUp() {
         roomReservationDao = RoomReservationDao.builder()
@@ -84,6 +87,20 @@ class HotelBookingServiceTest {
                     res.setAvailable(1);
                     res.setMinimumNights(1);
                 }).collect(Collectors.toSet()));
+
+        filtersDTO = RoomFiltersDTO.builder()
+                .pageIndex(0)
+                .pageSize(5)
+                .checkInDate(LocalDate.now().plusDays(1))
+                .checkOutDate(LocalDate.now().plusDays(2))
+                .numberOfRooms(1)
+                .numberOfAdults(1)
+                .childrenAges(List.of(7, 8))
+                .roomTypes(Set.of("single", "suite"))
+                .minPrice(Optional.of(50.0))
+                .maxPrice(Optional.of(500.0))
+                .roomFacilities(Set.of("wifi", "pool"))
+                .sort(RoomFiltersDTO.SortEnum.ASC);
     }
 
     @Test
@@ -152,178 +169,52 @@ class HotelBookingServiceTest {
         verify(roomRepository, times(1)).saveAll(List.of(room));
 
     }
+
+
     @Test
-    void testGetAllRooms_ValidRequest_ReturnsPaginatedRoomDTO() {
-        // Setup
-        LocalDate checkInDate = LocalDate.now().plusDays(1);
-        LocalDate checkOutDate = LocalDate.now().plusDays(2);
-        Integer numberOfRooms = 2;
-        int numberOfAdults = 2;
-        Optional<List<Integer>> childrenAges = Optional.of(List.of(7, 5)); // One child over 6
-        Optional<List<String>> roomTypes = Optional.of(List.of("single"));
-        Optional<Double> minPrice = Optional.of(50.0);
-        Optional<Double> maxPrice = Optional.of(100.0);
-        Optional<Set<String>> roomFacilities = Optional.of(Set.of("wifi"));
-        Pageable pageable = PageRequest.of(0, 10);
+    void testGetPaginatedRooms_invalidDateRange() {
+        filtersDTO.checkInDate(LocalDate.of(2024, 7, 19))
+                .checkOutDate(LocalDate.of(2024, 7, 18))
+                .build(); // Invalid date range
 
-        RoomView roomView = mock(RoomView.class);
-        Page<RoomView> rooms = new PageImpl<>(List.of(roomView));
-        when(roomRepository.getRoomAggregated(
-                checkInDate,
-                checkOutDate,
-                numberOfAdults + 1, // 2 adults + 1 child > 6
-                numberOfRooms,
-                roomTypes.get(),
-                minPrice.get(),
-                maxPrice.get(),
-                roomFacilities.get().toArray(new String[0]),
-                pageable
-        )).thenReturn(rooms);
-
-        PaginatedRoomDTO paginatedRoomDTO = mock(PaginatedRoomDTO.class); // Add fields and methods as necessary
-        when(roomMapper.toPageDto(rooms)).thenReturn(paginatedRoomDTO);
-        when(paginatedRoomDTO.content(anyList())).thenReturn(paginatedRoomDTO);
-
-        // Act
-        PaginatedRoomDTO result = sut.getAllRooms(
-                checkInDate,
-                checkOutDate,
-                numberOfRooms,
-                numberOfAdults,
-                childrenAges,
-                Optional.of(new HashSet<>(roomTypes.get())),
-                minPrice,
-                maxPrice,
-                roomFacilities,
-                pageable
-        );
-
-        // Assert
-        assertNotNull(result);
-        verify(roomRepository).getRoomAggregated(
-                checkInDate,
-                checkOutDate,
-                numberOfAdults + 1, // Verify correct guest count
-                numberOfRooms,
-                roomTypes.get(),
-                minPrice.get(),
-                maxPrice.get(),
-                roomFacilities.get().toArray(new String[0]),
-                pageable
-        );
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(filtersDTO.build());
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
+        assertEquals("Check-in should not be on past, and check out date should be after check in date!", thrown.getReason());
     }
 
     @Test
-    void testGetAllRooms_CheckInDateInPast_ThrowsException() {
-        // Setup
-        LocalDate checkInDate = LocalDate.now().minusDays(1);
-        LocalDate checkOutDate = LocalDate.now().plusDays(1);
-        Integer numberOfRooms = 2;
-        Integer numberOfAdults = 2;
-        Optional<List<Integer>> childrenAges = Optional.empty();
-        Optional<Set<String>> roomTypes = Optional.empty();
-        Optional<Double> minPrice = Optional.empty();
-        Optional<Double> maxPrice = Optional.empty();
-        Optional<Set<String>> roomFacilities = Optional.empty();
-        Pageable pageable = PageRequest.of(0, 10);
+    void testGetPaginatedRooms_invalidPriceRange() {
+        RoomFiltersDTO filtersDTO = this.filtersDTO
+                .minPrice(Optional.of(500.0))
+                .numberOfAdults(1)
+                .numberOfRooms(1)
+                .maxPrice(Optional.of(100.0)).build();
 
-        // Act & Assert
-        ResponseStatusException thrown = assertThrows(
-                ResponseStatusException.class,
-                () -> sut.getAllRooms(
-                        checkInDate,
-                        checkOutDate,
-                        numberOfRooms,
-                        numberOfAdults,
-                        childrenAges,
-                        roomTypes,
-                        minPrice,
-                        maxPrice,
-                        roomFacilities,
-                        pageable
-                )
-        );
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
-        Assertions.assertEquals("Check-in should not be on past, and check out date should be after check in date!", thrown.getReason());
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(filtersDTO);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
+        assertEquals("Min price should be less than max price!", thrown.getReason());
     }
 
     @Test
-    void testGetAllRooms_MinPriceGreaterThanMaxPrice_ThrowsException() {
-        // Setup
-        LocalDate checkInDate = LocalDate.now().plusDays(1);
-        LocalDate checkOutDate = LocalDate.now().plusDays(2);
-        Integer numberOfRooms = 2;
-        Integer numberOfAdults = 2;
-        Optional<List<Integer>> childrenAges = Optional.empty();
-        Optional<Set<String>> roomTypes = Optional.empty();
-        Optional<Double> minPrice = Optional.of(150.0);
-        Optional<Double> maxPrice = Optional.of(100.0);
-        Optional<Set<String>> roomFacilities = Optional.empty();
-        Pageable pageable = PageRequest.of(0, 10);
-
-        // Act & Assert
-        ResponseStatusException thrown = assertThrows(
-                ResponseStatusException.class,
-                () -> sut.getAllRooms(
-                        checkInDate,
-                        checkOutDate,
-                        numberOfRooms,
-                        numberOfAdults,
-                        childrenAges,
-                        roomTypes,
-                        minPrice,
-                        maxPrice,
-                        roomFacilities,
-                        pageable
-                )
-        );
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
-        Assertions.assertEquals("Min price should be less than max price!", thrown.getReason());
-    }
-
-    @Test
-    void testGetAllRooms_NoRoomsFound_ThrowsException() {
-        // Setup
-        LocalDate checkInDate = LocalDate.now().plusDays(1);
-        LocalDate checkOutDate = LocalDate.now().plusDays(2);
-        Integer numberOfRooms = 2;
-        Integer numberOfAdults = 2;
-        Optional<List<Integer>> childrenAges = Optional.empty();
-        Optional<Set<String>> roomTypes = Optional.empty();
-        Optional<Double> minPrice = Optional.empty();
-        Optional<Double> maxPrice = Optional.empty();
-        Optional<Set<String>> roomFacilities = Optional.empty();
-        Pageable pageable = PageRequest.of(0, 10);
+    void testGetPaginatedRooms_noRoomsFound() {
 
         when(roomRepository.getRoomAggregated(
-                checkInDate,
-                checkOutDate,
-                numberOfAdults,
-                numberOfRooms,
-                Collections.emptyList(),
-                null,
-                null,
-                new String[0],
-                pageable
-        )).thenReturn(Page.empty());
+                any(LocalDate.class), any(LocalDate.class), anyInt(), anyInt(),
+                any(String[].class), any(Double.class), any(Double.class),
+                any(String[].class), any(Pageable.class)))
+                .thenReturn(Page.empty());
 
-        // Act & Assert
-        ResponseStatusException thrown = assertThrows(
-                ResponseStatusException.class,
-                () -> sut.getAllRooms(
-                        checkInDate,
-                        checkOutDate,
-                        numberOfRooms,
-                        numberOfAdults,
-                        childrenAges,
-                        roomTypes,
-                        minPrice,
-                        maxPrice,
-                        roomFacilities,
-                        pageable
-                )
-        );
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, thrown.getStatusCode());
-        Assertions.assertEquals("No rooms available on Database", thrown.getReason());
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(filtersDTO.build());
+        });
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatusCode());
+        assertEquals("No rooms available on Database", thrown.getReason());
     }
 }
