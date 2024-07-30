@@ -96,7 +96,7 @@ public class HotelBookingService {
                 checkOutDate,
                 numberOfGuests,
                 numberOfRooms,
-                roomTypes.orElse(Collections.emptySet()).toArray(new String[0]),
+//                roomTypes.orElse(Collections.emptySet()).toArray(new String[0]),
                 minPrice.orElse(null),
                 maxPrice.orElse(null),
                 roomFacilities.orElse(Collections.emptySet()).toArray(new String[0]),

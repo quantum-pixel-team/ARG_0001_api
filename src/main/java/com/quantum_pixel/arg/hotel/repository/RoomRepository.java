@@ -65,11 +65,12 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                  FROM room_res r
                                           LEFT JOIN room_facility rf ON rf.room_id = r.id
                                           LEFT JOIN facility f ON f.id = rf.facility_id
-                                 WHERE (:roomTypes IS NULL
-                                     OR EXISTS (SELECT 1
-                                                FROM regexp_split_to_table(r.name, '\\s+') AS word
-                                                WHERE word ILIKE ANY (:roomTypes)))
-                                   AND (:minPrice IS NULL OR r.total_price >= :minPrice)
+                                 WHERE-- (:roomTypes IS NULL
+                                    -- OR EXISTS (SELECT 1
+                                     --           FROM regexp_split_to_table(r.name, '\\s+') AS word
+                                     --           WHERE word ILIKE ANY (:roomTypes)))
+                                  -- AND
+                                     (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
                                  GROUP BY r.id, r.name, r.description, r.total_capacity, r.images_url, r.total_price,
                                           r.available_rooms,
@@ -84,7 +85,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("checkOutDate") LocalDate checkOutDate,
             @Param("numberOfGuests") Integer numberOfGuests,
             @Param("numberOfRooms") Integer numberOfRooms,
-            @Param("roomTypes") String[] roomTypes,
+//            @Param("roomTypes") String[] roomTypes,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
             @Param("roomFacilities") String[] roomFacilities,
