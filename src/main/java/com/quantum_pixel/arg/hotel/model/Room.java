@@ -23,9 +23,10 @@ public class Room {
     @Column(name = "name")
     private String name;
 
-    @Size(max = 100)
-    @Column(name = "type", length = 100)
-    private String type;
+    @Size(max = 255)
+    @Column(name = "source_name")
+    private String sourceName;
+
 
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;

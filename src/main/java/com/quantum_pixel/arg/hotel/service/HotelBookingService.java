@@ -61,10 +61,10 @@ public class HotelBookingService {
         List<Room> rooms = roomMapper.toRoomEntities(roomDaos).stream()
                 .map(newRoom -> {
                     Optional<Room> room = roomRepository.findById(newRoom.getId());
-                    newRoom.setFacilities(room.map(Room::getFacilities).orElse(Collections.emptySet()));
-                    newRoom.setImagesUrl(room.map(Room::getImagesUrl).orElse(null));
-                    newRoom.setType(room.map(Room::getType).orElse(null));
+                    newRoom.setName(room.map(Room::getName).orElse(null));
                     newRoom.setDescription(room.map(Room::getDescription).orElse(null));
+                    newRoom.setImagesUrl(room.map(Room::getImagesUrl).orElse(null));
+                    newRoom.setFacilities(room.map(Room::getFacilities).orElse(Collections.emptySet()));
                     return newRoom;
                 })
                 .toList();

@@ -41,5 +41,8 @@ public abstract class HotelRoomMapper {
 
     public abstract List<Room> toRoomEntities(List<RoomDao> rooms);
 
-    public abstract List<RoomDTO> toDto(List<RoomView> rooms2) ;
+    @Mapping(target = "sourceName", source = "name")
+    public abstract Room toRoomEntity(RoomDao rooms);
+
+    public abstract List<RoomDTO> toDto(List<RoomView> rooms2);
 }

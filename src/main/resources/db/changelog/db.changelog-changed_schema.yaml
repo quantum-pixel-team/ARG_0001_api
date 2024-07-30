@@ -19,3 +19,22 @@ databaseChangeLog:
               - column:
                   name: icon_name
                   type: varchar(100)
+  - changeSet:
+      id: room_add_source_name
+      author: indrit.vaka@gmail.com
+      changes:
+        - addColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: source_name
+                  type: varchar(255)
+  - changeSet:
+      id: room_remove_type
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: type
