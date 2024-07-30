@@ -18,7 +18,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                     WITH agg_room_res AS (SELECT r.id,
                                                  r.name,
                                                  r.description,
-                                                 r.type,
                                                  r.capacity,
                                                  r.rate_applies_to,
                                                  r.images_url,
@@ -41,14 +40,13 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                          room_res AS (SELECT id,
                                              name,
                                              description,
-                                             type,
                                              capacity * :numberOfRooms        AS total_capacity,
                                              images_url,
                                              SUM(reservation_price_per_night) AS total_price,
                                              MIN(reservation_available)       AS available_rooms,
                                              MAX(reservation_minimum_nights)  AS minimum_nights
                                       FROM agg_room_res
-                                      GROUP BY id, name, description, type, capacity, rate_applies_to, images_url),
+                                      GROUP BY id, name, description, capacity, rate_applies_to, images_url),
                          res AS (SELECT r.id,
                                         r.name,
                                         r.description,
@@ -73,7 +71,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                                 WHERE word ILIKE ANY (:roomTypes)))
                                    AND (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
-                                 GROUP BY r.id, r.name, r.description, r.type, r.total_capacity, r.images_url, r.total_price,
+                                 GROUP BY r.id, r.name, r.description, r.total_capacity, r.images_url, r.total_price,
                                           r.available_rooms,
                                           r.minimum_nights
                                  HAVING (:roomFacilities) IS NULL
