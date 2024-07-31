@@ -23,14 +23,6 @@ public class Room {
     @Column(name = "name")
     private String name;
 
-    @Size(max = 255)
-    @Column(name = "source_name")
-    private String sourceName;
-
-
-    @Column(name = "description", length = Integer.MAX_VALUE)
-    private String description;
-
     @Column(name = "price")
     private Float price;
 

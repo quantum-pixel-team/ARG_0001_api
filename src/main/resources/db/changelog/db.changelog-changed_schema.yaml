@@ -38,3 +38,21 @@ databaseChangeLog:
             columns:
               - column:
                   name: type
+  - changeSet:
+      id: room_drop_source_name
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: source_name
+  - changeSet:
+      id: room_drop_description
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: description

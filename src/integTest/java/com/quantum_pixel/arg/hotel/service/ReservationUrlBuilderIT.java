@@ -22,7 +22,7 @@ public class ReservationUrlBuilderIT extends ConfigTest {
     @Test
     void buildReservationUrl() {
 
-        var expected = "https://app.inn-connect.com/book2/?p=Aragosta+Hotel%26Restaurant#book%7B%22ci%22:%222024-08-29%22,%22co%22:%222024-08-30%22,%22curr%22:%22USD%22,%22lang%22:%22en%22,%22rooms%22:%5B%7B%22adults%22:1,%22children%22:2,%22rate%22:625727,%22chAges%22:%222,2%22%7D,%7B%22adults%22:1,%22children%22:2,%22rate%22:625727,%22chAges%22:%222,2%22%7D%5D%7D";
+        var expected = "https://app.inn-connect.com/book2/?p=Aragosta+Hotel%26Restaurant#book%7B%22ci%22:%222024-08-29%22,%22co%22:%222024-08-30%22,%22curr%22:%22EUR%22,%22lang%22:%22en%22,%22rooms%22:%5B%7B%22adults%22:1,%22children%22:2,%22rate%22:625727,%22chAges%22:%222,2%22%7D,%7B%22adults%22:1,%22children%22:2,%22rate%22:625727,%22chAges%22:%222,2%22%7D%5D%7D";
         LocalDate checkInDate = LocalDate.of(2024, 8, 29);
         LocalDate checkOutDate = LocalDate.of(2024, 8, 30);
         var result = sut.buildReservationUrl(checkInDate, checkOutDate, 2, 1, List.of(2, 2), 625727L);

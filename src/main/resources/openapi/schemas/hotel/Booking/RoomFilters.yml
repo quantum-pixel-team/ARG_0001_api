@@ -18,6 +18,11 @@ properties:
     type: string
     format: date
     description: End date of the range for which to retrieve rooms
+  language:
+    type: string
+    maxLength: 7
+    example: en
+    description: The language code
   numberOfRooms:
     type: integer
     format: int16
@@ -60,6 +65,11 @@ properties:
     items:
       type: string
     uniqueItems: true
+  available:
+    type: boolean
+    description: Get only available rooms
+    example: false
+    default: false
   sort:
     type: string
     description: Sort order by price
@@ -74,6 +84,8 @@ required:
   - pageSize
   - checkInDate
   - checkOutDate
+  - language
   - numberOfRooms
   - numberOfAdults
   - sort
+  - available

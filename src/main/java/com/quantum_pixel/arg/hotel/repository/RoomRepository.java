@@ -16,8 +16,9 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query(nativeQuery = true,
             value = """
                     WITH agg_room_res AS (SELECT r.id,
-                                                 r.name,
-                                                 r.description,
+                                                 rt.name,
+                                                 rt.short_description,
+                                                 rt.description,
                                                  r.capacity,
                                                  r.rate_applies_to,
                                                  r.images_url,
@@ -35,20 +36,25 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                                      ELSE 0
                                                      END           AS reservation_price_per_night
                                           FROM room r
+                                              LEFT JOIN room_translation rt ON r.id = rt.room_id AND rt.language = :language
                                                    LEFT JOIN room_reservation rr
-                                                             ON r.id = rr.room_id AND rr.date BETWEEN :checkInDate AND :checkOutDate),
+                                                             ON r.id = rr.room_id
+                                                                 AND rr.date >= :checkInDate
+                                                                 AND rr.date < :checkOutDate),
                          room_res AS (SELECT id,
                                              name,
                                              description,
+                                             short_description,
                                              capacity * :numberOfRooms        AS total_capacity,
                                              images_url,
                                              SUM(reservation_price_per_night) AS total_price,
                                              MIN(reservation_available)       AS available_rooms,
                                              MAX(reservation_minimum_nights)  AS minimum_nights
                                       FROM agg_room_res
-                                      GROUP BY id, name, description, capacity, rate_applies_to, images_url),
+                                      GROUP BY id, name, description, short_description, capacity, rate_applies_to, images_url),
                          res AS (SELECT r.id,
                                         r.name,
+                                        r.short_description,
                                         r.description,
                                         r.total_price,
                                         r.total_capacity,
@@ -70,7 +76,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                    AND
                                      (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
-                                 GROUP BY r.id, r.name, r.description, r.total_capacity, r.images_url, r.total_price,
+                                   AND (:available IS NULL OR (:available = true AND total_price > 0) OR :available = false)
+                                 GROUP BY r.id, r.name, r.description, short_description, r.total_capacity, r.images_url, r.total_price,
                                           r.available_rooms,
                                           r.minimum_nights
                                  HAVING (:roomFacilities) IS NULL
@@ -81,12 +88,15 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Page<RoomView> getRoomAggregated(
             @Param("checkInDate") LocalDate checkInDate,
             @Param("checkOutDate") LocalDate checkOutDate,
+            @Param("language") String language,
             @Param("numberOfGuests") Integer numberOfGuests,
             @Param("numberOfRooms") Integer numberOfRooms,
             @Param("roomTypes") String[] roomTypes,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
             @Param("roomFacilities") String[] roomFacilities,
+            @Param("available") Boolean available,
+
             Pageable pageable
     );
 }

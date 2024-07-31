@@ -40,7 +40,6 @@ public class HotelBookingService {
     private final RoomReservationRepository roomReservationRepository;
     private final RoomScraperService roomScraperService;
     private final ReservationUrlBuilder reservationUrlBuilder;
-    private final EntityManager entityManager;
 
     @SneakyThrows
     @Transactional
@@ -67,8 +66,6 @@ public class HotelBookingService {
         List<Room> rooms = roomMapper.toRoomEntities(roomDaos).stream()
                 .map(newRoom -> {
                     Optional<Room> room = roomRepository.findById(newRoom.getId());
-                    newRoom.setName(room.map(Room::getName).orElse(null));
-                    newRoom.setDescription(room.map(Room::getDescription).orElse(null));
                     newRoom.setImagesUrl(room.map(Room::getImagesUrl).orElse(null));
                     newRoom.setFacilities(room.map(Room::getFacilities).orElse(Collections.emptySet()));
                     return newRoom;
@@ -94,7 +91,9 @@ public class HotelBookingService {
                 checkOutDate.isBefore(checkInDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check-in should not be on past, and check out date should be after check in date!");
         }
-
+        if (checkInDate.isEqual(checkOutDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check-in should not be same with checkout!");
+        }
         if (filtersDTO.getMinPrice().orElse(0d) > filtersDTO.getMaxPrice().orElse(Double.MAX_VALUE))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Min price should be less than max price!");
 
@@ -108,15 +107,18 @@ public class HotelBookingService {
 
         Pageable pageable = PageRequest.of(filtersDTO.getPageIndex(), filtersDTO.getPageSize(), sort);
 
+        String language = filtersDTO.getLanguage();
         var rooms = roomRepository.getRoomAggregated(
                 checkInDate,
                 checkOutDate,
+                language,
                 numberOfGuests,
                 filtersDTO.getNumberOfRooms(),
                 roomTypes,
                 filtersDTO.getMinPrice().orElse(null),
                 filtersDTO.getMaxPrice().orElse(null),
                 Optional.ofNullable(filtersDTO.getRoomFacilities()).orElse(Collections.emptySet()).toArray(new String[0]),
+                filtersDTO.getAvailable(),
                 pageable);
 
 
@@ -131,7 +133,6 @@ public class HotelBookingService {
                 .toList();
         return pageDto.content(updatedContent);
     }
-
 
 
 }

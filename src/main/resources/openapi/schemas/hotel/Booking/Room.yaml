@@ -14,6 +14,10 @@ properties:
     type: string
     description: Description of the room
     example: Spacious suite with a panoramic sea view
+  shortDescription:
+    type: string
+    description: Description of the room
+    example: Spacious suite with a panoramic sea view
   totalPrice:
     type: number
     format: float
@@ -57,3 +61,4 @@ required:
   - minimumNights
   - facilities
   - bookNowUrl
+  - shortDescription

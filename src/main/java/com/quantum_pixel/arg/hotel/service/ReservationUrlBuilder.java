@@ -29,7 +29,7 @@ public class ReservationUrlBuilder {
 
         List<RoomDetails> rooms = IntStream.range(0, numberOfRooms)
                 .mapToObj(el -> new RoomDetails(numberOfAdults, childrenAges.size(), roomId, chAges)).toList();
-        BookingDetails bookingDetails = new BookingDetails(checkInDate.toString(), checkOutDate.toString(), "USD", "en", rooms);
+        BookingDetails bookingDetails = new BookingDetails(checkInDate.toString(), checkOutDate.toString(), "EUR", "en", rooms);
 
         String jsonValue = objectMapper.writeValueAsString(bookingDetails);
         String encoded = URLEncoder.encode(jsonValue, StandardCharsets.UTF_8);
