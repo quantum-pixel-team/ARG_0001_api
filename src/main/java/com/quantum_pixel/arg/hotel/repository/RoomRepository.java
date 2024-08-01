@@ -16,6 +16,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query(nativeQuery = true,
             value = """
                     WITH agg_room_res AS (SELECT r.id,
+                                                 r.name AS source_name,
                                                  rt.name,
                                                  rt.short_description,
                                                  rt.description,
@@ -43,6 +44,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                                                  AND rr.date < :checkOutDate),
                          room_res AS (SELECT id,
                                              name,
+                                             source_name,
                                              description,
                                              short_description,
                                              capacity * :numberOfRooms        AS total_capacity,
@@ -51,7 +53,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                              MIN(reservation_available)       AS available_rooms,
                                              MAX(reservation_minimum_nights)  AS minimum_nights
                                       FROM agg_room_res
-                                      GROUP BY id, name, description, short_description, capacity, rate_applies_to, images_url),
+                                      GROUP BY id, name,source_name, description, short_description, capacity, rate_applies_to, images_url),
                          res AS (SELECT r.id,
                                         r.name,
                                         r.short_description,
@@ -72,7 +74,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                           LEFT JOIN room_facility rf ON rf.room_id = r.id
                                           LEFT JOIN facility f ON f.id = rf.facility_id
                                  WHERE ((:roomTypes) IS NULL
-                                     OR r.name ILIKE ANY (:roomTypes) OR  ARRAY_LENGTH(:roomTypes, 1) IS NULL)
+                                     OR r.source_name ILIKE ANY (:roomTypes) OR  ARRAY_LENGTH(:roomTypes, 1) IS NULL)
                                    AND
                                      (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
@@ -96,7 +98,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("maxPrice") Double maxPrice,
             @Param("roomFacilities") String[] roomFacilities,
             @Param("available") Boolean available,
-
             Pageable pageable
     );
 }
