@@ -78,7 +78,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                    AND
                                      (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
-                                   AND (:available IS NULL OR (:available = true AND total_price > 0) OR :available = false)
+                                   AND (:available IS NULL OR (:available = true AND available_rooms >= 1 * :numberOfRooms) OR :available = false)
                                  GROUP BY r.id, r.name, r.description, short_description, r.total_capacity, r.images_url, r.total_price,
                                           r.available_rooms,
                                           r.minimum_nights
