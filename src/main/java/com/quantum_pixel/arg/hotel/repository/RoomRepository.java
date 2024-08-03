@@ -86,7 +86,62 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                      OR ARRAY_AGG(f.name) @> :roomFacilities)
                     SELECT *
                     FROM res
-                    """, countQuery = "SELECT COUNT(*) FROM room")
+                    """, countQuery = """
+                            WITH agg_room_res AS (SELECT r.id,
+                                                         r.name AS source_name,
+                                                         rt.name,
+                                                         rt.short_description,
+                                                         rt.description,
+                                                         r.capacity,
+                                                         r.rate_applies_to,
+                                                         r.images_url,
+                                                         rr.date           AS reservation_date,
+                                                         rr.current_price  AS reservation_current_price,
+                                                         rr.available      AS reservation_available,
+                                                         rr.minimum_nights AS reservation_minimum_nights,
+                                                         CASE
+                                                             WHEN :numberOfGuests <= r.capacity * :numberOfRooms THEN
+                                                                 CASE
+                                                                     WHEN :numberOfGuests = r.rate_applies_to + 1 THEN rr.current_price + 15
+                                                                     WHEN :numberOfGuests = r.rate_applies_to + 2 THEN rr.current_price + 25
+                                                                     ELSE rr.current_price
+                                                                     END * :numberOfRooms
+                                                             ELSE 0
+                                                             END           AS reservation_price_per_night
+                                                  FROM room r
+                                                      LEFT JOIN room_translation rt ON r.id = rt.room_id AND rt.language = :language
+                                                           LEFT JOIN room_reservation rr
+                                                                     ON r.id = rr.room_id
+                                                                         AND rr.date >= :checkInDate
+                                                                         AND rr.date < :checkOutDate),
+                                 room_res AS (SELECT id,
+                                                     name,
+                                                     source_name,
+                                                     description,
+                                                     short_description,
+                                                     capacity * :numberOfRooms        AS total_capacity,
+                                                     images_url,
+                                                     SUM(reservation_price_per_night) AS total_price,
+                                                     MIN(reservation_available)       AS available_rooms,
+                                                     MAX(reservation_minimum_nights)  AS minimum_nights
+                                              FROM agg_room_res
+                                              GROUP BY id, name, source_name, description, short_description, capacity, rate_applies_to, images_url),
+                                 res AS (SELECT r.id
+                                         FROM room_res r
+                                                  LEFT JOIN room_facility rf ON rf.room_id = r.id
+                                                  LEFT JOIN facility f ON f.id = rf.facility_id
+                                         WHERE ((:roomTypes) IS NULL
+                                             OR r.source_name ILIKE ANY (:roomTypes) OR ARRAY_LENGTH(:roomTypes, 1) IS NULL)
+                                           AND
+                                             (:minPrice IS NULL OR r.total_price >= :minPrice)
+                                           AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
+                                           AND (:available IS NULL OR (:available = true AND available_rooms >= 1 * :numberOfRooms) OR :available = false)
+                                         GROUP BY r.id
+                                         HAVING (:roomFacilities) IS NULL
+                                             OR ARRAY_AGG(f.name) @> :roomFacilities)
+                            SELECT COUNT(*)
+                            FROM res
+            """)
     Page<RoomView> getRoomAggregated(
             @Param("checkInDate") LocalDate checkInDate,
             @Param("checkOutDate") LocalDate checkOutDate,
