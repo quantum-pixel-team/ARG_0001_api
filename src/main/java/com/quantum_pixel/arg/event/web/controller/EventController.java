@@ -18,8 +18,8 @@ public class EventController implements EventApi {
     private final EventService service;
 
     @Override
-    public ResponseEntity<PageDTO> getAllUpcomingEvents(Integer pageIndex, Integer pageSize, String filter) {
-        var res = service.getEvents(new EventSearch(PageRequest.of(pageIndex, pageSize), filter));
+    public ResponseEntity<PageDTO> getAllUpcomingEvents(Integer pageIndex, Integer pageSize, String filter, String language) {
+        var res = service.getEvents(new EventSearch(PageRequest.of(pageIndex, pageSize), filter, language));
         return ResponseEntity.ok(res);
     }
 

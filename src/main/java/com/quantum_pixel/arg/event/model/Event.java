@@ -30,6 +30,7 @@ public class Event {
     private LocalDate endDate;
 
     private LocalTime startTime;
+    private String language;
 
     private String featureImageUrl;
 }
