@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-public class RoomReservationService {
+public class RoomReservationHttpService {
 
     private final RestTemplate restTemplate;
 

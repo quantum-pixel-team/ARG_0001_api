@@ -9,3 +9,50 @@ databaseChangeLog:
               - column:
                   name: email
                   type: varchar(254)
+  - changeSet:
+      id: facility_add_font_icon_name
+      author: indrit.vaka@gmail.com
+      changes:
+        - addColumn:
+            tableName: facility
+            columns:
+              - column:
+                  name: icon_name
+                  type: varchar(100)
+  - changeSet:
+      id: room_add_source_name
+      author: indrit.vaka@gmail.com
+      changes:
+        - addColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: source_name
+                  type: varchar(255)
+  - changeSet:
+      id: room_remove_type
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: type
+  - changeSet:
+      id: room_drop_source_name
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: source_name
+  - changeSet:
+      id: room_drop_description
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: description

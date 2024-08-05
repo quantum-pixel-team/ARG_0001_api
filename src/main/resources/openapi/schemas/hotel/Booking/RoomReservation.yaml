@@ -1,7 +1,7 @@
 type: object
 description: Room Reservation details
 properties:
-  room-id:
+  roomId:
     type: integer
     format: int64
     description: Unique identifier for the reservation
@@ -11,7 +11,7 @@ properties:
     format: date
     description: Date of the reservation
     example: 2024-07-18
-  current-price:
+  currentPrice:
     type: number
     format: float
     description: Current price for the reservation
@@ -20,13 +20,14 @@ properties:
     type: integer
     description: Number of available rooms for the reservation
     example: 3
-  minimum-nights:
+  minimumNights:
     type: integer
     description: Minimum number of nights required for the reservation
     example: 2
+
 required:
-  - room-id
+  - roomId
   - date
-  - current-price
+  - currentPrice
   - available
-  - minimum-nights
+  - minimumNights

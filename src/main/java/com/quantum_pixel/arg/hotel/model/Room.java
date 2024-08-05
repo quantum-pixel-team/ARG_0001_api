@@ -23,13 +23,6 @@ public class Room {
     @Column(name = "name")
     private String name;
 
-    @Size(max = 100)
-    @Column(name = "type", length = 100)
-    private String type;
-
-    @Column(name = "description", length = Integer.MAX_VALUE)
-    private String description;
-
     @Column(name = "price")
     private Float price;
 
@@ -43,9 +36,10 @@ public class Room {
     @JoinTable(name = "room_facility",
             joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "facility_id"))
+
     private Set<Facility> facilities = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room")
     private Set<RoomReservation> roomReservations = new LinkedHashSet<>();
 
     @JdbcTypeCode(SqlTypes.ARRAY)

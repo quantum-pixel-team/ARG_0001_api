@@ -61,6 +61,3 @@ whatsapp:
     phone_number_id: ${whatsapp_api_phone_number_id:341358742400656}
     url: https://graph.facebook.com/v19.0
     token: ${whatsapp_api_token}
-logging:
-  file:
-    path: ${ARG_SPRING_BOOT_LOGS_PATH:./logs}

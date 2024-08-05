@@ -15,24 +15,18 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
-class RoomReservationServiceTest {
+class RoomReservationHttpServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
 
 
     @InjectMocks
-    private RoomReservationService sut;
+    private RoomReservationHttpService sut;
     String mockResponseBody = "//OK[1,[\"[{\\\"rateId\\\":1,\\\"dates\\\":[{\\\"date\\\":\\\"2024-07-19T00:00:00.000\\\",\\\"available\\\":false,\\\"avail\\\":0,\\\"minStay\\\":1,\\\"guests\\\":1,\\\"capacity\\\":2,\\\"rate\\\":\\\"90.00\\\"}]}]\"],0,7]";
 
     @Test

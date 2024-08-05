@@ -191,3 +191,41 @@ databaseChangeLog:
             referencedColumnNames: id
             constraintName: fk_room_facility_facility
             onDelete: cascade
+
+  - changeSet:
+      id: created_room_translation_table
+      author: indrit.vaka@gmail.com
+      changes:
+        - createTable:
+            tableName: room_translation
+            columns:
+              - column:
+                  name: room_id
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: language
+                  type: VARCHAR(5)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: short_description
+                  type: varchar(255)
+              - column:
+                  name: description
+                  type: text
+
+        - addPrimaryKey:
+            tableName: room_translation
+            columnNames: room_id, language
+
+        - addForeignKeyConstraint:
+            baseTableName: room_translation
+            baseColumnNames: room_id
+            constraintName: fk_room_translation_room
+            referencedTableName: room
+            referencedColumnNames: id
