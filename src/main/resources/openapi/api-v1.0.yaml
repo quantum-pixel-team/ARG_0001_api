@@ -256,6 +256,14 @@ paths:
             type: string
             enum: [ upcoming, recent, all ]
             default: all
+        - name: language
+          in: query
+          description: The language code
+          schema:
+            type: string
+            maxLength: 7
+            example: en
+          required: true
 
       responses:
         '200':

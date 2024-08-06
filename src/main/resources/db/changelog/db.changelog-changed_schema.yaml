@@ -56,3 +56,15 @@ databaseChangeLog:
             columns:
               - column:
                   name: description
+  - changeSet:
+      id: events_add_language
+      author: indrit.vaka@gmail.com
+      changes:
+        - addColumn:
+            tableName: events
+            columns:
+              - column:
+                  name: language
+                  type: VARCHAR(5)
+                  constraints:
+                    nullable: false
