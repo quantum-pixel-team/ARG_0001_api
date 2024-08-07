@@ -149,6 +149,49 @@ paths:
         '500':
           description: Internal server error
   /api/v1/hotel/rooms/reservation:
+    get:
+      summary: Room Availability
+      operationId: getRoomAvailability
+      tags:
+        - HotelBooking
+      parameters:
+        - name: room-id
+          description: the room id
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int64
+            example: 625642
+        - name: start-date
+          description: Start date of the range for which to get room availability
+          example: 2024-07-19
+          required: true
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end-date
+          in: query
+          description: End date of the range for which to get room availability
+          example: 2024-10-20
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Room Availability
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/RoomAvailability"
+        '400':
+          $ref: './responses/BadRequest.yaml'
+        '500':
+          $ref: './responses/UnexpectedError.yaml'
+
     post:
       summary: Trigger an update of room reservations only (rooms are not updated)
       operationId: triggerRoomReservationUpdate
@@ -256,6 +299,14 @@ paths:
             type: string
             enum: [ upcoming, recent, all ]
             default: all
+        - name: language
+          in: query
+          description: The language code
+          schema:
+            type: string
+            maxLength: 7
+            example: en
+          required: true
 
       responses:
         '200':
@@ -311,6 +362,8 @@ components:
       $ref: "./schemas/hotel/Booking/Room.yaml"
     RoomFilters:
       $ref: "./schemas/hotel/Booking/RoomFilters.yml"
+    RoomAvailability:
+      $ref: "./schemas/hotel/Booking/RoomAvailability.yml"
     PaginatedRoom:
       $ref: "./schemas/hotel/Booking/PaginatedRoom.yml"
     ContactUsMailStructure:

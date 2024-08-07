@@ -6,11 +6,12 @@ import com.quantum_pixel.arg.hotel.model.RoomReservation;
 import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
 import com.quantum_pixel.arg.hotel.repository.RoomRepository;
 import com.quantum_pixel.arg.hotel.repository.RoomReservationRepository;
+import com.quantum_pixel.arg.hotel.specification.RoomReservationSearch;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
+import com.quantum_pixel.arg.v1.web.model.RoomAvailabilityDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomFiltersDTO;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -135,4 +136,9 @@ public class HotelBookingService {
     }
 
 
+    public List<RoomAvailabilityDTO> getRoomAvailability(Long roomId, LocalDate startDate, LocalDate endDate) {
+
+        var rooms = roomReservationRepository.findAll(new RoomReservationSearch(roomId, startDate, endDate).getSpecification());
+        return rooms.stream().map(roomMapper::toRoomAvailability).toList();
+    }
 }

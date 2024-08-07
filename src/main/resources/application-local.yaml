@@ -7,8 +7,7 @@ spring:
     show-sql: true
 
 
-allowed-origins: http://localhost:4200, http://localhost:5211
-
+allowed-origins: http://localhost:4200, http://localhost:5211, *
 
 # Email Config
 
@@ -21,3 +20,6 @@ IMAP_USERNAME: testqpt8%40gmail.com
 IMAP_PASSWORD: lbzhzuruwvudrbem
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
+whatsapp:
+  api:
+    token: dummy_token

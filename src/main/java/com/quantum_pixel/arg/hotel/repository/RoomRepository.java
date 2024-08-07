@@ -135,7 +135,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                            AND
                                              (:minPrice IS NULL OR r.total_price >= :minPrice)
                                            AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
-                                           AND (:available IS NULL OR (:available = true AND available_rooms >= 1 * :numberOfRooms) OR :available = false)
+                                           AND (:available IS NULL OR (:available = true AND available_rooms >= :numberOfRooms) OR :available = false)
                                          GROUP BY r.id
                                          HAVING (:roomFacilities) IS NULL
                                              OR ARRAY_AGG(f.name) @> :roomFacilities)
@@ -155,4 +155,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("available") Boolean available,
             Pageable pageable
     );
+
 }

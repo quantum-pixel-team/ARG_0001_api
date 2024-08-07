@@ -3,6 +3,7 @@ package com.quantum_pixel.arg.hotel.web.controller;
 import com.quantum_pixel.arg.hotel.service.HotelBookingService;
 import com.quantum_pixel.arg.v1.web.HotelBookingApi;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
+import com.quantum_pixel.arg.v1.web.model.RoomAvailabilityDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomFiltersDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,14 @@ public class HotelBookingController implements HotelBookingApi {
     private final HotelBookingService service;
 
     @Override
+    public ResponseEntity<List<RoomAvailabilityDTO>> getRoomAvailability(Long roomId, LocalDate startDate, LocalDate endDate) {
+        return ResponseEntity.ok(service.getRoomAvailability(roomId, startDate, endDate));
+    }
+
+    @Override
     public ResponseEntity<PaginatedRoomDTO> retrieveAvailableRoomsForDateRange(RoomFiltersDTO roomFiltersDTO) {
         return ResponseEntity.ok(service.getPaginatedRooms(roomFiltersDTO));
     }
-
 
 
     @Override

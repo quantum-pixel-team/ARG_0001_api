@@ -8,6 +8,7 @@ import com.quantum_pixel.arg.hotel.model.RoomView;
 import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
 import com.quantum_pixel.arg.hotel.model.dao.RoomReservationDao;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
+import com.quantum_pixel.arg.v1.web.model.RoomAvailabilityDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomFacilityDTO;
 import lombok.SneakyThrows;
@@ -43,4 +44,9 @@ public abstract class HotelRoomMapper {
 
 
     public abstract List<RoomDTO> toDto(List<RoomView> rooms2);
+
+    @Mapping(target = "roomId", source = "id.roomId")
+    @Mapping(target = "date", source = "id.date")
+    @Mapping(target = "availableRooms", source = "available")
+    public abstract RoomAvailabilityDTO toRoomAvailability(RoomReservation roomReservation) ;
 }
