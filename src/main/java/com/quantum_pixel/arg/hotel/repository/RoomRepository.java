@@ -155,4 +155,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("available") Boolean available,
             Pageable pageable
     );
+
 }
