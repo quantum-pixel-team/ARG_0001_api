@@ -8,9 +8,6 @@ spring:
 
 
 allowed-origins: http://localhost:4200, http://localhost:5211, *
-server:
-  address: 192.168.111.8
-
 
 # Email Config
 
