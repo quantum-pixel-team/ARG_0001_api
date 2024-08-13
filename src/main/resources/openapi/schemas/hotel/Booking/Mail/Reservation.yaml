@@ -5,7 +5,7 @@ properties:
     type: string
     format: date
     description: requested date of the reservation
-    example: "2024-09-16"
+    example: "2024-09-16T00:00:00.0Z"
   numberOfAttenders:
     type: integer
     description: requested number of participant
@@ -13,14 +13,14 @@ properties:
     example: 20
   startTime:
     type: string
-    format: time
+    format: date-time
     description: the time when the meeting start
-    example: 14:00
+    example: "2024-09-16T14:00:00.0Z"
   endTime:
     type: string
-    format: time
+    format: date-time
     description: the time when the meeting ends
-    example: 16:00
+    example: "2024-09-16T16:00:00.0Z"
 required:
   - reservationDate
   - startTime

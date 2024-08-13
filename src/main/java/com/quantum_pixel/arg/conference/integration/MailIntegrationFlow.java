@@ -14,7 +14,9 @@ import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.mail.dsl.Mail;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @EnableIntegration
@@ -22,7 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MailIntegrationFlow {
     private final HotelBookingService hotelBookingService;
-
+    private final Clock clock;
     @Bean
     public IntegrationFlow imapMailFlow(@Value("imaps://${IMAP_USERNAME}:${IMAP_PASSWORD}@${IMAP_HOST}:${IMAP_PORT}/inbox") String storeUrl) {
         return IntegrationFlow
@@ -56,7 +58,7 @@ public class MailIntegrationFlow {
     public IntegrationFlow processAggregatedMessages() {
         return IntegrationFlow.from("aggregateChannel")
                 .handle(message -> this.hotelBookingService
-                        .triggerRoomReservationUpdate(LocalDate.now(), LocalDate.now().plusMonths(3L), Optional.empty()))
+                        .triggerRoomReservationUpdate(OffsetDateTime.now(clock), OffsetDateTime.now().plusMonths(3L), Optional.empty()))
                 .get();
     }
 }

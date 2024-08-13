@@ -46,7 +46,7 @@ class RoomReservationHttpServiceTest {
         // Assert
         assertNotNull(rate);
         assertEquals(1L, rate.getRateId());
-        assertEquals(LocalDate.of(2024, 7, 19), rate.getDates().getFirst().getDate());
+        assertEquals(LocalDate.of(2024, 7, 19).atStartOfDay(), rate.getDates().getFirst().getDate());
         assertEquals("90.00", rate.getDates().getFirst().getRate());
     }
 

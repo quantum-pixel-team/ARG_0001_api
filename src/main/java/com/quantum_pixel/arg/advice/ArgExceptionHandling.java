@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,7 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.AccessDeniedException;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
@@ -30,10 +31,22 @@ import static org.springframework.http.HttpStatus.*;
 @Log4j2
 public class ArgExceptionHandling {
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleDateTimeParseException(DateTimeParseException ex) {
+        String errorMessage = "Invalid date format. Please use the correct format, such as 'yyyy-MM-dd'T'HH:mm:ss.SSSXXX' for OffsetDateTime.";
+        return ResponseEntity.badRequest().body(errorMessage);
+    }
+
     @ExceptionHandler(PastDateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleInvalidArgument(PastDateException pastDateException) {
-        Arrays.stream(pastDateException.getStackTrace()).forEach(System.out::println);
         return ResponseEntity.badRequest().body(pastDateException.getMessage());
     }
 

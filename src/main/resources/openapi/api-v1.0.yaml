@@ -118,6 +118,15 @@ paths:
       operationId: retrieveAvailableRoomsForDateRange
       tags:
         - HotelBooking
+      parameters:
+        - name: timezone-offset
+          description: The timezone offset the client browser is on, formatted as ±HH:mm
+          in: header
+          required: true
+          schema:
+            type: string
+            format: timezone-offset
+            example: "+02:00"
       requestBody:
         required: true
         content:
@@ -165,20 +174,20 @@ paths:
             example: 625642
         - name: start-date
           description: Start date of the range for which to get room availability
-          example: 2024-07-19
+          example: 2024-07-19T00:00:00.0z
           required: true
           in: query
           schema:
             type: string
-            format: date
+            format: date-time
         - name: end-date
           in: query
           description: End date of the range for which to get room availability
-          example: 2024-10-20
+          example: 2025-10-20T00:00:00.0z
           required: true
           schema:
             type: string
-            format: date
+            format: date-time
       responses:
         200:
           description: Room Availability

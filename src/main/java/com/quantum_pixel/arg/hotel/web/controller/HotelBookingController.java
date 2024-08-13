@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,18 +21,21 @@ public class HotelBookingController implements HotelBookingApi {
     private final HotelBookingService service;
 
     @Override
-    public ResponseEntity<List<RoomAvailabilityDTO>> getRoomAvailability(Long roomId, LocalDate startDate, LocalDate endDate) {
+    public ResponseEntity<List<RoomAvailabilityDTO>> getRoomAvailability(Long roomId,
+                                                                         OffsetDateTime startDate,
+                                                                         OffsetDateTime endDate) {
         return ResponseEntity.ok(service.getRoomAvailability(roomId, startDate, endDate));
     }
 
     @Override
-    public ResponseEntity<PaginatedRoomDTO> retrieveAvailableRoomsForDateRange(RoomFiltersDTO roomFiltersDTO) {
-        return ResponseEntity.ok(service.getPaginatedRooms(roomFiltersDTO));
+    public ResponseEntity<PaginatedRoomDTO> retrieveAvailableRoomsForDateRange(ZoneOffset zoneOffset, RoomFiltersDTO roomFiltersDTO) {
+        return ResponseEntity.ok(service.getPaginatedRooms(zoneOffset, roomFiltersDTO));
     }
 
 
     @Override
-    public ResponseEntity<Void> triggerRoomReservationUpdate(LocalDate startDate, LocalDate endDate, Optional<List<Long>> roomsId) {
+    public ResponseEntity<Void> triggerRoomReservationUpdate(OffsetDateTime startDate,
+                                                             OffsetDateTime endDate, Optional<List<Long>> roomsId) {
         service.triggerRoomReservationUpdate(startDate, endDate, roomsId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

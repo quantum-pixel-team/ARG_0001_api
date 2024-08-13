@@ -4,10 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import java.io.Serial;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -25,20 +24,17 @@ public class RoomReservationId implements java.io.Serializable {
 
     @NotNull
     @Column(name = "date", nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        RoomReservationId entity = (RoomReservationId) o;
-        return Objects.equals(this.date, entity.date) &&
-                Objects.equals(this.roomId, entity.roomId);
+        if (!(o instanceof RoomReservationId that)) return false;
+        return Objects.equals(getRoomId(), that.getRoomId()) && Objects.equals(getDate(), that.getDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, roomId);
+        return Objects.hash(getRoomId(), getDate());
     }
-
 }

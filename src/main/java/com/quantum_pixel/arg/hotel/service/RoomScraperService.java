@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Log4j2
@@ -22,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomScraperService {
 
+    public static final ZoneId TIRANE_ZONE_ID = ZoneId.of("Europe/Tirane");
     private final RoomReservationHttpService roomReservationHttpService;
 
     private static final String BASE_URL = "https://app.inn-connect.com/book/properties/Aragosta%20Hotel%26Restaurant";
@@ -69,10 +71,16 @@ public class RoomScraperService {
 
         Rate rates = roomReservationHttpService.fetchRoomRates(roomId, startDate, endDate);
         return rates.getDates().stream()
-                .filter(rate -> rate.getDate().isBefore(endDate.plusDays(1)) && rate.getDate().isAfter(startDate.minusDays(1)))
+                .filter(rate ->
+                        rate.getDate()
+                                .toLocalDate()
+                                .isBefore(endDate.plusDays(1))
+                                && rate.getDate()
+                                .toLocalDate()
+                                .isAfter(startDate.minusDays(1)))
                 .map(rateDate -> RoomReservationDao.builder()
                         .roomId(roomId)
-                        .date(rateDate.getDate())
+                        .date(rateDate.getDate().atZone(TIRANE_ZONE_ID).toOffsetDateTime())
                         .currentPrice(Double.parseDouble(rateDate.getRate()))
                         .available(rateDate.getAvail())
                         .minimumNights(rateDate.getMinStay())

@@ -8,6 +8,7 @@ import com.quantum_pixel.arg.hotel.repository.RoomRepository;
 import com.quantum_pixel.arg.hotel.repository.RoomReservationRepository;
 import com.quantum_pixel.arg.hotel.specification.RoomReservationSearch;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
+import com.quantum_pixel.arg.utilities.DateTimeUtils;
 import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomAvailabilityDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomDTO;
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -41,10 +42,11 @@ public class HotelBookingService {
     private final RoomReservationRepository roomReservationRepository;
     private final RoomScraperService roomScraperService;
     private final ReservationUrlBuilder reservationUrlBuilder;
+    private final Clock clock;
 
     @SneakyThrows
     @Transactional
-    public void triggerRoomReservationUpdate(LocalDate startDate, LocalDate endDate, Optional<List<Long>> roomsId) {
+    public void triggerRoomReservationUpdate(OffsetDateTime startDate, OffsetDateTime endDate, Optional<List<Long>> roomsId) {
         boolean isStartDateGreaterThanEndDate = startDate.isAfter(endDate);
         if (isStartDateGreaterThanEndDate) throw new PastDateException("Start date should be less than end date");
         log.info("Getting room reservation details");
@@ -56,7 +58,9 @@ public class HotelBookingService {
 
         List<RoomReservation> reservations = rooms.stream()
                 .flatMap(room -> {
-                    var reservationDetails = roomScraperService.getRoomReservationDetails(room.getId(), startDate, endDate);
+                    var reservationDetails = roomScraperService.getRoomReservationDetails(room.getId(),
+                            startDate.toLocalDate(),
+                            endDate.toLocalDate());
                     return roomMapper.toReservationEntities(reservationDetails).stream().map(reservation -> reservation.setRoom(room));
                 }).toList();
         roomReservationRepository.saveAll(reservations);
@@ -75,7 +79,7 @@ public class HotelBookingService {
         roomRepository.saveAll(rooms);
     }
 
-    public PaginatedRoomDTO getPaginatedRooms(RoomFiltersDTO filtersDTO) {
+    public PaginatedRoomDTO getPaginatedRooms(ZoneOffset zoneOffset, RoomFiltersDTO filtersDTO) {
         var numberOfGuests = filtersDTO.getNumberOfAdults() + Optional.ofNullable(filtersDTO.getChildrenAges())
                 .map(children -> (int) children.stream().filter(age -> age > 6).count())
                 .orElse(0);
@@ -85,12 +89,15 @@ public class HotelBookingService {
                 Sort.Order.desc("available_rooms"),
                 Sort.Order.desc("total_capacity")
         );
-        LocalDate checkInDate = filtersDTO.getCheckInDate();
-        LocalDate checkOutDate = filtersDTO.getCheckOutDate();
+        var checkInDate = filtersDTO.getCheckInDate();
+        var checkOutDate = filtersDTO.getCheckOutDate();
 
-        if (checkInDate.isBefore(LocalDate.now()) ||
-                checkOutDate.isBefore(checkInDate)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check-in should not be on past, and check out date should be after check in date!");
+        if (DateTimeUtils.toLocalDateTimeUtc(checkInDate).isBefore(DateTimeUtils.toLocalDateTimeUtc(OffsetDateTime.of(LocalDate.now(clock), LocalTime.MIDNIGHT, zoneOffset))))
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check-in should not be on past!");
+        }
+        if (checkOutDate.isBefore(checkInDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check out date should be after check in date!");
         }
         if (checkInDate.isEqual(checkOutDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check-in should not be same with checkout!");
@@ -110,8 +117,8 @@ public class HotelBookingService {
 
         String language = filtersDTO.getLanguage();
         var rooms = roomRepository.getRoomAggregated(
-                checkInDate,
-                checkOutDate,
+                checkInDate.toLocalDate(),
+                checkOutDate.toLocalDate(),
                 language,
                 numberOfGuests,
                 filtersDTO.getNumberOfRooms(),
@@ -128,17 +135,21 @@ public class HotelBookingService {
 
         PaginatedRoomDTO pageDto = roomMapper.toPageDto(rooms);
         List<RoomDTO> updatedContent = pageDto.getContent().stream()
-                .map(el -> el.bookNowUrl(reservationUrlBuilder.buildReservationUrl(checkInDate,
-                        checkOutDate, filtersDTO.getNumberOfRooms(),
+                .map(el -> el.bookNowUrl(reservationUrlBuilder.buildReservationUrl(zoneOffset,
+                        checkInDate, checkOutDate, filtersDTO.getNumberOfRooms(),
                         filtersDTO.getNumberOfAdults(), filtersDTO.getChildrenAges(), el.getId())))
                 .toList();
         return pageDto.content(updatedContent);
     }
 
 
-    public List<RoomAvailabilityDTO> getRoomAvailability(Long roomId, LocalDate startDate, LocalDate endDate) {
+    public List<RoomAvailabilityDTO> getRoomAvailability(Long roomId,
+                                                         OffsetDateTime startDate,
+                                                         OffsetDateTime endDate) {
 
-        var rooms = roomReservationRepository.findAll(new RoomReservationSearch(roomId, startDate, endDate).getSpecification());
+        var rooms = roomReservationRepository.findAll(new RoomReservationSearch(roomId, DateTimeUtils.toLocalDateTimeUtc(startDate),
+                DateTimeUtils.toLocalDateTimeUtc(endDate))
+                .getSpecification());
         return rooms.stream().map(roomMapper::toRoomAvailability).toList();
     }
 }

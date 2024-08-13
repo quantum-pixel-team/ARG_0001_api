@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -54,15 +54,21 @@ class HotelBookingServiceTest {
     private HotelBookingService sut;
     @Mock
     private RoomReservationRepository roomReservationRepository;
+    private final Clock clock = Clock.system(ZoneOffset.UTC);
 
     private Room room;
     RoomReservationDao roomReservationDao;
     RoomFiltersDTO.RoomFiltersDTOBuilder filtersDTO;
+
     @BeforeEach
     void setUp() {
+
+        // Inject the fixed clock into the HotelBookingService
+        sut = new HotelBookingService(roomMapper, roomRepository, roomReservationRepository, roomScraperService, reservationUrlBuilder, clock);
+
         roomReservationDao = RoomReservationDao.builder()
                 .roomId(1L)
-                .date(LocalDate.now())
+                .date(OffsetDateTime.now())
                 .currentPrice(100.0)
                 .available(1)
                 .minimumNights(1)
@@ -77,7 +83,7 @@ class HotelBookingServiceTest {
         room.setRoomReservations(Stream.of(new RoomReservation())
                 .peek(res -> {
                     res.setRoom(room);
-                    res.setId(new RoomReservationId(1L, LocalDate.now()));
+                    res.setId(new RoomReservationId(1L, LocalDateTime.now()));
                     res.setCurrentPrice(100.0f);
                     res.setAvailable(1);
                     res.setMinimumNights(1);
@@ -86,8 +92,8 @@ class HotelBookingServiceTest {
         filtersDTO = RoomFiltersDTO.builder()
                 .pageIndex(0)
                 .pageSize(5)
-                .checkInDate(LocalDate.now().plusDays(1))
-                .checkOutDate(LocalDate.now().plusDays(2))
+                .checkInDate(OffsetDateTime.now().plusDays(1))
+                .checkOutDate(OffsetDateTime.now().plusDays(2))
                 .numberOfRooms(1)
                 .numberOfAdults(1)
                 .childrenAges(List.of(7, 8))
@@ -101,8 +107,8 @@ class HotelBookingServiceTest {
     @Test
     void triggerRoomReservationUpdate_success() {
         // Arrange
-        LocalDate startDate = LocalDate.now().minusDays(1);
-        LocalDate endDate = LocalDate.now();
+        var startDate = OffsetDateTime.now().minusDays(1);
+        var endDate = OffsetDateTime.now();
         List<Long> roomIds = List.of(1L);
 
 
@@ -123,8 +129,8 @@ class HotelBookingServiceTest {
     @Test
     void triggerRoomReservationUpdate_noRoomsOnDb() {
         // Arrange
-        LocalDate startDate = LocalDate.now().minusDays(1);
-        LocalDate endDate = LocalDate.now();
+        var startDate = OffsetDateTime.now().minusDays(1);
+        var endDate = OffsetDateTime.now();
 
         when(roomRepository.findAll()).thenReturn(Collections.emptyList());
         Optional<List<Long>> ids = Optional.empty();
@@ -140,8 +146,8 @@ class HotelBookingServiceTest {
     @Test
     void triggerRoomReservationUpdate_startDateAfterEndDate() {
         // Arrange
-        LocalDate startDate = LocalDate.now().plusDays(1);
-        LocalDate endDate = LocalDate.now();
+        var startDate = OffsetDateTime.now().plusDays(1);
+        var endDate = OffsetDateTime.now();
         Optional<List<Long>> ids = Optional.empty();
         // Act & Assert
         assertThrows(PastDateException.class,
@@ -167,19 +173,31 @@ class HotelBookingServiceTest {
 
 
     @Test
-    void testGetPaginatedRooms_invalidDateRange() {
-        filtersDTO.checkInDate(LocalDate.of(2024, 7, 19))
-                .checkOutDate(LocalDate.of(2024, 7, 18))
+    void testGetPaginatedRooms_invalidCheckInRange() {
+        filtersDTO.checkInDate(OffsetDateTime.of(LocalDate.of(2024, 7, 19), LocalTime.MIDNIGHT, ZoneOffset.UTC))
+                .checkOutDate(OffsetDateTime.of(LocalDate.of(2024, 7, 18), LocalTime.MIDNIGHT, ZoneOffset.UTC))
                 .build(); // Invalid date range
 
         // Verify exception
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
-            sut.getPaginatedRooms(filtersDTO.build());
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO.build());
         });
         assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
-        assertEquals("Check-in should not be on past, and check out date should be after check in date!", thrown.getReason());
+        assertEquals("Check-in should not be on past!", thrown.getReason());
     }
+    @Test
+    void testGetPaginatedRooms_invalidDateInRange() {
+        filtersDTO.checkInDate(OffsetDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT, ZoneOffset.UTC))
+                .checkOutDate(OffsetDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT, ZoneOffset.UTC))
+                .build(); // Invalid date range
 
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO.build());
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
+        assertEquals("Check-in should not be same with checkout!", thrown.getReason());
+    }
     @Test
     void testGetPaginatedRooms_invalidPriceRange() {
         RoomFiltersDTO filtersDTO = this.filtersDTO
@@ -190,7 +208,7 @@ class HotelBookingServiceTest {
 
         // Verify exception
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
-            sut.getPaginatedRooms(filtersDTO);
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO);
         });
         assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
         assertEquals("Min price should be less than max price!", thrown.getReason());
@@ -199,11 +217,11 @@ class HotelBookingServiceTest {
     @Test
     void testGetPaginatedRooms_noRoomsFound() {
 
-        when(roomRepository.getRoomAggregated(any(),any(),any(),any(),any(),any(),any(),any(),any(),any(),any())).thenReturn(Page.empty());
+        when(roomRepository.getRoomAggregated(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Page.empty());
 
         // Verify exception
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
-            sut.getPaginatedRooms(filtersDTO.build());
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO.build());
         });
         assertEquals(HttpStatus.NOT_FOUND, thrown.getStatusCode());
         assertEquals("No rooms available on Database", thrown.getReason());

@@ -104,7 +104,7 @@ class RoomScraperServiceTest {
 
     private Rate mockRate() {
         RateDate rateDate = RateDate.builder()
-                .date(LocalDate.now())
+                .date(LocalDate.now().atStartOfDay())
                 .rate("100.0")
                 .capacity(2)
                 .guests(2)
@@ -112,7 +112,7 @@ class RoomScraperServiceTest {
                 .minStay(1)
                 .build();
         RateDate rateDate2 = RateDate.builder()
-                .date(LocalDate.now().plusDays(1))
+                .date(LocalDate.now().plusDays(1).atStartOfDay())
                 .rate("100.0")
                 .capacity(2)
                 .guests(2)
@@ -120,7 +120,7 @@ class RoomScraperServiceTest {
                 .minStay(1)
                 .build();
         RateDate rateDate3 = RateDate.builder()
-                .date(LocalDate.now().plusDays(2))
+                .date(LocalDate.now().plusDays(2).atStartOfDay())
                 .rate("100.0")
                 .capacity(2)
                 .guests(2)

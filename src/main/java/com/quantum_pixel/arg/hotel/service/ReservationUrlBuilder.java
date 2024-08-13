@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -17,8 +18,9 @@ public class ReservationUrlBuilder {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public String buildReservationUrl(LocalDate checkInDate,
-                                      LocalDate checkOutDate,
+    public String buildReservationUrl(ZoneOffset zoneOffset,
+                                      OffsetDateTime checkInDate,
+                                      OffsetDateTime checkOutDate,
                                       Integer numberOfRooms,
                                       Integer numberOfAdults,
                                       List<Integer> childrenAges,
@@ -29,7 +31,10 @@ public class ReservationUrlBuilder {
 
         List<RoomDetails> rooms = IntStream.range(0, numberOfRooms)
                 .mapToObj(el -> new RoomDetails(numberOfAdults, childrenAges.size(), roomId, chAges)).toList();
-        BookingDetails bookingDetails = new BookingDetails(checkInDate.toString(), checkOutDate.toString(), "EUR", "en", rooms);
+        var localizedCheckInDate = checkInDate.withOffsetSameInstant(zoneOffset);
+        var localizedCheckOutDate = checkOutDate.withOffsetSameInstant(zoneOffset);
+
+        BookingDetails bookingDetails = new BookingDetails(localizedCheckInDate.toLocalDate().toString(), localizedCheckOutDate.toLocalDate().toString(), "EUR", "en", rooms);
 
         String jsonValue = objectMapper.writeValueAsString(bookingDetails);
         String encoded = URLEncoder.encode(jsonValue, StandardCharsets.UTF_8);

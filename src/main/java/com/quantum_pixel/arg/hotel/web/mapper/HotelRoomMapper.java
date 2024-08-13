@@ -2,6 +2,7 @@ package com.quantum_pixel.arg.hotel.web.mapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.quantum_pixel.arg.common.web.mapper.DateTimeMapper;
 import com.quantum_pixel.arg.hotel.model.Room;
 import com.quantum_pixel.arg.hotel.model.RoomReservation;
 import com.quantum_pixel.arg.hotel.model.RoomView;
@@ -21,7 +22,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public abstract class HotelRoomMapper {
+public abstract class HotelRoomMapper implements DateTimeMapper {
 
     @Autowired
     private ObjectMapper objectMapper;
