@@ -13,8 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,9 +36,9 @@ public class ConferenceServiceTest {
 
         var emailStructure = createEmailStructure();
         emailStructure.getConferenceReservations().add(ReservationDTO.builder()
-                .reservationDate(LocalDate.MIN)
-                .startTime(LocalTime.MIN)
-                .endTime(LocalTime.MAX)
+                .reservationDate(OffsetDateTime.now().minusDays(2))
+                .startTime(OffsetDateTime.now().minusDays(2))
+                .endTime(OffsetDateTime.now().minusDays(20))
                 .build());
 
 
@@ -52,16 +51,16 @@ public class ConferenceServiceTest {
 
         var emailStructure = createEmailStructure();
         emailStructure.getConferenceReservations().add(ReservationDTO.builder()
-                .reservationDate(LocalDate.MAX)
-                .startTime(LocalTime.MAX)
-                .endTime(LocalTime.MIN)
+                .reservationDate(OffsetDateTime.now().minusDays(5))
+                .startTime(OffsetDateTime.now().minusDays(5))
+                .endTime(OffsetDateTime.now().plusDays(20))
                 .build());
         Assertions.assertThrows(PastDateException.class, () -> conferenceService.sentEmail(emailStructure));
     }
 
     @Test
-    void emailValidationPassSuccessfully(){
-        var confernceMailStructureDTO =createEmailStructure();
+    void emailValidationPassSuccessfully() {
+        var confernceMailStructureDTO = createEmailStructure();
         doNothing().when(mailService).sendEmail(any());
         conferenceService.sentEmail(confernceMailStructureDTO);
 
@@ -71,9 +70,9 @@ public class ConferenceServiceTest {
     private ConferenceMailStructureDTO createEmailStructure() {
         List<ReservationDTO> reservations = new ArrayList<>();
         reservations.add((ReservationDTO.builder()
-                .reservationDate(LocalDate.MAX)
-                .startTime(LocalTime.MIN)
-                .endTime(LocalTime.MAX)
+                .reservationDate(OffsetDateTime.now().plusDays(1))
+                .startTime(OffsetDateTime.now().plusDays(1))
+                .endTime(OffsetDateTime.now().plusDays(20))
                 .build()));
         return ConferenceMailStructureDTO.builder()
                 .fullNameOrCompanyName("luka buziu")

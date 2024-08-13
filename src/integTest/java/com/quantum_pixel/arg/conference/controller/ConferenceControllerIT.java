@@ -6,7 +6,6 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import com.quantum_pixel.arg.AppITConfig;
 import com.quantum_pixel.arg.ConfigTest;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +38,14 @@ public class ConferenceControllerIT extends ConfigTest {
                     "email": "lukabuziu22@gmail.com",
                     "conferenceReservations" : [
                         {
-                            "reservationDate": "2024-11-16",
-                            "startTime": "14:00",
-                            "endTime": "16:00"
+                            "reservationDate": "2024-11-16T00:00:00.0Z",
+                            "startTime": "2024-11-16T14:00Z",
+                            "endTime": "2024-11-16T16:00Z"
                         },
                                 {
-                            "reservationDate": "2024-11-17",
-                            "startTime": "12:00",
-                            "endTime": "17:00"
+                            "reservationDate": "2024-11-17T00:00:00.0Z",
+                            "startTime": "2024-11-17T12:00Z",
+                            "endTime": "2024-11-17T17:00Z"
                         }
                     ],
                     "emailContent":"Some information about the email"

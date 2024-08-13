@@ -12,12 +12,12 @@ properties:
     minimum: 1
   checkInDate:
     type: string
-    format: date
-    description: Start date of the range for which to retrieve rooms
+    format: date-time
+    description: Start date of the range for which to retrieve rooms (UTC)
   checkOutDate:
     type: string
-    format: date
-    description: End date of the range for which to retrieve rooms
+    format: date-time
+    description: End date of the range for which to retrieve rooms (UTC)
   language:
     type: string
     maxLength: 7

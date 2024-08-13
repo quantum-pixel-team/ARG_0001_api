@@ -2,7 +2,7 @@ package com.quantum_pixel.arg.hotel.model.app_in_connect;
 
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RateDate {
-    private LocalDate date;
+    private LocalDateTime date;
     private boolean available;
     private int avail;
     private int minStay;

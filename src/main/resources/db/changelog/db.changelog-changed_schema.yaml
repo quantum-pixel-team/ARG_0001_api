@@ -68,3 +68,11 @@ databaseChangeLog:
                   type: VARCHAR(5)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: room_reservation_modify_date_column_type
+      author: indrit.vaka@gmail.com
+      changes:
+        - modifyDataType:
+            tableName: room_reservation
+            columnName: date
+            newDataType: datetime
