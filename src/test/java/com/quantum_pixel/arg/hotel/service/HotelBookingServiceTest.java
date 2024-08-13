@@ -101,7 +101,7 @@ class HotelBookingServiceTest {
                 .minPrice(Optional.of(50.0))
                 .maxPrice(Optional.of(500.0))
                 .roomFacilities(Set.of("wifi", "pool"))
-                .sort(RoomFiltersDTO.SortEnum.ASC);
+                .sort(Optional.of(RoomFiltersDTO.SortEnum.ASC));
     }
 
     @Test
