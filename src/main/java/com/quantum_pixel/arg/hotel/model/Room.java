@@ -32,6 +32,9 @@ public class Room {
     @Column(name = "rate_applies_to")
     private Integer rateAppliesTo;
 
+    @Column(name = "priority")
+    private Integer priority;
+
     @ManyToMany
     @JoinTable(name = "room_facility",
             joinColumns = @JoinColumn(name = "room_id"),

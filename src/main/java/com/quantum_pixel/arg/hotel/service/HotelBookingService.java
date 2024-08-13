@@ -37,6 +37,7 @@ import static com.quantum_pixel.arg.v1.web.model.RoomFiltersDTO.SortEnum.ASC;
 @Log4j2
 public class HotelBookingService {
 
+    public static final Sort.Order PRIORITY = Sort.Order.asc("priority");
     private final HotelRoomMapper roomMapper;
     private final RoomRepository roomRepository;
     private final RoomReservationRepository roomReservationRepository;
@@ -85,15 +86,14 @@ public class HotelBookingService {
                 .orElse(0);
 
         Sort sort = Sort.by(
-                filtersDTO.getSort() == ASC ? Sort.Order.asc("total_price") : Sort.Order.desc("total_price"),
+                filtersDTO.getSort().map(el -> el == ASC ? Sort.Order.asc("total_price") : Sort.Order.desc("total_price")).orElse(PRIORITY),
                 Sort.Order.desc("available_rooms"),
                 Sort.Order.desc("total_capacity")
         );
         var checkInDate = filtersDTO.getCheckInDate();
         var checkOutDate = filtersDTO.getCheckOutDate();
 
-        if (DateTimeUtils.toLocalDateTimeUtc(checkInDate).isBefore(DateTimeUtils.toLocalDateTimeUtc(OffsetDateTime.of(LocalDate.now(clock), LocalTime.MIDNIGHT, zoneOffset))))
-        {
+        if (DateTimeUtils.toLocalDateTimeUtc(checkInDate).isBefore(DateTimeUtils.toLocalDateTimeUtc(OffsetDateTime.of(LocalDate.now(clock), LocalTime.MIDNIGHT, zoneOffset)))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Check-in should not be on past!");
         }
         if (checkOutDate.isBefore(checkInDate)) {

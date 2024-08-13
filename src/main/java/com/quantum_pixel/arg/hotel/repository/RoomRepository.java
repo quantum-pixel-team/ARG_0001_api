@@ -23,6 +23,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                                  r.capacity,
                                                  r.rate_applies_to,
                                                  r.images_url,
+                                                 r.priority,
                                                  rr.date           AS reservation_date,
                                                  rr.current_price  AS reservation_current_price,
                                                  rr.available      AS reservation_available,
@@ -49,11 +50,12 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                              short_description,
                                              capacity * :numberOfRooms        AS total_capacity,
                                              images_url,
+                                             priority,
                                              SUM(reservation_price_per_night) AS total_price,
                                              MIN(reservation_available)       AS available_rooms,
                                              MAX(reservation_minimum_nights)  AS minimum_nights
                                       FROM agg_room_res
-                                      GROUP BY id, name,source_name, description, short_description, capacity, rate_applies_to, images_url),
+                                      GROUP BY id, name,source_name, description, short_description, capacity, rate_applies_to, images_url, priority),
                          res AS (SELECT r.id,
                                         r.name,
                                         r.short_description,
@@ -61,6 +63,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                         r.total_price,
                                         r.total_capacity,
                                         r.images_url,
+                                        r.priority,
                                         r.available_rooms,
                                         r.minimum_nights,
                                         COALESCE(JSONB_AGG(
@@ -79,9 +82,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                      (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
                                    AND (:available IS NULL OR (:available = true AND available_rooms >= 1 * :numberOfRooms) OR :available = false)
-                                 GROUP BY r.id, r.name, r.description, short_description, r.total_capacity, r.images_url, r.total_price,
-                                          r.available_rooms,
-                                          r.minimum_nights
+                                 GROUP BY r.id, r.name, r.description, short_description, r.total_capacity, r.images_url,
+                                          priority, r.total_price, r.available_rooms, r.minimum_nights
                                  HAVING (:roomFacilities) IS NULL
                                      OR ARRAY_AGG(f.name) @> :roomFacilities)
                     SELECT *
