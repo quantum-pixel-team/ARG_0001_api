@@ -9,7 +9,7 @@ properties:
     type: string
     format: date
     description: Date of the reservation
-    example: 2024-08-06
+    example: 2024-08-06T00:00z
   availableRooms:
     type: integer
     description: the number of available rooms for given date

@@ -174,7 +174,7 @@ paths:
             example: 625642
         - name: start-date
           description: Start date of the range for which to get room availability
-          example: 2024-07-19T00:00:00.0z
+          example: 2024-07-19T00:00z
           required: true
           in: query
           schema:
@@ -183,7 +183,7 @@ paths:
         - name: end-date
           in: query
           description: End date of the range for which to get room availability
-          example: 2025-10-20T00:00:00.0z
+          example: 2025-10-20T00:00z
           required: true
           schema:
             type: string
@@ -209,7 +209,7 @@ paths:
       parameters:
         - name: start-date
           description: Start date of the range for which to update room reservations
-          example: 2024-07-19
+          example: 2024-07-19T00:00z
           required: true
           in: query
           schema:
@@ -218,7 +218,7 @@ paths:
         - name: end-date
           in: query
           description: End date of the range for which to update room reservations
-          example: 2024-07-20
+          example: 2024-07-20T00:00z
           required: true
           schema:
             type: string
