@@ -75,7 +75,7 @@ class WhatsAppServiceTest {
         assertThat(requestBody)
                 .contains(reservationRequestDTO.getName())
                 .contains(reservationRequestDTO.getPhoneNumber())
-                .contains(reservationRequestDTO.getDate().toString())
+                .contains(reservationRequestDTO.getDate().toLocalDate().toString())
                 .contains(reservationRequestDTO.getMessage().orElseThrow());
     }
 }
