@@ -76,3 +76,16 @@ databaseChangeLog:
             tableName: room_reservation
             columnName: date
             newDataType: datetime
+  - changeSet:
+      id: room_add_priority
+      author: indrit.vaka@gmail.com
+      changes:
+        - addColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: priority
+                  type: integer
+                  defaultValueNumeric: "100"
+                  constraints:
+                    nullable: false
