@@ -87,5 +87,4 @@ required:
   - language
   - numberOfRooms
   - numberOfAdults
-  - sort
   - available
