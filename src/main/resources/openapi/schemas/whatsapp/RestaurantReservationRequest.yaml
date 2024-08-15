@@ -16,11 +16,11 @@ properties:
   date:
     type: string
     format: date
-    example: '2024-06-12'
+    example: '2024-06-12T00:00z'
   time:
     type: string
     format: time
-    example: '18:30:00'
+    example: '18:30:00z'
   message:
     type: string
     maxLength: 1500

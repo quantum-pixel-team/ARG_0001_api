@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.*;
 
 public class DateTimeUtils {
+    public static final ZoneId TIRANE_ZONE_ID = ZoneId.of("Europe/Tirane");
+
     private DateTimeUtils() {
     }
 
@@ -24,4 +26,8 @@ public class DateTimeUtils {
     public static OffsetTime toOffsetTimeUtc(LocalTime value) {
         return value.atOffset(ZoneOffset.UTC);
     }
+    public static LocalDateTime toLocalDateTimeTirane(OffsetDateTime dateTime) {
+        return dateTime.atZoneSameInstant(TIRANE_ZONE_ID).toLocalDateTime();
+    }
+
 }

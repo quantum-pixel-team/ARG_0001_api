@@ -15,4 +15,4 @@ IMAP_PORT: 993
 
 whatsapp:
   api:
-    phone_number_id: ${whatsapp_api_phone_number_id:341358742400656}
+    phone_number_id: ${whatsapp_api_phone_number_id:433727949813085}
