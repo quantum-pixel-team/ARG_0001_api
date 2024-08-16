@@ -29,7 +29,7 @@ public class MailIntegrationFlow {
 
     @Bean
     public IntegrationFlow imapMailFlow(@Value("imaps://${IMAP_USERNAME}:${IMAP_PASSWORD}@${IMAP_HOST}:${IMAP_PORT}/inbox") String storeUrl) {
-       
+       log.info("[MailIntegrationFlow]  initialing ");
         return IntegrationFlow
                 .from(Mail.imapIdleAdapter(storeUrl)
                         .searchTermStrategy(this::unreadEmails)
@@ -48,20 +48,23 @@ public class MailIntegrationFlow {
 
     @Bean
     public IntegrationFlow processImapMessages() {
+        log.info("[MailIntegrationFlow]  grouping  ");
         return IntegrationFlow.from("imapIdleChannel")
                 .aggregate(aggregatorSpec -> aggregatorSpec.correlationStrategy(message -> 1)
                         .releaseStrategy(group -> group.size() >= 10)
                         .groupTimeout(10_000L)
                         .sendPartialResultOnExpiry(true))
                 .channel(MessageChannels.queue("aggregateChannel"))
+
                 .get();
     }
 
     @Bean
     public IntegrationFlow processAggregatedMessages() {
+        log.info("[MailIntegrationFlow]  executing  ");
         return IntegrationFlow.from("aggregateChannel")
                 .handle(message -> this.hotelBookingService
-                        .triggerRoomReservationUpdate(OffsetDateTime.now(clock), OffsetDateTime.now().plusMonths(3L), Optional.empty()))
+                        .triggerRoomReservationUpdate(OffsetDateTime.now(clock), OffsetDateTime.now(clock).plusMonths(3L), Optional.empty()))
                 .get();
     }
 }

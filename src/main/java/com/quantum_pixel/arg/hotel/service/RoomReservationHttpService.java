@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.quantum_pixel.arg.hotel.model.app_in_connect.Rate;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoomReservationHttpService {
 
     private final RestTemplate restTemplate;
@@ -32,7 +34,7 @@ public class RoomReservationHttpService {
 
         String url = "https://app.inn-connect.com/book2/Book/book";
         HttpEntity<String> entity = getStringHttpEntity(roomId, startDate, endDate);
-
+        log.info("[RoomReservationHttpService] entity: {}", entity);
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
         String responseBody = response.getBody();
         if (responseBody == null) throw new BadRequestException("Invalid response");

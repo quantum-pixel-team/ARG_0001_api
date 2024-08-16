@@ -50,7 +50,8 @@ public class HotelBookingService {
     public void triggerRoomReservationUpdate(OffsetDateTime startDate, OffsetDateTime endDate, Optional<List<Long>> roomsId) {
         boolean isStartDateGreaterThanEndDate = startDate.isAfter(endDate);
         if (isStartDateGreaterThanEndDate) throw new PastDateException("Start date should be less than end date");
-        log.info("Getting room reservation details");
+        log.info("[HotelBookingService] Getting room reservation details");
+
 
         List<Room> rooms = roomsId.map(roomRepository::findAllById).orElseGet(roomRepository::findAll);
         if (rooms.isEmpty()) {
