@@ -13,7 +13,7 @@ services:
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       whatsapp_api_token: ${whatsapp_api_token}
-      GMAIL_EMAIL: ${GMAIL}
+      GMAIL: ${GMAIL}
       GMAIL_IMAP: ${GMAIL_IMAP}
       GMAIL_PASSWORD: ${GMAIL_PASSWORD}
     volumes:
