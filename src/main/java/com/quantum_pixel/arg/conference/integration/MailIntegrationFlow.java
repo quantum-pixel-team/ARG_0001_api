@@ -6,6 +6,7 @@ import jakarta.mail.Folder;
 import jakarta.mail.search.FlagTerm;
 import jakarta.mail.search.SearchTerm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.config.EnableIntegration;
@@ -21,11 +22,14 @@ import java.util.Optional;
 @EnableIntegration
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MailIntegrationFlow {
     private final HotelBookingService hotelBookingService;
     private final Clock clock;
+
     @Bean
     public IntegrationFlow imapMailFlow(@Value("imaps://${IMAP_USERNAME}:${IMAP_PASSWORD}@${IMAP_HOST}:${IMAP_PORT}/inbox") String storeUrl) {
+       
         return IntegrationFlow
                 .from(Mail.imapIdleAdapter(storeUrl)
                         .searchTermStrategy(this::unreadEmails)
