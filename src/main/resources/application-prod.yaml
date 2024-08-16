@@ -1,4 +1,13 @@
-allowed-origins: http://62.171.153.17,http://62.171.153.17:4200,http://62.171.153.17:4100,http://localhost:4200
+server:
+  shutdown: graceful
+  port: 8080
+  ssl:
+    key-store: ${security_key}
+    key-store-password: ${security_password}
+    key-store-type: PKCS12
+    key-alias: tomcat
+
+allowed-origins: http://45.90.121.140,http://45.90.121.140:80,http://45.90.121.140:443,http://quantum-pixel.eu,https://quantum-pixel.eu
 
 # Email Config
 

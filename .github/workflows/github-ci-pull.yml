@@ -47,7 +47,7 @@ jobs:
       SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
 
   cd-prod:
-    needs: cd-dev
+    needs: ci
     #    if: github.event_name  == 'push'
     uses: quantum-pixel-team/ci-cd-templates/.github/workflows/common-cd.yml@master
     with:
