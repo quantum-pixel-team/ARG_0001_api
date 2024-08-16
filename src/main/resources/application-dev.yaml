@@ -8,8 +8,8 @@ EMAIL_USERNAME: some03642@gmail.com
 EMAIL_PASSWORD: efguwlscpdvgudst
 VERIFY_EMAIL_HOST: http://localhost:8080
 
-IMAP_USERNAME: some03642%40gmail.com
-IMAP_PASSWORD: efguwlscpdvgudst
+IMAP_USERNAME: testqpt8%40gmail.com
+IMAP_PASSWORD: lbzhzuruwvudrbem
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
 

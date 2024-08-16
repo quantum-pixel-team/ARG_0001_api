@@ -15,7 +15,6 @@ import org.springframework.integration.mail.dsl.Mail;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -47,8 +46,8 @@ public class MailIntegrationFlow {
     public IntegrationFlow processImapMessages() {
         return IntegrationFlow.from("imapIdleChannel")
                 .aggregate(aggregatorSpec -> aggregatorSpec.correlationStrategy(message -> 1)
-                        .releaseStrategy(group -> group.size() >= 5)
-                        .groupTimeout(5000L)
+                        .releaseStrategy(group -> group.size() >= 10)
+                        .groupTimeout(10_000L)
                         .sendPartialResultOnExpiry(true))
                 .channel(MessageChannels.queue("aggregateChannel"))
                 .get();
