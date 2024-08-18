@@ -1,16 +1,11 @@
-ssl:
-  bundle:
-    jks:
-      server:
-        key:
-          alias: "server"
-        keystore:
-          location: ${security_key}
-          password:  ${security_password}
-          type: "PKCS12"
-    client:
-      truststore:
-        certificate: ${client_file}
+server:
+  shutdown: graceful
+  port: 8080
+  ssl:
+    key-store: ${security_key}
+    key-store-password: ${security_password}
+    key-store-type: PKCS12
+    key-alias: tomcat
 
 
 allowed-origins: http://45.90.121.140,http://45.90.121.140:80,http://45.90.121.140:443,http://quantum-pixel.eu,https://quantum-pixel.eu
