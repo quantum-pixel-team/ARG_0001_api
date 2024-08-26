@@ -15,7 +15,9 @@ services:
       whatsapp_api_token: ${whatsapp_api_token}
       security_password: ${security_password}
       client_file: ${client_file}
-
+      GMAIL: ${GMAIL}
+      GMAIL_IMAP: ${GMAIL_IMAP}
+      GMAIL_PASSWORD: ${GMAIL_PASSWORD}
     volumes:
       - ${ARG_SPRING_BOOT_LOGS_PATH}:/app/logs
       - ${security_key_file}:/etc/ssl/keystore.p12
