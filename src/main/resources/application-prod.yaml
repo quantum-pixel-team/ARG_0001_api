@@ -27,3 +27,7 @@ IMAP_PORT: 993
 whatsapp:
   api:
     phone_number_id: ${whatsapp_api_phone_number_id:433727949813085}
+logging:
+  file:
+    path: ${ARG_SPRING_BOOT_LOGS_PATH:./logs}
+  config: classpath:logback-spring-dev.xml
