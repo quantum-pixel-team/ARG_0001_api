@@ -74,6 +74,7 @@ public class HotelBookingService {
                     Optional<Room> room = roomRepository.findById(newRoom.getId());
                     newRoom.setImagesUrl(room.map(Room::getImagesUrl).orElse(null));
                     newRoom.setFacilities(room.map(Room::getFacilities).orElse(Collections.emptySet()));
+                    newRoom.setPriority(room.map(Room::getPriority).orElse(100));
                     return newRoom;
                 })
                 .toList();
