@@ -13,14 +13,16 @@ allowed-origins: http://45.90.121.140,http://45.90.121.140:80,http://45.90.121.1
 
 EMAIL_HOST: smtp.gmail.com
 EMAIL_PORT: 587
-EMAIL_USERNAME: some03642@gmail.com
-EMAIL_PASSWORD: efguwlscpdvgudst
+EMAIL_USERNAME: ${GMAIL}
+EMAIL_PASSWORD: ${GMAIL_PASSWORD}
 VERIFY_EMAIL_HOST: http://localhost:8080
+RESERVATION_EMAIL_RECEIVER: reservation@aragosta.al
 
-IMAP_USERNAME: some03642%40gmail.com
-IMAP_PASSWORD: efguwlscpdvgudst
+IMAP_USERNAME: ${GMAIL_IMAP}
+IMAP_PASSWORD: ${GMAIL_PASSWORD}
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
+
 
 whatsapp:
   api:
