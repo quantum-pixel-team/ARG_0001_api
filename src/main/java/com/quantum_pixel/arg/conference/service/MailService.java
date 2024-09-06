@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MailService {
-    private static final String email = "lukabuziu42@gmail.com";
+    @Value("${RESERVATION_EMAIL_RECEIVER}")
+    private  String email ;
 
     private final JavaMailSender javaMailSender;
 
