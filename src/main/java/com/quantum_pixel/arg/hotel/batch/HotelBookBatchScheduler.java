@@ -15,7 +15,7 @@ public class HotelBookBatchScheduler {
 
     private final Job job;
 
-    @Scheduled(cron = "* 0 * * * *")
+    @Scheduled(cron = "* 1 * * * *")
     public void performBatchJob() throws Exception {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
