@@ -1,0 +1,45 @@
+type: object
+description: A common error response
+properties:
+    timestamp:
+        type: object
+        description: Timestamp where error occur
+    errorCode:
+        type: integer
+        description: Error Code
+    errorMessage:
+        type: string
+        description: Message
+    errorStacktrace:
+        type: object
+        description: stacktrace
+    errorLevel:
+        type: string
+        description: Level of error
+        default: info
+        enum:
+            - info
+            - warning
+            - error
+            - critical
+    errorType:
+        type: string
+        description: Type of error
+        enum:
+            - functional
+            - technical
+    documentationUrl:
+        type: string
+        description: Url of the documenation
+    tips:
+        type: string
+        description: Tips/help for adressing the error
+required:
+    - timestamp
+    - errorCode
+    - errorMessage
+    - errorLevel
+    - errorType
+    - documentationUrl
+    - tips
+    - errorStacktrace

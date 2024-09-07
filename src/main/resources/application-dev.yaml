@@ -7,8 +7,14 @@ EMAIL_PORT: 587
 EMAIL_USERNAME: some03642@gmail.com
 EMAIL_PASSWORD: efguwlscpdvgudst
 VERIFY_EMAIL_HOST: http://localhost:8080
+RESERVATION_EMAIL_RECEIVER: lukabuziu42@gmail.com
 
 IMAP_USERNAME: some03642%40gmail.com
 IMAP_PASSWORD: efguwlscpdvgudst
 IMAP_HOST: imap.gmail.com
 IMAP_PORT: 993
+
+logging:
+  file:
+    path: ${ARG_SPRING_BOOT_LOGS_PATH:./logs}
+  config: classpath:logback-spring-dev.xml

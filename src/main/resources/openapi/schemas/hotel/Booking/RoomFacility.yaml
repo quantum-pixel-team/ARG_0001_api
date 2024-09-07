@@ -1,0 +1,20 @@
+type: object
+description: Room facility
+properties:
+  name:
+    type: string
+    description: Name of the facility
+    example: Wifi
+  iconName:
+    type: string
+    description: Represents the icon name from Google Fonts
+    example: wifi
+  usageCount:
+    type: integer
+    description: The number of times this facility is used on filters
+    example: 5
+
+required:
+  - name
+  - iconName
+  - usageCount

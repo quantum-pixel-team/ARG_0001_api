@@ -1,0 +1,90 @@
+type: object
+properties:
+  pageIndex:
+    type: integer
+    description: Number of the page
+    example: 0
+    minimum: 0
+  pageSize:
+    type: integer
+    description: The size of the page
+    example: 5
+    minimum: 1
+  checkInDate:
+    type: string
+    format: date-time
+    description: Start date of the range for which to retrieve rooms (UTC)
+  checkOutDate:
+    type: string
+    format: date-time
+    description: End date of the range for which to retrieve rooms (UTC)
+  language:
+    type: string
+    maxLength: 7
+    example: en
+    description: The language code
+  numberOfRooms:
+    type: integer
+    format: int16
+    description: Number of rooms to reserve
+    example: 1
+    minimum: 1
+  numberOfAdults:
+    type: integer
+    format: int16
+    description: Number of adults
+    example: 1
+    minimum: 1
+  childrenAges:
+    type: array
+    description: Age of each child
+    default: []
+    items:
+      type: integer
+  roomTypes:
+    type: array
+    description: Filter rooms by types (comma-separated values)
+    example: [ "single", "double", "suite" ]
+    items:
+      type: string
+    uniqueItems: true
+  minPrice:
+    type: number
+    format: double
+    description: Minimum price to filter rooms
+    example: 50
+  maxPrice:
+    type: number
+    format: double
+    description: Maximum price to filter rooms
+    example: 500
+  roomFacilities:
+    type: array
+    description: Filter rooms by facilities (comma-separated values)
+    example: [ "wifi", "parking", "pool" ]
+    items:
+      type: string
+    uniqueItems: true
+  available:
+    type: boolean
+    description: Get only available rooms
+    example: false
+    default: false
+  sort:
+    type: string
+    description: Sort order by price
+    enum:
+      - ASC
+      - DESC
+    default: ASC
+    example: ASC
+
+required:
+  - pageIndex
+  - pageSize
+  - checkInDate
+  - checkOutDate
+  - language
+  - numberOfRooms
+  - numberOfAdults
+  - available

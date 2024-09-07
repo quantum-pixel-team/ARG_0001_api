@@ -112,32 +112,137 @@ paths:
           description: Bad Request - Invalid input
         '404':
           description: Not Found - Items not found
+  /api/v1/hotel/rooms/all:
+    post:
+      summary: Retrieve a list of available rooms for a specified date range
+      operationId: retrieveAvailableRoomsForDateRange
+      tags:
+        - HotelBooking
+      parameters:
+        - name: timezone-offset
+          description: The timezone offset the client browser is on, formatted as ±HH:mm
+          in: header
+          required: true
+          schema:
+            type: string
+            format: timezone-offset
+            example: "+02:00"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoomFilters"
+      responses:
+        '200':
+          description: A list of rooms available within the specified date range
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedRoom"
+        '400':
+          $ref: './responses/BadRequest.yaml'
+        '500':
+          $ref: './responses/UnexpectedError.yaml'
   /api/v1/hotel/rooms:
+    post:
+      summary: Trigger an update for all rooms (Loads all room from app_in_connect into DB)
+      operationId: triggerRoomUpdate
+      tags:
+        - HotelBooking
+      responses:
+        '200':
+          description: Successful update of rooms
+        '400':
+          description: Bad request, invalid date format or missing required parameters
+        '500':
+          description: Internal server error
+  /api/v1/hotel/rooms/reservation:
     get:
-      summary: Get list of rooms
-      operationId: getRoomsForGivenRangeOfDate
+      summary: Room Availability
+      operationId: getRoomAvailability
+      tags:
+        - HotelBooking
+      parameters:
+        - name: room-id
+          description: the room id
+          required: true
+          in: query
+          schema:
+            type: integer
+            format: int64
+            example: 625642
+        - name: start-date
+          description: Start date of the range for which to get room availability
+          example: 2024-07-19T00:00z
+          required: true
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end-date
+          in: query
+          description: End date of the range for which to get room availability
+          example: 2025-10-20T00:00z
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Room Availability
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/RoomAvailability"
+        '400':
+          $ref: './responses/BadRequest.yaml'
+        '500':
+          $ref: './responses/UnexpectedError.yaml'
+
+    post:
+      summary: Trigger an update of room reservations only (rooms are not updated)
+      operationId: triggerRoomReservationUpdate
       tags:
         - HotelBooking
       parameters:
         - name: start-date
+          description: Start date of the range for which to update room reservations
+          example: 2024-07-19T00:00z
+          required: true
           in: query
           schema:
             type: string
             format: date
         - name: end-date
           in: query
+          description: End date of the range for which to update room reservations
+          example: 2024-07-20T00:00z
+          required: true
           schema:
             type: string
             format: date
+        - name: rooms-id
+          description: The id of all rooms to trigger an reservation update
+          in: query
+          required: false
+          example: [ 1,5,625646 ]
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+            default: [ ]
       responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/RoomPrototype"
+        '200':
+          description: Successful update of room reservations
+        '400':
+          description: Bad request, invalid date format or missing required parameters
+        '404':
+          description: Not found, no reservations found for the given date range or no room present
+        '500':
+          description: Internal server error
 
   /api/v1/contact-us/conference-mail-reservation:
     post:
@@ -203,6 +308,14 @@ paths:
             type: string
             enum: [ upcoming, recent, all ]
             default: all
+        - name: language
+          in: query
+          description: The language code
+          schema:
+            type: string
+            maxLength: 7
+            example: en
+          required: true
 
       responses:
         '200':
@@ -254,8 +367,14 @@ components:
       $ref: "./schemas/CreateUser.yaml"
     UpdateUserRequest:
       $ref: "./schemas/UpdateUserRequest.yaml"
-    RoomPrototype:
-      $ref: "./schemas/hotel/Booking/RoomPrototype.yaml"
+    Room:
+      $ref: "./schemas/hotel/Booking/Room.yaml"
+    RoomFilters:
+      $ref: "./schemas/hotel/Booking/RoomFilters.yml"
+    RoomAvailability:
+      $ref: "./schemas/hotel/Booking/RoomAvailability.yml"
+    PaginatedRoom:
+      $ref: "./schemas/hotel/Booking/PaginatedRoom.yml"
     ContactUsMailStructure:
       $ref: "./schemas/hotel/Booking/Mail/ContactUsMailStructure.yaml"
     ConferenceMailStructure:

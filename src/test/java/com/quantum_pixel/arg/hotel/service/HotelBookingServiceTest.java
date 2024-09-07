@@ -1,115 +1,229 @@
 package com.quantum_pixel.arg.hotel.service;
 
-import com.quantum_pixel.arg.hotel.exception.TableStructureChangedException;
+import com.quantum_pixel.arg.hotel.exception.PastDateException;
+import com.quantum_pixel.arg.hotel.model.Room;
+import com.quantum_pixel.arg.hotel.model.RoomReservation;
+import com.quantum_pixel.arg.hotel.model.RoomReservationId;
+import com.quantum_pixel.arg.hotel.model.dao.RoomDao;
+import com.quantum_pixel.arg.hotel.model.dao.RoomReservationDao;
+import com.quantum_pixel.arg.hotel.repository.RoomRepository;
+import com.quantum_pixel.arg.hotel.repository.RoomReservationRepository;
 import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapper;
-import com.quantum_pixel.arg.hotel.web.mapper.HotelRoomMapperImpl;
-import com.quantum_pixel.arg.v1.web.model.RoomPrototypeDTO;
-import com.quantum_pixel.arg.v1.web.model.RoomReservationDTO;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.quantum_pixel.arg.v1.web.model.RoomFiltersDTO;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.time.LocalDate;
+import java.time.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class HotelBookingServiceTest {
 
     @Mock
-    private Connection connection;
+    private RoomScraperService roomScraperService;
 
-    HotelRoomMapper roomMapper = new HotelRoomMapperImpl();
-    private final HotelBookingService sut = new HotelBookingService(roomMapper);
+    @Mock
+    private HotelRoomMapper roomMapper;
 
-    @Test
-    void getRoomReservationsForGivenRangeOfDate_table_structure_changed() throws IOException {
-        try (MockedStatic<Jsoup> sutUtil = Mockito.mockStatic(Jsoup.class)) {
+    @Mock
+    private RoomRepository roomRepository;
+    @Mock
+    private ReservationUrlBuilder reservationUrlBuilder;
 
-            // given
-            Document document = new Document("");
-            sutUtil.when(() -> Jsoup.connect(any())).thenReturn(connection);
-            when(connection.get()).thenReturn(document);
+    @InjectMocks
+    private HotelBookingService sut;
+    @Mock
+    private RoomReservationRepository roomReservationRepository;
+    private final Clock clock = Clock.system(ZoneOffset.UTC);
 
-            Element table = new Element("table");
-            table.attr("id", "new table id");
-            document.appendChild(table);
-            Optional<LocalDate> startDate = Optional.empty();
-            Optional<LocalDate> endDate = Optional.empty();
+    private Room room;
+    RoomReservationDao roomReservationDao;
+    RoomFiltersDTO.RoomFiltersDTOBuilder filtersDTO;
 
-            // when
-            assertThrows(TableStructureChangedException.class,
-                    () -> sut.getRoomReservationsForGivenRangeOfDate(startDate, endDate));
+    @BeforeEach
+    void setUp() {
 
-        }
+        // Inject the fixed clock into the HotelBookingService
+        sut = new HotelBookingService(roomMapper, roomRepository, roomReservationRepository, roomScraperService, reservationUrlBuilder, clock);
+
+        roomReservationDao = RoomReservationDao.builder()
+                .roomId(1L)
+                .date(OffsetDateTime.now())
+                .currentPrice(100.0)
+                .available(1)
+                .minimumNights(1)
+                .build();
+
+        room = new Room();
+        room.setId(1L);
+        room.setName("Room 1");
+        room.setPrice(100.0f);
+        room.setCapacity(2);
+        room.setRateAppliesTo(2);
+        room.setRoomReservations(Stream.of(new RoomReservation())
+                .peek(res -> {
+                    res.setRoom(room);
+                    res.setId(new RoomReservationId(1L, LocalDateTime.now()));
+                    res.setCurrentPrice(100.0f);
+                    res.setAvailable(1);
+                    res.setMinimumNights(1);
+                }).collect(Collectors.toSet()));
+
+        filtersDTO = RoomFiltersDTO.builder()
+                .pageIndex(0)
+                .pageSize(5)
+                .checkInDate(OffsetDateTime.now().plusDays(1))
+                .checkOutDate(OffsetDateTime.now().plusDays(2))
+                .numberOfRooms(1)
+                .numberOfAdults(1)
+                .childrenAges(List.of(7, 8))
+                .roomTypes(Set.of("single", "suite"))
+                .minPrice(Optional.of(50.0))
+                .maxPrice(Optional.of(500.0))
+                .roomFacilities(Set.of("wifi", "pool"))
+                .sort(Optional.of(RoomFiltersDTO.SortEnum.ASC));
     }
 
     @Test
-    void getRoomReservationsForGivenRangeOfDate_ok() throws IOException {
+    void triggerRoomReservationUpdate_success() {
+        // Arrange
+        var startDate = OffsetDateTime.now().minusDays(1);
+        var endDate = OffsetDateTime.now();
+        List<Long> roomIds = List.of(1L);
+
+
+        when(roomRepository.findAllById(roomIds)).thenReturn(List.of(room));
+        when(roomMapper.toReservationEntities(any())).thenReturn(room.getRoomReservations().stream().toList());
+        // Act
+        sut.triggerRoomReservationUpdate(startDate, endDate, Optional.of(roomIds));
+
+        // Assert
+        verify(roomRepository, times(1)).findAllById(roomIds);
+        verify(roomReservationRepository, times(1)).saveAll(room.getRoomReservations().stream().toList());
+
+        assertFalse(room.getRoomReservations().isEmpty());
+        Assertions.assertEquals(1, room.getRoomReservations().size());
+        room.getRoomReservations().forEach(res -> Assertions.assertEquals(room, res.getRoom()));
+    }
+
+    @Test
+    void triggerRoomReservationUpdate_noRoomsOnDb() {
+        // Arrange
+        var startDate = OffsetDateTime.now().minusDays(1);
+        var endDate = OffsetDateTime.now();
+
+        when(roomRepository.findAll()).thenReturn(Collections.emptyList());
+        Optional<List<Long>> ids = Optional.empty();
+
+        // Act
+        assertThrows(HttpClientErrorException.class, () -> sut.triggerRoomReservationUpdate(startDate, endDate, ids));
+
+        // Assert
+        verify(roomRepository, times(1)).findAll();
+
+    }
+
+    @Test
+    void triggerRoomReservationUpdate_startDateAfterEndDate() {
+        // Arrange
+        var startDate = OffsetDateTime.now().plusDays(1);
+        var endDate = OffsetDateTime.now();
+        Optional<List<Long>> ids = Optional.empty();
+        // Act & Assert
+        assertThrows(PastDateException.class,
+                () -> sut.triggerRoomReservationUpdate(startDate, endDate, ids));
+
+    }
+
+    @Test
+    void testTriggerRoomUpdate() {
         // given
-        try (MockedStatic<Jsoup> sutUtil = Mockito.mockStatic(Jsoup.class)) {
+        var mockRoom = mock(RoomDao.class);
+        when(roomScraperService.getAllRooms()).thenReturn(List.of(mockRoom));
+        when(roomMapper.toRoomEntities(any())).thenReturn(List.of(room));
+        when(roomRepository.findById(any())).thenReturn(Optional.ofNullable(room));
+        // when
+        sut.triggerRoomUpdate();
 
-            Document document = mock(Document.class);
-            sutUtil.when(() -> Jsoup.connect(any())).thenReturn(connection);
-            when(connection.get()).thenReturn(document);
-            Element mockTable = mock(Element.class);
-            when(document.getElementById("room-chart")).thenReturn(mockTable);
+        // then
+        verify(roomScraperService, times(1)).getAllRooms();
+        verify(roomRepository, times(1)).saveAll(List.of(room));
 
-            Element mockRow = new Element("tr");
-            mockRow.attr("data-prev-day-rate", "40");
-
-            Element cell = new Element("td");
-            cell.attr("data-tooltip", "date " + LocalDate.now());
-            Element cellHeader = new Element("td");
-
-            Element p = new Element("p");
-            cellHeader.appendChild(p);
-            Element cell2 = new Element("td");
-            cell2.attr("data-tooltip", "date " + LocalDate.now().plusDays(1));
-            Element a = new Element("a");
-            a.attr("href", "url_to_room_reservation");
-            a.text("150");
-            cell2.appendChild(a);
-            mockRow.appendChild(cellHeader);
-            mockRow.appendChild(cell);
-            mockRow.appendChild(cell2);
-            Elements rows = new Elements(mockRow, mockRow);
-            when(mockTable.select("tr")).thenReturn(rows);
-
-            // when
-            List<RoomPrototypeDTO> roomReservations = sut.getRoomReservationsForGivenRangeOfDate(Optional.empty(), Optional.empty());
-
-            // then
-
-            RoomReservationDTO reservationDetails = roomReservations.get(0).getRoomReservations().get(0);
-
-            assertThat(reservationDetails)
-                    .extracting(RoomReservationDTO::getDate)
-                    .isEqualTo(LocalDate.now());
-            assertThat(reservationDetails)
-                    .extracting(RoomReservationDTO::getSold)
-                    .withFailMessage("This room should be sold on given date since a tag is null")
-                    .isEqualTo(true);
-            assertThat(roomReservations.get(0).getRoomReservations().get(1))
-                    .extracting(RoomReservationDTO::getSold)
-                    .isEqualTo(false);
-        }
+    }
 
 
+    @Test
+    void testGetPaginatedRooms_invalidCheckInRange() {
+        filtersDTO.checkInDate(OffsetDateTime.of(LocalDate.of(2024, 7, 19), LocalTime.MIDNIGHT, ZoneOffset.UTC))
+                .checkOutDate(OffsetDateTime.of(LocalDate.of(2024, 7, 18), LocalTime.MIDNIGHT, ZoneOffset.UTC))
+                .build(); // Invalid date range
+
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO.build());
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
+        assertEquals("Check-in should not be on past!", thrown.getReason());
+    }
+    @Test
+    void testGetPaginatedRooms_invalidDateInRange() {
+        filtersDTO.checkInDate(OffsetDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT, ZoneOffset.UTC))
+                .checkOutDate(OffsetDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT, ZoneOffset.UTC))
+                .build(); // Invalid date range
+
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO.build());
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
+        assertEquals("Check-in should not be same with checkout!", thrown.getReason());
+    }
+    @Test
+    void testGetPaginatedRooms_invalidPriceRange() {
+        RoomFiltersDTO filtersDTO = this.filtersDTO
+                .minPrice(Optional.of(500.0))
+                .numberOfAdults(1)
+                .numberOfRooms(1)
+                .maxPrice(Optional.of(100.0)).build();
+
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, thrown.getStatusCode());
+        assertEquals("Min price should be less than max price!", thrown.getReason());
+    }
+
+    @Test
+    void testGetPaginatedRooms_noRoomsFound() {
+
+        when(roomRepository.getRoomAggregated(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Page.empty());
+
+        // Verify exception
+        ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
+            sut.getPaginatedRooms(ZoneOffset.UTC, filtersDTO.build());
+        });
+        assertEquals(HttpStatus.NOT_FOUND, thrown.getStatusCode());
+        assertEquals("No rooms available on Database", thrown.getReason());
     }
 }

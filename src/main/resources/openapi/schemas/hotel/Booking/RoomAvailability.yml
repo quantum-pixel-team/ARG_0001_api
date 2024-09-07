@@ -1,0 +1,21 @@
+type: object
+description: Room Reservation details
+properties:
+  roomId:
+    type: integer
+    format: long
+    description: room id
+  date:
+    type: string
+    format: date
+    description: Date of the reservation
+    example: 2024-08-06T00:00z
+  availableRooms:
+    type: integer
+    description: the number of available rooms for given date
+    example: 1
+
+required:
+  - roomId
+  - date
+  - availableRooms

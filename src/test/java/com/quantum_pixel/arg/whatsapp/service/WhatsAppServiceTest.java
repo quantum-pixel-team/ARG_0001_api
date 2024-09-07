@@ -13,8 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -49,8 +48,8 @@ class WhatsAppServiceTest {
                 .phoneNumber("0987654321")
                 .to("355676923049")
                 .guests(4)
-                .date(LocalDate.parse("2023-07-01"))
-                .time(LocalTime.parse("19:00"))
+                .date(OffsetDateTime.of(LocalDate.parse("2023-07-01").atStartOfDay(), ZoneOffset.UTC))
+                .time(OffsetTime.of(LocalTime.parse("19:00"), ZoneOffset.UTC))
                 .message(Optional.of("Please arrange a corner table"))
                 .build();
 
@@ -76,7 +75,7 @@ class WhatsAppServiceTest {
         assertThat(requestBody)
                 .contains(reservationRequestDTO.getName())
                 .contains(reservationRequestDTO.getPhoneNumber())
-                .contains(reservationRequestDTO.getDate().toString())
+                .contains(reservationRequestDTO.getDate().toLocalDate().toString())
                 .contains(reservationRequestDTO.getMessage().orElseThrow());
     }
 }

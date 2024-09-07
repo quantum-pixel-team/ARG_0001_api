@@ -1,0 +1,64 @@
+type: object
+description: Hotel Room prototype
+properties:
+  id:
+    type: integer
+    format: int64
+    description: ID of the room on the web interface
+    example: 1
+  name:
+    type: string
+    description: Name of the room
+    example: Suite with Sea View
+  description:
+    type: string
+    description: Description of the room
+    example: Spacious suite with a panoramic sea view
+  shortDescription:
+    type: string
+    description: Description of the room
+    example: Spacious suite with a panoramic sea view
+  totalPrice:
+    type: number
+    format: float
+    description: Total price of the room for given dates
+    example: 140.0
+  totalCapacity:
+    type: integer
+    description: Total capacity of all rooms
+    example: 2
+  imagesUrl:
+    type: array
+    description: URLs of images associated with the room
+    items:
+      type: string
+    example:
+      - https://example.com/image1.jpg
+      - https://example.com/image2.jpg
+  availableRooms:
+    type: integer
+    description: The number of available rooms for given dates
+    example: 1
+  minimumNights:
+    type: integer
+    description: Minimum nights that one room can be booked for given dates
+  facilities:
+    type: array
+    description: Room facilities
+    items:
+      $ref: "RoomFacility.yaml"
+  bookNowUrl:
+    type: string
+    description: The URL to book the room for given dates/filters
+required:
+  - id
+  - name
+  - description
+  - totalPrice
+  - totalCapacity
+  - imagesUrl
+  - availableRooms
+  - minimumNights
+  - facilities
+  - bookNowUrl
+  - shortDescription

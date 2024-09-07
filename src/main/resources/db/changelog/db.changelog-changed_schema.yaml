@@ -10,22 +10,82 @@ databaseChangeLog:
                   name: email
                   type: varchar(254)
   - changeSet:
-      id: rename column
-      author: luka.buziu22@gmail.com
+      id: facility_add_font_icon_name
+      author: indrit.vaka@gmail.com
       changes:
-        - renameColumn:
-            tableName: room_reservations
-            oldColumnName: checkoutUrl
-            newColumnName: checkout_url
+        - addColumn:
+            tableName: facility
+            columns:
+              - column:
+                  name: icon_name
+                  type: varchar(100)
   - changeSet:
-      id: rename columns
-      author: luka.buziu22@gmail.com
+      id: room_add_source_name
+      author: indrit.vaka@gmail.com
       changes:
-        - renameColumn:
-            tableName: room_reservations
-            oldColumnName: currentPrice
-            newColumnName: current_price
-        - renameColumn:
-            tableName: room_reservations
-            oldColumnName: roomPrice
-            newColumnName: room_price
+        - addColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: source_name
+                  type: varchar(255)
+  - changeSet:
+      id: room_remove_type
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: type
+  - changeSet:
+      id: room_drop_source_name
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: source_name
+  - changeSet:
+      id: room_drop_description
+      author: indrit.vaka@gmail.com
+      changes:
+        - dropColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: description
+  - changeSet:
+      id: events_add_language
+      author: indrit.vaka@gmail.com
+      changes:
+        - addColumn:
+            tableName: events
+            columns:
+              - column:
+                  name: language
+                  type: VARCHAR(5)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: room_reservation_modify_date_column_type
+      author: indrit.vaka@gmail.com
+      changes:
+        - modifyDataType:
+            tableName: room_reservation
+            columnName: date
+            newDataType: datetime
+  - changeSet:
+      id: room_add_priority
+      author: indrit.vaka@gmail.com
+      changes:
+        - addColumn:
+            tableName: room
+            columns:
+              - column:
+                  name: priority
+                  type: integer
+                  defaultValueNumeric: "100"
+                  constraints:
+                    nullable: false

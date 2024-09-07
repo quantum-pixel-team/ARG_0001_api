@@ -1,4 +1,4 @@
-FROM  amazoncorretto:17-alpine AS build
+FROM  amazoncorretto:21-alpine AS build
 WORKDIR /app
 
 HEALTHCHECK --interval=10s --start-period=30s \
