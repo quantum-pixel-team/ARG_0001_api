@@ -1,4 +1,5 @@
 <configuration>
+    <property name="COMPONENT" value="API" />
     <!-- Console Appender (Colored Text) -->
     <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -38,6 +39,8 @@
                     <fieldName>stacktrace</fieldName>
                 </stackTrace>
                 <mdc/>
+                <!-- Caller Data (captures file, line number, class, and method) -->
+                <callerData/>
             </providers>
         </encoder>
     </appender>
