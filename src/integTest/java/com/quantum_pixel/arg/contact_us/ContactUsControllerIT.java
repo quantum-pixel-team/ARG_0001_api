@@ -30,6 +30,7 @@ public class ContactUsControllerIT extends ConfigTest {
             .withPerMethodLifecycle(true);
 
 
+
     @Test
     void mailShouldSentSuccessfully() {
         String payload = """
@@ -39,6 +40,7 @@ public class ContactUsControllerIT extends ConfigTest {
                     "message":"Some information about the email"
                 }
                 """;
+
 
         given()
                 .contentType(ContentType.JSON)

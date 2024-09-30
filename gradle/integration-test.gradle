@@ -47,6 +47,7 @@ dependencies {
     integTestCompileOnly 'org.projectlombok:lombok'
     integTestAnnotationProcessor 'org.projectlombok:lombok'
     integTestImplementation 'com.icegreen:greenmail-junit5:2.0.1'
+    integTestImplementation 'org.springframework.batch:spring-batch-core:5.1.2'
 
 }
 

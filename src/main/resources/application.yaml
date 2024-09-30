@@ -26,6 +26,9 @@ spring:
     url: ${DATABASE_URL:jdbc:postgresql://localhost/arg}
     username: ${DATABASE_USER:arg}
     password: ${DATABASE_PASSWORD:arg}
+  batch:
+    jdbc:
+      initialize-schema: always
   mail:
     host: ${EMAIL_HOST}
     port: ${EMAIL_PORT}
