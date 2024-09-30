@@ -6,6 +6,7 @@ import com.quantum_pixel.arg.v1.web.model.PaginatedRoomDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomAvailabilityDTO;
 import com.quantum_pixel.arg.v1.web.model.RoomFiltersDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 public class HotelBookingController implements HotelBookingApi {
@@ -29,6 +31,7 @@ public class HotelBookingController implements HotelBookingApi {
 
     @Override
     public ResponseEntity<PaginatedRoomDTO> retrieveAvailableRoomsForDateRange(ZoneOffset zoneOffset, RoomFiltersDTO roomFiltersDTO) {
+        log.info("[HotelBookingController] Receiving Available rooms for given date range zoneOffset: {} details: {}", zoneOffset, roomFiltersDTO);
         return ResponseEntity.ok(service.getPaginatedRooms(zoneOffset, roomFiltersDTO));
     }
 
