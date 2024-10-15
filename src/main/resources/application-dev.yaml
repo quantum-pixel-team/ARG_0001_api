@@ -19,3 +19,5 @@ logging:
   file:
     path: ${ARG_SPRING_BOOT_LOGS_PATH:./logs}
   config: classpath:logback-spring-dev.xml
+error:
+  include-stacktrace: true
