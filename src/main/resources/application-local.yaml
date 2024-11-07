@@ -8,6 +8,8 @@ spring:
 
 
 allowed-origins: http://localhost:4200, http://localhost:5211, *
+#server:
+#  address: 192.168.111.5
 
 # Email Config
 
@@ -24,3 +26,9 @@ IMAP_PORT: 993
 whatsapp:
   api:
     token: dummy_token
+logging:
+  file:
+    path: ${ARG_SPRING_BOOT_LOGS_PATH:./logs}
+  config: classpath:logback-spring-dev.xml
+error:
+  include-stacktrace: true

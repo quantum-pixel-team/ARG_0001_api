@@ -72,7 +72,7 @@ public class ConferenceServiceTest {
         reservations.add((ReservationDTO.builder()
                 .reservationDate(OffsetDateTime.now().plusDays(1))
                 .startTime(OffsetDateTime.now().plusDays(1))
-                .endTime(OffsetDateTime.now().plusDays(20))
+                .endTime(OffsetDateTime.now().plusDays(20).plusHours(1))
                 .build()));
         return ConferenceMailStructureDTO.builder()
                 .fullNameOrCompanyName("luka buziu")
