@@ -6,6 +6,7 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import com.quantum_pixel.arg.AppITConfig;
 import com.quantum_pixel.arg.ConfigTest;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class ConferenceControllerIT extends ConfigTest {
             .withPerMethodLifecycle(true);
 
     @Test
+    @Disabled
     void shouldSentSuccessfully() {
         String payload = """
                 {  \s

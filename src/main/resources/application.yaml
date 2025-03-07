@@ -59,6 +59,8 @@ swagger-ui:
   enabled: ${SWAGGER_ENABLED:true}
   configuration-name: ${SWAGGER_UI_CONFIGURATION_NAME:keycloak}
 
+error:
+  include-stacktrace: false
 whatsapp:
   api:
     phone_number_id: ${whatsapp_api_phone_number_id:341358742400656}

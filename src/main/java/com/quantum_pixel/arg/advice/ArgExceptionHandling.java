@@ -6,17 +6,25 @@ import com.quantum_pixel.arg.v1.web.model.ErrorDTO;
 import com.quantum_pixel.arg.v1.web.model.ErrorsDTO;
 import jakarta.validation.ValidationException;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,6 +38,13 @@ import static org.springframework.http.HttpStatus.*;
 @ControllerAdvice
 @Log4j2
 public class ArgExceptionHandling {
+
+    @Value("${error.include-stacktrace:false}")
+    private boolean includeStacktrace;
+
+    private String getStacktraceIfNeeded(Throwable ex) {
+        return includeStacktrace ? getStacktrace(ex) : null;
+    }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -74,7 +89,7 @@ public class ArgExceptionHandling {
                                                         .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
                                                         .errorType(ErrorDTO.ErrorTypeEnum.FUNCTIONAL)
                                                         .errorMessage(message)
-                                                        .errorStacktrace(getStacktrace(ex))
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
                                                         .build()))
                                 .build());
     }
@@ -98,7 +113,7 @@ public class ArgExceptionHandling {
                                                         .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
                                                         .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
                                                         .errorMessage(BAD_REQUEST.getReasonPhrase() + ": " + message)
-                                                        .errorStacktrace(getStacktrace(ex))
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
                                                         .build()))
                                 .build());
     }
@@ -121,7 +136,7 @@ public class ArgExceptionHandling {
                                                         .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
                                                         .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
                                                         .errorMessage(FORBIDDEN.getReasonPhrase() + ": " + message)
-                                                        .errorStacktrace(getStacktrace(ex))
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
                                                         .build()))
                                 .build());
     }
@@ -146,7 +161,7 @@ public class ArgExceptionHandling {
                                                         .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
                                                         .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
                                                         .errorMessage("Missing parameter " + ex.getParameterName() + ": " + message)
-                                                        .errorStacktrace(getStacktrace(ex))
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
                                                         .build()))
                                 .build());
     }
@@ -171,11 +186,171 @@ public class ArgExceptionHandling {
                                                                 INTERNAL_SERVER_ERROR.getReasonPhrase()
                                                                         + ": "
                                                                         + ex.getMessage())
-                                                        .errorStacktrace(getStacktrace(ex))
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
                                                         .build()))
                                 .build());
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ResponseEntity<ErrorsDTO> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, WebRequest req) {
+        String message = "Request method '" + ex.getMethod() + "' is not supported for this endpoint.";
+        log.error("HTTP request method not supported for path '{}' : {}", req.getContextPath(), message, ex);
+
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        ErrorsDTO.builder()
+                                .errors(
+                                        List.of(
+                                                ErrorDTO.builder()
+                                                        .timestamp(OffsetDateTime.now())
+                                                        .errorCode(HttpStatus.METHOD_NOT_ALLOWED.value())
+                                                        .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
+                                                        .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
+                                                        .errorMessage(message)
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
+                                                        .build()))
+                                .build());
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorsDTO> handleNoResourceFound(NoResourceFoundException ex, WebRequest req) {
+        String message = "No static resource found.";
+        log.error("No static resource found for path '{}' : {}", req.getContextPath(), message, ex);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        ErrorsDTO.builder()
+                                .errors(
+                                        List.of(
+                                                ErrorDTO.builder()
+                                                        .timestamp(OffsetDateTime.now())
+                                                        .errorCode(HttpStatus.NOT_FOUND.value())
+                                                        .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
+                                                        .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
+                                                        .errorMessage(message)
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
+                                                        .build()))
+                                .build());
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorsDTO> handleMissingRequestHeader(MissingRequestHeaderException ex, WebRequest req) {
+        String message = "Required request header '" + ex.getHeaderName() + "' is not present.";
+        log.error("Missing request header for path '{}' : {}", req.getContextPath(), message, ex);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        ErrorsDTO.builder()
+                                .errors(
+                                        List.of(
+                                                ErrorDTO.builder()
+                                                        .timestamp(OffsetDateTime.now())
+                                                        .errorCode(HttpStatus.BAD_REQUEST.value())
+                                                        .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
+                                                        .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
+                                                        .errorMessage(message)
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
+                                                        .build()))
+                                .build());
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ResponseEntity<ErrorsDTO> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, WebRequest req) {
+        String message = "Media type '" + ex.getContentType() + "' is not supported.";
+        log.error("Unsupported media type for path '{}' : {}", req.getContextPath(), message, ex);
+
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        ErrorsDTO.builder()
+                                .errors(
+                                        List.of(
+                                                ErrorDTO.builder()
+                                                        .timestamp(OffsetDateTime.now())
+                                                        .errorCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                                                        .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
+                                                        .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
+                                                        .errorMessage(message)
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
+                                                        .build()))
+                                .build());
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    public ResponseEntity<ErrorsDTO> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, WebRequest req) {
+        String message = "Media type not acceptable.";
+        log.error("Media type not acceptable for path '{}' : {}", req.getContextPath(), message, ex);
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        ErrorsDTO.builder()
+                                .errors(
+                                        List.of(
+                                                ErrorDTO.builder()
+                                                        .timestamp(OffsetDateTime.now())
+                                                        .errorCode(HttpStatus.NOT_ACCEPTABLE.value())
+                                                        .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
+                                                        .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
+                                                        .errorMessage(message)
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
+                                                        .build()))
+                                .build());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorsDTO> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, WebRequest req) {
+        String message = "Request body is not readable.";
+        log.error("Request body not readable for path '{}' : {}", req.getContextPath(), message, ex);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        ErrorsDTO.builder()
+                                .errors(
+                                        List.of(
+                                                ErrorDTO.builder()
+                                                        .timestamp(OffsetDateTime.now())
+                                                        .errorCode(HttpStatus.BAD_REQUEST.value())
+                                                        .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
+                                                        .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
+                                                        .errorMessage(message)
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
+                                                        .build()))
+                                .build());
+    }
+
+    @ExceptionHandler(HttpMessageNotWritableException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorsDTO> handleHttpMessageNotWritable(HttpMessageNotWritableException ex, WebRequest req) {
+        String message = "Response body is not writable.";
+        log.error("Response body not writable for path '{}' : {}", req.getContextPath(), message, ex);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(
+                        ErrorsDTO.builder()
+                                .errors(
+                                        List.of(
+                                                ErrorDTO.builder()
+                                                        .timestamp(OffsetDateTime.now())
+                                                        .errorCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                                        .errorType(ErrorDTO.ErrorTypeEnum.TECHNICAL)
+                                                        .errorLevel(ErrorDTO.ErrorLevelEnum.ERROR)
+                                                        .errorMessage(message)
+                                                        .errorStacktrace(getStacktraceIfNeeded(ex))
+                                                        .build()))
+                                .build());
+    }
     private static String getStacktrace(Throwable throwable) {
         var sw = new StringWriter();
         var pw = new PrintWriter(sw, true);
