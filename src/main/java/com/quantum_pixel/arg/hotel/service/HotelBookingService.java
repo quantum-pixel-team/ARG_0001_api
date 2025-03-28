@@ -25,7 +25,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -115,7 +119,8 @@ public class HotelBookingService {
 
 
         Pageable pageable = PageRequest.of(filtersDTO.getPageIndex(), filtersDTO.getPageSize(), sort);
-
+        var numberOfRequestedNights = getDifferenceInDays(checkInDate.toLocalDate(),
+                checkOutDate.toLocalDate());
         String language = filtersDTO.getLanguage();
         var rooms = roomRepository.getRoomAggregated(
                 checkInDate.toLocalDate(),
@@ -128,6 +133,7 @@ public class HotelBookingService {
                 filtersDTO.getMaxPrice().orElse(null),
                 Optional.ofNullable(filtersDTO.getRoomFacilities()).orElse(Collections.emptySet()).toArray(new String[0]),
                 filtersDTO.getAvailable(),
+                numberOfRequestedNights,
                 pageable);
 
 
@@ -141,6 +147,10 @@ public class HotelBookingService {
                         filtersDTO.getNumberOfAdults(), filtersDTO.getChildrenAges(), el.getId())))
                 .toList();
         return pageDto.content(updatedContent);
+    }
+
+    long getDifferenceInDays(LocalDate date1, LocalDate date2) {
+        return java.time.temporal.ChronoUnit.DAYS.between(date1, date2);
     }
 
 

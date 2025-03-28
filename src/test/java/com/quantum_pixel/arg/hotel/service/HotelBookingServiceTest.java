@@ -217,7 +217,7 @@ class HotelBookingServiceTest {
     @Test
     void testGetPaginatedRooms_noRoomsFound() {
 
-        when(roomRepository.getRoomAggregated(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Page.empty());
+        when(roomRepository.getRoomAggregated(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(Page.empty());
 
         // Verify exception
         ResponseStatusException thrown = assertThrows(ResponseStatusException.class, () -> {
