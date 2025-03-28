@@ -71,7 +71,7 @@ public class ConferenceServiceTest {
         List<ReservationDTO> reservations = new ArrayList<>();
         reservations.add((ReservationDTO.builder()
                 .reservationDate(OffsetDateTime.now().plusDays(1))
-                .startTime(OffsetDateTime.now().plusDays(1))
+                .startTime(OffsetDateTime.now().plusDays(2))
                 .endTime(OffsetDateTime.now().plusDays(20).plusHours(1))
                 .build()));
         return ConferenceMailStructureDTO.builder()
