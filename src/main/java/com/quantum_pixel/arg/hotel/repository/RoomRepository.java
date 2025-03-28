@@ -82,6 +82,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                      (:minPrice IS NULL OR r.total_price >= :minPrice)
                                    AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
                                    AND (:available IS NULL OR (:available = true AND available_rooms >= 1 * :numberOfRooms) OR :available = false)
+                                   AND (:numberOfGuests IS NULL OR total_capacity >= :numberOfGuests)
                                  GROUP BY r.id, r.name, r.description, short_description, r.total_capacity, r.images_url,
                                           priority, r.total_price, r.available_rooms, r.minimum_nights
                                  HAVING (:roomFacilities) IS NULL
@@ -138,6 +139,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
                                              (:minPrice IS NULL OR r.total_price >= :minPrice)
                                            AND (:maxPrice IS NULL OR r.total_price <= :maxPrice)
                                            AND (:available IS NULL OR (:available = true AND available_rooms >= :numberOfRooms) OR :available = false)
+                                           AND (:numberOfGuests IS NULL OR total_capacity >= :numberOfGuests)
                                          GROUP BY r.id
                                          HAVING (:roomFacilities) IS NULL
                                              OR ARRAY_AGG(f.name) @> :roomFacilities)
